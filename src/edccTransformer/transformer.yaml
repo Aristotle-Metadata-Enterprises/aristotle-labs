@@ -94,21 +94,3 @@ Resources:
       Principal: "events.amazonaws.com"
       SourceArn:
         !GetAtt TransformDataSchedule.Arn
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
