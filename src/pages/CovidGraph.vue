@@ -1,6 +1,6 @@
 <template>
-    <div class="root">
-        <h1>Aristotle Covid Dashboard</h1>    
+    <div class="covid-graph">
+        <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
             <bar-graph/>
             <selector/>
@@ -10,11 +10,10 @@
 </template>
 
 <script>
-import Selector from './Selector.vue'
-import BarGraph from './BarGraph.vue'
-import MetadataDisplay from './MetadataDisplay.vue'
+import Selector from '@/components/Selector.vue'
+import BarGraph from '@/components/BarGraph.vue'
+import MetadataDisplay from '@/components/MetadataDisplay.vue'
 
-// This is the root component for the covid dashboard application
 export default {
     components: {
         'selector': Selector,
