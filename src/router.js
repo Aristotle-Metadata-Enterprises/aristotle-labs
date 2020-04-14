@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import CovidGraph from './pages/CovidGraph.vue'
-import CovidMap from './pages/CovidMap.vue'
+import CovidGraph from './pages/covid/Graph.vue'
+import CovidMap from './pages/covid/Map.vue'
 
 Vue.use(VueRouter)
 
