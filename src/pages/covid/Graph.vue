@@ -2,10 +2,21 @@
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
-            <bar-graph/>
-            <selector/>
+            <bar-graph />
+            <div>
+                <selector 
+                    v-model="selected" 
+                    description="Choose a data element" 
+                    :options="options" 
+                />
+                <selector 
+                    v-model="selectedCategory" 
+                    description="Choose a category data element" 
+                    :options="categoryOptions"
+                />
+            </div>
         </div>
-        <metadata-display/>
+        <metadata-display />
     </div>
 </template>
 
@@ -13,13 +24,38 @@
 import Selector from '@/components/Selector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import { getDistribution, getDistributionOptions } from '@/data/covid.js'
 
 export default {
+    data: () => ({
+        distribution: {},
+        selected: '',
+        selectedCategory: '',
+        options: [],
+        categoryOptions: [],
+    }),
     components: {
         'selector': Selector,
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
-    }
+    },
+    mounted: function() {
+        getDistribution().then((data) => {
+            this.distribution = data
+            this.options = getDistributionOptions(data)
+            this.categoryOptions = getDistributionOptions(
+                data, 
+                (de) => {
+                    if (de.valueDomain) {
+                        return de.valueDomain.permissiblevalueSet.length > 0
+                    }
+                    return false
+                }
+            )
+        }).catch((error) => {
+            console.error(error)
+        })
+    },
 }
 </script>
 

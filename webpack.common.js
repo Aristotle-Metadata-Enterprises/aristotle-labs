@@ -4,10 +4,9 @@ const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const fs = require('fs');
-
 
 module.exports = {
     entry: {
@@ -24,6 +23,7 @@ module.exports = {
         new webpack.BannerPlugin(fs.readFileSync('./LICENSE', 'utf-8')),
     ],
     module: {
+        strictExportPresence: true,  // Missing exports fail the build
         rules: [
             {
                 test: /\.svg$/,
