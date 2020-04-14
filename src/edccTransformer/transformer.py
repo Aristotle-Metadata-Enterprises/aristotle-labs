@@ -100,8 +100,8 @@ def handler(event, context):
     # Transform the data
     transformer = DataTransformer()
     data = transformer.transform()
-    # Upload to S3
 
+    # Upload to S3
     response = s3_client.put_object(
         Body=data,
         Bucket=covid_data_bucket,
