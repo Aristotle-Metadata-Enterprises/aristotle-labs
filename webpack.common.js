@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -6,7 +7,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const fs = require('fs');
+const info = require("./package.json")
+
 
 
 module.exports = {
@@ -21,7 +23,9 @@ module.exports = {
             template: './src/index.html',
             filename: 'index.html',
         }),
-        new webpack.BannerPlugin(fs.readFileSync('./LICENSE', 'utf-8')),
+        new webpack.BannerPlugin(() => {
+            return `${info.name}, ${info.version}\n\n${fs.readFileSync('./LICENSE', 'utf-8')}`
+        })
     ],
     module: {
         rules: [
