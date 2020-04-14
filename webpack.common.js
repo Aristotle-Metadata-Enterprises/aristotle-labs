@@ -11,15 +11,15 @@ const fs = require('fs');
 
 module.exports = {
     entry: {
-        "covidTimeSeries": './src/timeSeries/index.js'
+        "main": './src/main.js'
     },
     plugins: [
         new CleanWebpackPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             title: 'covidTimeSeries',
-            template: './src/timeSeries/index.html',
-            filename: './timeSeries/index.html',
+            template: './src/index.html',
+            filename: 'index.html',
         }),
         new webpack.BannerPlugin(fs.readFileSync('./LICENSE', 'utf-8')),
     ],
@@ -46,6 +46,11 @@ module.exports = {
                 loader: 'vue-loader'
             }
         ]
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src')
+        }
     },
     output: {
         filename: "[name].min.js",
