@@ -1,6 +1,7 @@
 import requests
 import time
 import csv
+import codecs
 import json
 import boto3
 from datetime import datetime
@@ -8,6 +9,7 @@ from typing import List, Dict
 
 s3_client = boto3.client("s3")
 covid_data_bucket = 'aristotle-edcc-covid19-data'
+csv_url = "https://aristotle-edcc-covid19-data.s3-ap-southeast-2.amazonaws.com/covid_spreadsheet.csv"
 
 
 class DataTransformer:
@@ -34,15 +36,15 @@ class DataTransformer:
 
     def load_data_from_csv(self) -> List[Dict]:
         """Load the CSV file containing additional metadata and convert to dictionary"""
-        with open('./covid_spreadsheet.csv') as csv_file:
-            csv_dict = csv.DictReader(csv_file)
+        response = requests.get(csv_url)
 
-            extra_metadata = {}
-            for row in csv_dict:
-                country_code = row.pop('countryCode')
-                row = {country_code: {k.strip(): v.strip() for k, v in row.items()}}
+        csv_dict = csv.DictReader(codecs.iterdecode(response.iter_lines(), 'utf-8'))
+        extra_metadata = {}
+        for row in csv_dict:
+            country_code = row.pop('countryCode')
+            row = {country_code: {k.strip(): v.strip() for k, v in row.items()}}
 
-                extra_metadata.update(row)
+            extra_metadata.update(row)
 
         return extra_metadata
 
