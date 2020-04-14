@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Data transformer for EDCC and WHO data - results are put into a S3 bucket"
+
+Parameters:
+  LambdaSourceZip:
+    Type: String
+    Description: "The filename for the source ZIP of the lambda code"
+    Default: "transformer.zip"
+
+Resources:
+  TransformedDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "aristotle-edcc-covid19-data"
+      AccessControl: "PublicRead"
+
+  LambdaSourceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "aristotle-lambdas"
+
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'
+
+  TransformDataFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-COVID-Data-Transformer"
+      Handler: "edccTransformer/transformer.handler"
+      Code:
+        S3Bucket: !Ref LambdaSourceBucket
+        Key: !Ref LambdaSourceZip
+      MemorySize: 256
+      Runtime: "python-3.8"
+      Timeout: 300
+
+  AllowWriteToDataBucketPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectVersion'
+              - 's3:PutObject'
+            Resource:
+              - !GetAtt TransformedDataBucket.Arn
+              - !Sub '${TransformedDataBucket.Arn}/*'
+
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-LambdaExecutionRole"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - !Ref AllowWriteToDataBucketPolicy
+
+  TransformDataSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${AWS::StackName}-TransformDataSchedule"
+      Description: "Trigger a download and transform of COVID-19 data from the EDCC"
+      ScheduleExpression: rate(1 day)
+      State: "ENABLED"
+      Targets:
+        - Arn: !GetAtt TransformDataFunction.Arn
+
+  TransformDataFunctionInvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        !Ref TransformDataFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn:
+        !GetAtt TransformDataSchedule.Arn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

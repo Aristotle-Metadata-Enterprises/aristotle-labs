@@ -1,0 +1,140 @@
+import requests
+import time
+import csv
+import json
+import boto3
+from datetime import datetime
+from typing import List, Dict
+
+s3_client = boto3.client("s3")
+covid_data_bucket = 'aristotle-edcc-covid19-data'
+
+
+class DataTransformer:
+    """A transformer that removes unwanted fields and adds in useful extra metadata from daily EDCC COVID-19
+    case data """
+    edcc_url = 'https://opendata.ecdc.europa.eu/covid19/casedistribution/json/'
+
+    def __init__(self):
+        self.raw_data = self.request_edcc_data()
+        self.extra_metadata = self.load_data_from_csv()
+
+    def request_edcc_data(self):
+        request = requests.get(self.edcc_url)
+        return request.json()
+
+    def remove_unwanted_fields(self, record) -> Dict:
+        """Remove unwanted fields from data"""
+        unwanted_fields = ['GeoId', 'popData2018']
+        for field in unwanted_fields:
+            if field in record:
+                del record[field]
+
+        return record
+
+    def load_data_from_csv(self) -> List[Dict]:
+        """Load the CSV file containing additional metadata and convert to dictionary"""
+        with open('./covid_spreadsheet.csv') as csv_file:
+            csv_dict = csv.DictReader(csv_file)
+
+            extra_metadata = {}
+            for row in csv_dict:
+                country_code = row.pop('countryCode')
+                row = {country_code: {k.strip(): v.strip() for k, v in row.items()}}
+
+                extra_metadata.update(row)
+
+        return extra_metadata
+
+    def add_cumulative_totals(self, data) -> List[Dict]:
+        """Calculate a running cumulative total and attach to records"""
+        data = data['records']
+        # Sort by date
+        data.sort(key=lambda x: time.mktime(time.strptime(x['dateRep'],"%d/%m/%Y")))
+        # Sort by country code
+        data.sort(key=lambda x: x['geoId'])
+
+        previous_region = data[0]['geoId']
+        cumulative_cases = 0
+        cumulative_deaths = 0
+
+        for record in data:
+            if record['geoId'] != previous_region:
+                # We're on to a new country, reset the cumulative total count
+                cumulative_cases = cumulative_deaths = 0
+            cumulative_cases += int(record['cases'])
+            cumulative_deaths += int(record['deaths'])
+            record['cumulativeCases'] = cumulative_cases
+            record['cumulativeDeaths'] = cumulative_deaths
+
+            previous_region = record['geoId']
+
+        return data
+
+    def add_extra_metadata(self, data) -> List[Dict]:
+        for record in data:
+            key = None
+            if 'countryterritoryCode' in record and record['countryterritoryCode']:
+                key = record['countryterritoryCode']
+            elif 'geoId' in record and record['geoId']:
+                key = record['geoId']
+
+            if key is not None:
+                if key in self.extra_metadata:
+                    record.update(self.extra_metadata[key])
+
+        return data
+
+    def transform(self):
+        # Calculate the cumulative total
+        data = self.add_cumulative_totals(self.raw_data)
+        # Add the additional metadata
+        data = self.add_extra_metadata(data)
+        # Dump the JSON data
+        return json.dumps(data)
+
+
+def handler(event, context):
+    # Transform the data
+    transformer = DataTransformer()
+    data = transformer.transform()
+    # Upload to S3
+
+    response = s3_client.put_object(
+        Body=data,
+        Bucket=covid_data_bucket,
+        Key=f'{datetime.now().strftime("%Y-%m-%d")}-COVID-19-Cases',
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
