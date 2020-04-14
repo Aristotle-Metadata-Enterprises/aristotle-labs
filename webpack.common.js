@@ -1,8 +1,8 @@
+/* eslint-env node */
 const path = require('path');
 
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
