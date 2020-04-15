@@ -5,10 +5,9 @@ const fs = require('fs');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const info = require("./package.json")
-
 
 
 module.exports = {
@@ -28,6 +27,7 @@ module.exports = {
         })
     ],
     module: {
+        strictExportPresence: true,  // Missing exports fail the build
         rules: [
             {
                 test: /\.svg$/,
