@@ -1,27 +1,31 @@
+/* eslint-env node */
 const path = require('path');
+const fs = require('fs');
 
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const fs = require('fs');
+const info = require("./package.json")
+
 
 
 module.exports = {
     entry: {
-        "covidTimeSeries": './src/timeSeries/index.js'
+        "main": './src/main.js'
     },
     plugins: [
         new CleanWebpackPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             title: 'covidTimeSeries',
-            template: './src/timeSeries/index.html',
-            filename: './timeSeries/index.html',
+            template: './src/index.html',
+            filename: 'index.html',
         }),
-        new webpack.BannerPlugin(fs.readFileSync('./LICENSE', 'utf-8')),
+        new webpack.BannerPlugin(() => {
+            return `${info.name}, ${info.version}\n\n${fs.readFileSync('./LICENSE', 'utf-8')}`
+        })
     ],
     module: {
         rules: [
@@ -46,6 +50,11 @@ module.exports = {
                 loader: 'vue-loader'
             }
         ]
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src')
+        }
     },
     output: {
         filename: "[name].min.js",

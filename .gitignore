@@ -131,3 +131,6 @@ dmypy.json
 # Js project ignores
 node_modules
 dist
+
+# Ignore the used data file.
+/data.json
