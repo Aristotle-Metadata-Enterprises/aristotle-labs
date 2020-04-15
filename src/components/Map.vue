@@ -4,7 +4,7 @@
                 type="GeoChart"
                 :data="chartData"
                 :options="chartOptions"
-                :settings="{ packages: ['geochart'],  }"
+                :settings="{ packages: ['geochart'],}"
         />
     </div>
 </template>
