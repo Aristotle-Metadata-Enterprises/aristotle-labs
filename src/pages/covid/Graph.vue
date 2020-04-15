@@ -27,6 +27,7 @@ import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
     getDistribution,
     getDistributionOptions,
+    getDatasetSpecification,
     mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
@@ -35,6 +36,7 @@ import {
 export default {
     data: () => ({
         distribution: {},
+        dss: {},
         selected: '',
         selectedCategory: '',
         options: [],
@@ -52,6 +54,13 @@ export default {
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements)
             this.datamap = mapDistributionData(data)
+        }).catch((error) => {
+            // TODO handle errors gracefully
+            console.error(error)
+        })
+
+        getDatasetSpecification().then((data) => {
+            this.dss = data
         }).catch((error) => {
             // TODO handle errors gracefully
             console.error(error)
