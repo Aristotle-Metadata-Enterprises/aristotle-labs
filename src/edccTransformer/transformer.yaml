@@ -11,8 +11,18 @@ Resources:
   TransformedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "aristotle-edcc-covid19-data"
+      BucketName: "aristotle-ecdc-covid19-data"
       AccessControl: "PublicRead"
+      CorsConfiguration:
+        CorsRules:
+          - Id: "Allow CORS for GET"
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - "*"
+            AllowedHeaders:
+              - "*"
+            MaxAge: 3000
 
   LambdaSourceBucket:
     Type: AWS::S3::Bucket
