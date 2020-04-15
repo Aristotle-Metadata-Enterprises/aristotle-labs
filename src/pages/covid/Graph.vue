@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display />
+        <metadata-display :selected="selectedSet" :dss="dss" />
     </div>
 </template>
 
@@ -66,6 +66,18 @@ export default {
             console.error(error)
         })
     },
+    computed: {
+        selectedSet: function() {
+            let s = new Set()
+            if (this.selected) {
+                s.add(this.selected)
+            }
+            if (this.selectedCategory) {
+                s.add(this.selectedCategory)
+            }
+            return s
+        }
+    }
 }
 </script>
 
