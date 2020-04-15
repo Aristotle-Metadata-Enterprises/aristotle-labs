@@ -106,4 +106,12 @@ def handler(event, context):
         Body=data,
         Bucket=covid_data_bucket,
         Key=f'{datetime.now().strftime("%Y-%m-%d")}-COVID-19-Cases',
+        ExtraArgs={'ACL': 'public-read'}
+    )
+    # Upload to S3 as most recent
+    response = s3_client.put_object(
+        Body=data,
+        Bucket=covid_data_bucket,
+        Key='daily_data',
+        ExtraArgs={'ACL': 'public-read'}
     )

@@ -10,7 +10,5 @@ zip -g transformer.zip transformer.py
 zip -g transformer.zip covid_spreadsheet.csv
 # Copy to source code bucket
 aws s3 cp ./transformer.zip s3://aristotle-lambdas/
-# Remove old ZIP
-#rm ./transformer.zip
 
 echo "Lambda changes uploaded"
