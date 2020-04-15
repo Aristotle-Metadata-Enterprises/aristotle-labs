@@ -9,7 +9,7 @@ from typing import List, Dict
 
 s3_client = boto3.client("s3")
 covid_data_bucket = 'aristotle-edcc-covid19-data'
-csv_url = "https://aristotle-edcc-covid19-data.s3-ap-southeast-2.amazonaws.com/covid_spreadsheet.csv"
+csv_url = "https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/covid_spreadsheet.csv"
 
 
 class DataTransformer:
