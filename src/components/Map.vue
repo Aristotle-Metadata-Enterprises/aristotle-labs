@@ -11,7 +11,6 @@
 
 <script>
     import { GChart } from 'vue-google-charts'
-    import graphData from '../data.json'
 
     export default {
         name: 'Map',
@@ -47,6 +46,8 @@
             console.log("hello world")
             const json = require('../daily_data_recent.json');
             console.log(json)
+            console.log("THIS IS THE CURRENT DATA")
+            console.log(this.data)
         }
     }
 </script>
