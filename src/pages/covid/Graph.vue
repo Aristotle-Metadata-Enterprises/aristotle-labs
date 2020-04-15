@@ -24,7 +24,12 @@
 import Selector from '@/components/Selector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
-import { getDistribution, getDistributionOptions } from '@/data/covid.js'
+import {
+    getDistribution,
+    getDistributionOptions,
+    filterNumberDataElements,
+    filterValueDataElements,
+} from '@/data/covid.js'
 
 export default {
     data: () => ({
@@ -42,17 +47,10 @@ export default {
     mounted: function() {
         getDistribution().then((data) => {
             this.distribution = data
-            this.options = getDistributionOptions(data)
-            this.categoryOptions = getDistributionOptions(
-                data, 
-                (de) => {
-                    if (de.valueDomain) {
-                        return de.valueDomain.permissiblevalueSet.length > 0
-                    }
-                    return false
-                }
-            )
+            this.options = getDistributionOptions(data, filterNumberDataElements)
+            this.categoryOptions = getDistributionOptions(data, filterValueDataElements)
         }).catch((error) => {
+            // TODO handle errors gracefully
             console.error(error)
         })
     },

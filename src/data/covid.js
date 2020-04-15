@@ -1,4 +1,4 @@
-// Covid data access
+// Covid data access functions to be used across vue components
 /* global process */
 import axios from 'axios'
 
@@ -19,6 +19,10 @@ export function getDistribution() {
                 name
                 uuid
                 valueDomain {
+                  uuid
+                  dataType {
+                    name
+                  }
                   permissiblevalueSet {
                     value
                   }
@@ -43,7 +47,7 @@ export function getDistribution() {
 }
 
 // Get a distributions data elements as options array
-// Filter is optional function that recieves a data element and return a boolean
+// Filter is an optional function that recieves a data element and return a boolean
 // indicating its inclusion in the options
 export function getDistributionOptions(distribution, filter) {
     let options = []
@@ -54,4 +58,20 @@ export function getDistributionOptions(distribution, filter) {
         options.push({value: dep.dataElement.uuid, text: dep.dataElement.name}) 
     }
     return options
+}
+
+// Filter for data elements to use with getDistributionOptions
+export function filterNumberDataElements(data_element) {
+    if (data_element.valueDomain && data_element.valueDomain.dataType) {
+        return data_element.valueDomain.dataType.name === 'Number'
+    }
+    return false
+}
+
+// Filter for data element that have permissible values
+export function filterValueDataElements(data_element) {
+    if (data_element.valueDomain) {
+        return data_element.valueDomain.permissiblevalueSet.length > 0
+    }
+    return false
 }
