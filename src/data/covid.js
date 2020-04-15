@@ -75,3 +75,14 @@ export function filterValueDataElements(data_element) {
     }
     return false
 }
+
+// Get map of data element uuid to logicalPath
+export function mapDistributionData(distribution) {
+    let map = new Map()
+    for (let dep of distribution.distributiondataelementpathSet) {
+        if (dep.dataElement) {
+            map.set(dep.dataElement.uuid, dep.logicalPath)
+        }
+    }
+    return map
+}
