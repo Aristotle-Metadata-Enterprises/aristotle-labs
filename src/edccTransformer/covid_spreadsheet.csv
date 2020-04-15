@@ -1,0 +1,204 @@
+region,reportingArea,TransmissionClassification,countryCode
+Western Pacific Region,China,Local transmission,CHN
+Western Pacific Region,Republic of Korea,Local transmission,KOR
+Western Pacific Region,Australia,Local transmission,AUS
+Western Pacific Region,Malaysia,Local transmission,MYS
+Western Pacific Region,Japan,Local transmission,JPN
+Western Pacific Region,Philippines,Local transmission,PHL
+Western Pacific Region,Singapore,Local transmission,SNG
+Western Pacific Region,New Zealand,Local transmission,NZL
+Western Pacific Region,Viet Nam,Local transmission,VNM
+Western Pacific Region,Brunei Darussalam,Local transmission,BRN
+Western Pacific Region,Cambodia,Local transmission,KHM
+Western Pacific Region,Mongolia,Imported cases only,MNG
+Western Pacific Region,Lao People's Democratic Republic,Local transmission,LAO
+Western Pacific Region,Fiji,Local transmission,FJI
+Western Pacific Region,Papua New Guinea,Imported cases only,PNG
+Territories,Guam,Local transmission,GUM
+Territories,French Polynesia,Local transmission,PYF
+Territories,New Caledonia,Local transmission,NCL
+Territories,Northern Mariana Islands (Commonwealth of the),Under investigation,MNP
+European Region,Italy,Local transmission,ITA
+European Region,Spain,Local transmission,ESP
+European Region,Germany,Local transmission,DEU
+European Region,France,Local transmission,FRA
+European Region,The United Kingdom,Local transmission,GBR
+European Region,Switzerland,Local transmission,CHE
+European Region,Belgium,Local transmission,BEL
+European Region,Netherlands,Local transmission,NLD
+European Region,Turkey,Local transmission,TUR
+European Region,Austria,Local transmission,AUT
+European Region,Portugal,Local transmission,PRT
+European Region,Israel,Local transmission,ISR
+European Region,Norway,Local transmission,NOR
+European Region,Sweden,Local transmission,SWE
+European Region,Czechia,Local transmission,CZ
+European Region,Ireland,Local transmission,IRL
+European Region,Denmark,Local transmission,DNK
+European Region,Poland,Local transmission,POL
+European Region,Luxembourg,Local transmission,LUX
+European Region,Romania,Local transmission,ROU
+European Region,Russian Federation,Local transmission,RUS
+European Region,Finland,Local transmission,FIN
+European Region,Greece,Local transmission,GRC
+European Region,Iceland,Local transmission,ISL
+European Region,Croatia,Local transmission,HRV
+European Region,Serbia,Local transmission,SRB
+European Region,Slovenia,Local transmission,SVN
+European Region,Estonia,Local transmission,EST
+European Region,Ukraine,Local transmission,UKR
+European Region,Lithuania,Local transmission,LTU
+European Region,Armenia,Local transmission,ARM
+European Region,Hungary,Local transmission,HUN
+European Region,Latvia,Local transmission,LVA
+European Region,Andorra,Local transmission,AND
+European Region,Bosnia and Herzegovina,Local transmission,BIH
+European Region,Bulgaria,Local transmission,BGR
+European Region,Slovakia,Local transmission,SVK
+European Region,Kazakhstan,Local transmission,KAZ
+European Region,Republic of Moldova,Local transmission,MDA
+European Region,North Macedonia,Local transmission,MKD
+European Region,Azerbaijan,Local transmission,AZE
+European Region,Cyprus,Local transmission,CYP
+European Region,San Marino,Local transmission,SMR
+European Region,Albania,Local transmission,ALB
+European Region,Malta,Local transmission,MLT
+European Region,Belarus,Local transmission,BLR
+European Region,Uzbekistan,Local transmission,UZB
+European Region,Kyrgyzstan,Local transmission,KGZ
+European Region,Georgia,Local transmission,GEO
+European Region,Montenegro,Local transmission,MNE
+European Region,Liechtenstein,Under investigation,LIE
+European Region,Monaco,Local transmission,MCO
+European Region,Holy See,Local transmission,VAT
+Territories,Faroe Islands,Local transmission,FRO
+Territories,Kosovo,Local transmission,XKX
+Territories,Gibraltar,Local transmission,GIB
+Territories,Jersey,Local transmission,JEY
+Territories,Guernsey,Local transmission,GGY
+Territories,Isle of Man,Local transmission,IMN
+Territories,Greenland,Under investigation,GRL
+South-East Asia Region,Thailand,Local transmission,THA
+South-East Asia Region,Indonesia,Local transmission,IDN
+South-East Asia Region,India,Local transmission,IND
+South-East Asia Region,Sri Lanka,Local transmission,LKA
+South-East Asia Region,Bangladesh,Local transmission,BGD
+South-East Asia Region,Maldives,Local transmission,MDV
+South-East Asia Region,Myanmar,Local transmission,MMR
+South-East Asia Region,Nepal,Imported cases only,NPL
+South-East Asia Region,Bhutan,Imported cases only,BTN
+South-East Asia Region,Timor-Leste,Under investigation,TLS
+Eastern Mediterranean Region,Iran (Islamic Republic of),Local transmission,IRN
+Eastern Mediterranean Region,Pakistan,Local transmission,PAK
+Eastern Mediterranean Region,Saudi Arabia,Local transmission,SAU
+Eastern Mediterranean Region,Qatar,Local transmission,QAT
+Eastern Mediterranean Region,Egypt,Local transmission,EGY
+Eastern Mediterranean Region,Iraq,Local transmission,IRQ
+Eastern Mediterranean Region,United Arab Emirates,Local transmission,AE
+Eastern Mediterranean Region,Morocco,Local transmission,MAR
+Eastern Mediterranean Region,Bahrain,Local transmission,BHR
+Eastern Mediterranean Region,Lebanon,Local transmission,LBN
+Eastern Mediterranean Region,Tunisia,Local transmission,TUN
+Eastern Mediterranean Region,Jordan,Local transmission,JOR
+Eastern Mediterranean Region,Kuwait,Local transmission,KWT
+Eastern Mediterranean Region,Oman,Local transmission,OMN
+Eastern Mediterranean Region,Afghanistan,Local transmission,AFG
+Eastern Mediterranean Region,Djibouti,Local transmission,DJI
+Eastern Mediterranean Region,Syrian Arab Republic,Imported cases only,SYR
+Eastern Mediterranean Region,Libya,Local transmission,LBY
+Eastern Mediterranean Region,Sudan,Imported cases only,SDN
+Eastern Mediterranean Region,Somalia,Imported cases only,SOM
+Territories,occupied Palestinian territory,Local transmission,PSE
+Region of the Americas,United States of America,Local transmission,USA
+Region of the Americas,Canada,Local transmission,CAN
+Region of the Americas,Brazil,Local transmission,BRA
+Region of the Americas,Chile,Local transmission,CHL
+Region of the Americas,Ecuador,Local transmission,ECU
+Region of the Americas,Mexico,Local transmission,MEX
+Region of the Americas,Panama,Local transmission,PAN
+Region of the Americas,Dominican Republic,Local transmission,DOM
+Region of the Americas,Peru,Local transmission,PER
+Region of the Americas,Argentina,Local transmission,ARG
+Region of the Americas,Colombia,Local transmission,COL
+Region of the Americas,Costa Rica,Local transmission,CRI
+Region of the Americas,Uruguay,Local transmission,URY
+Region of the Americas,Cuba,Local transmission,CUB
+Region of the Americas,Honduras,Local transmission,HND
+Region of the Americas,Venezuela (Bolivarian Republic of),Local transmission,VEN
+Region of the Americas,Bolivia (Plurinational State of),Local transmission,BOL
+Region of the Americas,Trinidad and Tobago,Local transmission,TTO
+Region of the Americas,Paraguay,Local transmission,PRY
+Region of the Americas,Guatemala,Local transmission,GTM
+Region of the Americas,Jamaica,Local transmission,JAM
+Region of the Americas,Barbados,Local transmission,BRB
+Region of the Americas,El Salvador,Local transmission,SLV
+Region of the Americas,Haiti,Imported cases only,HTI
+Region of the Americas,Bahamas,Local transmission,BHS
+Region of the Americas,Cayman Islands,Imported cases only,CYM
+Region of the Americas,Grenada,Local transmission,GRD
+Region of the Americas,Saint Lucia,Local transmission,LCA
+Region of the Americas,Guyana,Local transmission,GUY
+Region of the Americas,Suriname,Imported cases only,SUR
+Region of the Americas,Antigua and Barbuda,Imported cases only,ATG
+Region of the Americas,Nicaragua,Imported cases only,NIC
+Region of the Americas,Belize,Local transmission,BLZ
+Region of the Americas,Saint Kitts and Nevis,Imported cases only,KNA
+Region of the Americas,Saint Vincent and the Grenadines,Imported cases only,VCT
+Territories,Puerto Rico,Imported cases only,PRI
+Territories,Martinique,Local transmission,
+Territories,Guadeloupe,Imported cases only,
+Territories,Aruba,Local transmission,ABW
+Territories,French Guiana,Local transmission,
+Territories,United States Virgin Islands,Imported cases only,VIR
+Territories,Bermuda,Local transmission,BMU
+Territories,Saint Martin,Under investigation,
+Territories,Curaçao,Imported cases only,CUW
+Territories,Dominica,Local transmission,DOM
+Territories,Saint Barthélemy,Under investigation,
+Territories,Sint Maarten,Imported cases only,SXM
+Territories,Montserrat,Imported cases only,MS
+Territories,Turks and Caicos Islands,Local transmission,TC
+Territories,Anguilla,Local transmission,AI
+Territories,British Virgin Islands,Imported cases only,VGB
+African Region,South Africa,Local transmission,ZAF
+African Region,Algeria,Local transmission,DZA
+African Region,Burkina Faso,Local transmission,BFA
+African Region,Cote d’Ivoire,Local transmission,CIV
+African Region,Senegal,Local transmission,SEN
+African Region,Ghana,Local transmission,GHA
+African Region,Cameroon,Local transmission,CMR
+African Region,Nigeria,Local transmission,NGA
+African Region,Mauritius,Local transmission,MUS
+African Region,Democratic Republic of the Congo,Local transmission,COD
+African Region,Rwanda,Local transmission,RWA
+African Region,Madagascar,Imported cases only,MDG
+African Region,Kenya,Local transmission,KEN
+African Region,Zambia,Local transmission,ZMB
+African Region,Togo,Local transmission,TGO
+African Region,Uganda,Local transmission,UGA
+African Region,Ethiopia,Local transmission,ETH
+African Region,Niger,Local transmission,NGA
+African Region,Congo,Imported cases only,COD
+African Region,United Republic of Tanzania,Under investigation,TZA
+African Region,Mali,Local transmission,MLI
+African Region,Guinea,Local transmission,GIN
+African Region,Equatorial Guinea,Local transmission,GNQ
+African Region,Namibia,Imported cases only,NAM
+African Region,Eswatini,Imported cases only,SWZ
+African Region,Mozambique,Local transmission,MOZ
+African Region,Seychelles,Imported cases only,SYC
+African Region,Gabon,Imported cases only,GAB
+African Region,Benin,Imported cases only,BEN
+African Region,Central African Republic,Imported cases only,CAF
+African Region,Eritrea,Imported cases only,ERI
+African Region,Cape Verde,Imported cases only,CPV
+African Region,Chad,Imported cases only,TCD
+African Region,Mauritania,Imported cases only,MRT
+African Region,Zimbabwe,Local transmission,ZWE
+African Region,Gambia,Imported cases only,GMB
+African Region,Liberia,Local transmission,LBR
+African Region,Angola ,Imported cases only,AGO
+African Region,Guinea-Bissau,Imported cases only,GNB
+Territories,Réunion,Local transmission,
+Territories,Mayotte,Local transmission,
+,International conveyance (Diamond Princess),Local transmission,
