@@ -7,7 +7,7 @@
                 :value="value"
                 @input="emitInput"
         >
-            <option disabled value="">
+            <option value="">
                 {{ blankText }}
             </option>
             <option v-for="o in options" :key="o.value" :value="o.value">

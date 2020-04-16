@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display />
+        <metadata-display :selected="allSelected" :dss="dss" />
     </div>
 </template>
 
@@ -27,6 +27,8 @@ import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
     getDistribution,
     getDistributionOptions,
+    getDatasetSpecification,
+    mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
 } from '@/data/covid.js'
@@ -34,6 +36,7 @@ import {
 export default {
     data: () => ({
         distribution: {},
+        dss: {},
         selected: '',
         selectedCategory: '',
         options: [],
@@ -53,7 +56,19 @@ export default {
             // TODO handle errors gracefully
             console.error(error)
         })
+
+        getDatasetSpecification().then((data) => {
+            this.dss = data
+        }).catch((error) => {
+            // TODO handle errors gracefully
+            console.error(error)
+        })
     },
+    computed: {
+        allSelected: function() {
+            return [this.selected, this.selectedCategory]
+        }
+    }
 }
 </script>
 

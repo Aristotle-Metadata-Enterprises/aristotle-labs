@@ -2,12 +2,9 @@
 /* global process */
 import axios from 'axios'
 
-const url = 'https://registry.aristotlemetadata.com/api/graphql/json'
-const headers = {'Authorization': `Token ${process.env.TOKEN}`}
-const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
-
+// Get the COVID-19 data and transform into JavaScript object
 export function getCovidData() {
-    // Get the COVID-19 data and transform into JavaScript object
+    const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
     return axios.get(data_url).then((response) => {
        return response.data
     }).catch((response) => {
@@ -15,8 +12,22 @@ export function getCovidData() {
     })
 }
 
-// Query covid distribution data 
+// Perform a graphql query on the aristotle registry
+function graphqlQuery(query, variables) {
+    // Url for our registries graphql endpoint
+    const graphql_url = 'https://registry.aristotlemetadata.com/api/graphql/json'
+    // Auth headers for api requests
+    // TODO remove once metadata is public
+    const headers = {'Authorization': `Token ${process.env.TOKEN}`}
+
+    const query_obj = {query: query, variables: variables}
+    return axios.post(graphql_url, query_obj, {headers: headers})
+}
+
+// Query covid distribution data
 export function getDistribution() {
+    // Identifier for covid distribution
+    const uuid = "11c5d3ac-73d0-11ea-9c38-02d94c4bd698"
     const query = `
     query ($uuid: UUID) {
       distributions (uuid: $uuid) {
@@ -49,14 +60,7 @@ export function getDistribution() {
       }
     }`
 
-    const query_obj = {
-        query: query,
-        variables: {
-            uuid: "11c5d3ac-73d0-11ea-9c38-02d94c4bd698"
-        }
-    }
-
-    return axios.post(url, query_obj, {headers: headers}).then((response) => {
+    return graphqlQuery(query, {uuid: uuid}).then((response) => {
         return response.data.data.distributions.edges[0].node
     })
 }
@@ -89,6 +93,44 @@ export function filterValueDataElements(data_element) {
         return data_element.valueDomain.permissiblevalueSet.length > 0
     }
     return false
+}
+
+export function getDatasetSpecification() {
+    // Identifier for covid dss
+    const uuid = "f8cf638e-6cc4-11ea-9034-02f12b5fb674"
+    const query = `
+    query ($uuid: UUID) {
+      datasetSpecifications (uuid:$uuid) {
+        edges {
+          node {
+            name
+            uuid
+            dssdeinclusionSet {
+              dataElement {
+                uuid
+                name
+                dedinputsthroughSet {
+                  dataElementDerivation {
+                    uuid
+                    name
+                    dedderivesthroughSet {
+                      dataElement {
+                        uuid
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }`
+
+    return graphqlQuery(query, {uuid: uuid}).then((response) => {
+        return response.data.data.datasetSpecifications.edges[0].node
+    })
 }
 
 // Get map of data element uuid to logicalPath
