@@ -20,11 +20,19 @@
     import {Bar} from 'vue-chartjs'
 
     export default {
+        extends: Bar,
         props: {
+            // The raw JSON COVID-19 case data
             raw_data: {
-                type: Object,
+                type: Array | Object,
                 required: false
             },
+            // A map of the UUID of the Data Element to the lookup key in the raw data
+            distribution_map: {
+                type: Object | Map,
+                required: true
+            },
+            // The set of selections from the two select boxes
             selected: {
                 type: Set,
                 required: true
@@ -55,13 +63,14 @@
         computed: {
             // Transformed data for display in the bar graph
             chartData: function () {
+                // Chart data is a list
                 console.log(this.selected)
             }
         },
         watch: {
             // Compute graph based on Data Element and VD selections
             selected: function (selected) {
-                this.drawBarGraph(graph)
+                this.drawBarGraph(selected)
             }
         },
         methods: {
@@ -81,7 +90,6 @@
                     ]
                 }, this.options)
             }
-        }
-        ,
+        },
     }
 </script>

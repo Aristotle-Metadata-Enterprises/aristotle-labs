@@ -2,7 +2,7 @@
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
-            <bar-graph :selected="selectedSet" :raw_data="raw_data" />
+            <bar-graph :selected="selectedSet" :raw_data="raw_data" :distribution_map="distributionDataMap" />
             <div>
                 <selector 
                     v-model="selected" 
@@ -42,6 +42,7 @@ export default {
         options: [],
         categoryOptions: [],
         dataMap: new Map(),
+        distributionDataMap: {},
     }),
     components: {
         'selector': Selector,
@@ -60,7 +61,8 @@ export default {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
-            this.datamap = mapDistributionData(data)
+            console.log(this.categoryOptions)
+            this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
             // TODO handle errors gracefully
             console.error(error)
