@@ -2,7 +2,7 @@
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
-            <bar-graph :selected="selectedSet" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
             <div>
                 <selector 
                     v-model="selected" 
@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display  />
+        <metadata-display :selected="allSelected" :dss="dss" />
     </div>
 </template>
 
@@ -28,6 +28,7 @@ import {
     getCovidData,
     getDistribution,
     getDistributionOptions,
+    getDatasetSpecification,
     mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
@@ -36,6 +37,7 @@ import {
 export default {
     data: () => ({
         distribution: {},
+        dss: {},
         raw_data: {},
         selected: '',
         selectedCategory: '',
@@ -67,17 +69,17 @@ export default {
             // TODO handle errors gracefully
             console.error(error)
         })
+
+        getDatasetSpecification().then((data) => {
+            this.dss = data
+        }).catch((error) => {
+            // TODO handle errors gracefully
+            console.error(error)
+        })
     },
     computed: {
-        selectedSet: function() {
-            let s = new Set();
-            if (this.selected) {
-                s.add(this.selected)
-            }
-            if (this.selectedCategory) {
-                s.add(this.selectedCategory)
-            }
-            return s
+        allSelected: function() {
+            return [this.selected, this.selectedCategory]
         }
     }
 }
