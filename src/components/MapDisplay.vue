@@ -30,7 +30,6 @@
                     backgroundColor: '#81d4fa',
                     datalessRegionColor: '#000000',
                     defaultColor: '#14716e',
-                    // displayMode: 'markers',
                 }
             }
         },
