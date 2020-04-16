@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display :selected="selectedSet" :dss="dss" />
+        <metadata-display :selected="allSelected" :dss="dss" />
     </div>
 </template>
 
@@ -67,15 +67,8 @@ export default {
         })
     },
     computed: {
-        selectedSet: function() {
-            let s = new Set()
-            if (this.selected) {
-                s.add(this.selected)
-            }
-            if (this.selectedCategory) {
-                s.add(this.selectedCategory)
-            }
-            return s
+        allSelected: function() {
+            return [this.selected, this.selectedCategory]
         }
     }
 }

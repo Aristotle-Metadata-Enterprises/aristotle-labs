@@ -20,8 +20,8 @@ export default {
             required: true,
         },
         selected: {
-            type: Set,
-            required: true,
+            type: Array,
+            default: () => [],
         }
     },
     computed: {
@@ -97,7 +97,7 @@ export default {
 
             // Start with selected values
             for (let val of selected) {
-                if (this.graph.nodeInfo.has(val)) {
+                if (val && this.graph.nodeInfo.has(val)) {
                     nodeStack.push(val)
                     dgraph.setNode(val, {label: this.getNodeLabel(val), class: 'selected'})
                 } else {
