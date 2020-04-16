@@ -2,7 +2,7 @@
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
-            <bar-graph />
+            <bar-graph :selected="selectedSet" :raw_data="raw_data" />
             <div>
                 <selector 
                     v-model="selected" 
@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display />
+        <metadata-display  />
     </div>
 </template>
 
@@ -36,7 +36,7 @@ import {
 export default {
     data: () => ({
         distribution: {},
-        data: {},
+        raw_data: {},
         selected: '',
         selectedCategory: '',
         options: [],
@@ -49,8 +49,12 @@ export default {
         'metadata-display': MetadataDisplay,
     },
     mounted: function() {
-        getCovidData().then((data) => {
-            this.data = data
+        getCovidData().then((raw_data) => {
+            this.raw_data = raw_data;
+        }).catch((error) =>
+        {
+            // TODO: handle errors gracefully
+            console.log(error)
         });
         getDistribution().then((data) => {
             this.distribution = data;
@@ -62,6 +66,18 @@ export default {
             console.error(error)
         })
     },
+    computed: {
+        selectedSet: function() {
+            let s = new Set();
+            if (this.selected) {
+                s.add(this.selected)
+            }
+            if (this.selectedCategory) {
+                s.add(this.selectedCategory)
+            }
+            return s
+        }
+    }
 }
 </script>
 
@@ -84,3 +100,4 @@ h1 {
     margin-top: 50px;
 }
 </style>
+k

@@ -12,8 +12,9 @@ export function getCovidData() {
     return axios.get(data_url).then((response) => {
        return response.data;
 
-    }).catch((response => {
-        console.log(response)
+    }).catch((error => {
+        // TODO: handle errors gracefully
+        console.log(error)
         })
     )
 }

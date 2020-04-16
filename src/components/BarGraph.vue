@@ -5,73 +5,83 @@
 </template>
 
 <style>
-.placeholder-bar-graph {
-    width: 70%;
-    height: 300px;
-    background-color: gray;
-}
+    .placeholder-bar-graph {
+        width: 70%;
+        height: 300px;
+        background-color: gray;
+    }
 
-.placeholder-bar-graph p {
-    text-align: center;
-    padding-top: 100px;
-}
+    .placeholder-bar-graph p {
+        text-align: center;
+        padding-top: 100px;
+    }
 </style>
 <script>
-import {Bar} from 'vue-chartjs'
-export default {
-    props: {
-        chartData: {
-            type: Array | Object,
-            required: false
+    import {Bar} from 'vue-chartjs'
+
+    export default {
+        props: {
+            raw_data: {
+                type: Object,
+                required: false
+            },
+            selected: {
+                type: Set,
+                required: true
+            }
         },
-        chartLabels: {
-            type: Array,
-            required: true
+        data() {
+            // Data function to return general purpose config
+            return {
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            gridLines: {
+                                display: false
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }
         },
-        chartLabel: {
-            type: String,
-            default: "",
-            required: true,
-        }
-    },
-    data() {
-        // Data function to return general purpose config
-        return {
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        },
-                        gridLines: {
-                            display: false
+        computed: {
+            // Transformed data for display in the bar graph
+            chartData: function () {
+                console.log(this.selected)
+            }
+        },
+        watch: {
+            // Compute graph based on Data Element and VD selections
+            selected: function (selected) {
+                this.drawBarGraph(graph)
+            }
+        },
+        methods: {
+            drawBarGraph: function (selected) {
+                this.renderChart({
+                    labels: this.chartLabels,
+                    datasets: [
+                        {
+                            label: this.chartLabel,
+                            borderColor: '#249EBF',
+                            pointBackgroundColor: 'white',
+                            borderWidth: 1,
+                            pointBorderColor: '#249EBF',
+                            backgroundColor: 'transparent',
+                            data: this.chartData
                         }
-                    }]
-                },
-                legend: {
-                    display: false
-                },
-                responsive: true,
-                maintainAspectRatio: false
+                    ]
+                }, this.options)
             }
         }
-    },
-    mounted () {
-        // Render chart with data
-      this.renderChart({
-        labels: this.chartLabels,
-        datasets: [
-          {
-            label: this.chartLabel,
-            borderColor: '#249EBF',
-            pointBackgroundColor: 'white',
-            borderWidth: 1,
-            pointBorderColor: '#249EBF',
-            backgroundColor: 'transparent',
-            data: this.chartData
-          }
-        ]
-      }, this.options)
+        ,
     }
-}
 </script>
