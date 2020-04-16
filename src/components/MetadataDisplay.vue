@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>Metadata display</p>
-        <svg class="metadata-display" ref="svg" width="1500" height="500">
+        <svg class="metadata-display" ref="svg" width="100%" height="500">
             <g />
         </svg>
     </div>
@@ -86,19 +86,20 @@ export default {
     methods: {
         // Get a nodes label
         getNodeLabel: function(uuid) {
-            return this.graph.nodeInfo.get(uuid).name
+            let info = this.graph.nodeInfo.get(uuid)
+            return `${info.name}\n(${info.type})`
         },
         // Create dagre graph filtered to contain all paths to selected metadata
         createDisplayGraph: function(selected) {
             let dgraph = new dagreD3.graphlib.Graph()
-            dgraph.setGraph({})
+            dgraph.setGraph({directed: true})
             let nodeStack = []
 
             // Start with selected values
             for (let val of selected) {
                 if (this.graph.nodeInfo.has(val)) {
                     nodeStack.push(val)
-                    dgraph.setNode(val, {label: this.getNodeLabel(val)})
+                    dgraph.setNode(val, {label: this.getNodeLabel(val), class: 'selected'})
                 } else {
                     console.error(`${val} is not a valid node`)
                 }
@@ -117,6 +118,16 @@ export default {
             return dgraph
         },
         drawGraph: function(graph) {
+            // Layout
+            let options = graph.graph()
+            options.rankdir = 'LR'
+            // node options
+            graph.nodes().forEach((n) => {
+                let node = graph.node(n)
+                node.ry = 5
+                node.rx = 5
+            })
+
             let svg = d3.select(this.$refs.svg)
             let inner = svg.select('g')
             let render = new dagreD3.render()
@@ -129,7 +140,7 @@ export default {
             svg.call(zoom)
 
             // Center graph
-            let xOffset = (svg.attr('width') - graph.graph().width) / 2
+            let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
             let yPadding = 20
             svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
             svg.attr('height', graph.graph().height + (yPadding * 2))
@@ -158,6 +169,10 @@ svg.metadata-display {
   stroke: #999;
   fill: #fff;
   stroke-width: 1.5px;
+}
+
+.metadata-display .selected rect {
+    fill: lightgreen;
 }
 
 .metadata-display .edgePath path {
