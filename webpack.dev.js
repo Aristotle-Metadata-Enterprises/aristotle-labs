@@ -13,7 +13,7 @@ module.exports = merge(common, {
     },
     plugins: [
         // This is used to pass tokens in development
-        // can be removed once metadata is public
+        // TODO remove once metadata is public
         new webpack.EnvironmentPlugin({
             'TOKEN': ''
         })
