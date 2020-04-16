@@ -23,6 +23,17 @@
                 default: () => [],
             }
         },
+        data () {
+            return {
+                chartOptions: {
+                    colorAxis: {colors: ['#ffffff', '#0066ff', '#bc00ff']},
+                    backgroundColor: '#81d4fa',
+                    datalessRegionColor: '#000000',
+                    defaultColor: '#14716e',
+                    // displayMode: 'markers',
+                }
+            }
+        },
     }
 </script>
 
