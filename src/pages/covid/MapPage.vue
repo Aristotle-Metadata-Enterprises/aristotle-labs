@@ -50,10 +50,10 @@
         methods: {
             changeTheMap: function (selection) {
                 let sel = this.datamap.get(selection)
-                let mapAttributes = [["Country", sel]]
+                let mapAttributes = [["Country", "Country name", sel]]
                 for (const jsonElement of json) {
                     if (jsonElement['year'] === "2020" && jsonElement['month'] === "4" && jsonElement['day'] === "13") {
-                        mapAttributes.push([jsonElement['countriesAndTerritories'], parseInt(jsonElement[sel])])
+                        mapAttributes.push([jsonElement['geoId'], jsonElement['reportingArea'], parseInt(jsonElement[sel])])
                     }
                 }
                 this.mapData = mapAttributes
