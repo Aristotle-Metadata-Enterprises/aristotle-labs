@@ -76,11 +76,14 @@ class DataTransformer:
             cumulative_deaths += daily_deaths
 
             # Calculate cases in the last 7 days, per region
-            if index - 7 >= 0:
+            day = 0
+            cases_last_7_days = 0
+
+            while 7 - day >= 0:
                 if record['geoId'] == previous_region:
                     # Remove the record
-                    cases_last_7_days -= int(data[index-7]['cases'])
-                    cases_last_7_days += daily_cases
+                    cases_last_7_days += int(data[index-day]['cases'])
+                day += 1
 
             if daily_cases == 0:
                 days_since_last_case += 1
