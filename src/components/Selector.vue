@@ -1,11 +1,13 @@
 <template>
     <div class="form-block">
-        <p>{{ description }}</p>
-        <select name="data element" :value="value" @input="emitValue">
-            <option value="">
+        <label for="select-id">
+            {{ description }}
+        </label>
+        <select id="select-id" name="data element" v-model="selected" @change="updateMap(selected)">
+            <option disabled value="">
                 {{ blankText }}
             </option>
-            <option v-for="o in options" :key="o.value" :value="o.value">
+            <option v-for="o in options" :key="o.value" :value="o.value" :text="o.text">
                 {{ o.text }}
             </option>
         </select>
@@ -14,42 +16,39 @@
 
 <script>
 
-// Select form component with v-model support
-export default {
-    props: {
-        // Selected value
-        value: {
-            type: String,
-            required: true,
+    // Select form component with v-model support
+    export default {
+        props: {
+            // Description of selection
+            description: {
+                type: String,
+                required: true,
+            },
+            // Text to display when empty
+            blankText: {
+                type: String,
+                default: '----------',
+            },
+            // Options as an array of objects with value and text properties
+            options: {
+                type: Array,
+                default: () => [],
+            }
         },
-        // Description of selection
-        description: {
-            type: String,
-            required: true,
-        },
-        // Text to display when empty
-        blankText: {
-            type: String,
-            default: '----------',
-        },
-        // Options as an array of objects with value and text properties
-        options: {
-            type: Array,
-            default: () => [],
-        }
-    },
-    methods: {
-        emitValue: function(event) {
-            console.log(event.target.value)
-            this.$emit('input', event.target.value)
+        data: () => ({
+            selected: "",
+        }),
+        methods: {
+            updateMap: function(selectedOption) {
+                this.$emit('changeMap', selectedOption)
+            },
         }
     }
-}
 </script>
 
 <style scoped>
-.form-block {
-    display: block;
-    margin: 20px;
-}
+    .form-block {
+        display: block;
+        margin: 20px;
+    }
 </style>

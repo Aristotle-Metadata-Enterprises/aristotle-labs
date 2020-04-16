@@ -40,6 +40,11 @@ export function getDistribution() {
                     value
                   }
                 }
+                dataElementConcept{
+                  property {
+                    name
+                  }
+                }
               }
             }
           }
@@ -60,7 +65,7 @@ export function getDistribution() {
 }
 
 // Get a distributions data elements as options array
-// Filter is an optional function that recieves a data element and return a boolean
+// Filter is an optional function that receives a data element and returns a boolean
 // indicating its inclusion in the options
 export function getDistributionOptions(distribution, filter) {
     let options = []
@@ -68,7 +73,7 @@ export function getDistributionOptions(distribution, filter) {
         if (filter && !filter(dep.dataElement)) {
             continue
         }
-        options.push({value: dep.dataElement.uuid, text: dep.dataElement.name}) 
+        options.push({value: dep.dataElement.uuid, text: dep.dataElement.dataElementConcept.property.name})
     }
     return options
 }
