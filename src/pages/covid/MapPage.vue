@@ -3,12 +3,13 @@
         <h1>Aristotle Covid Map</h1>
         <div class="horizontal-container">
             <map-display
+                    v-model="selected"
                     :map-data="mapData"
             />
             <selector
+                    v-model="selectedCategory"
                     description="Choose a data element"
                     :options="options"
-                    @changeMap="changeTheMap"
             />
         </div>
         <metadata-display />
@@ -21,15 +22,17 @@
     import MapDisplay from '@/components/MapDisplay.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
     import {
+        getCovidData,
         getDistribution,
         getDistributionOptions,
         mapDistributionData,
         filterNumberDataElements,
     } from '@/data/covid.js'
-    import axios from "axios";
 
     export default {
         data: () => ({
+            selected: '',
+            selectedCategory: '',
             options: [],
             mapData: [['Country'],]
         }),
@@ -39,32 +42,42 @@
             'metadata-display': MetadataDisplay,
         },
         mounted: function() {
-            getDistribution().then((data) => {
-                this.distribution = data
-                this.options = getDistributionOptions(data, filterNumberDataElements)
-                this.datamap = mapDistributionData(data)
+
+            getCovidData().then((data) => {
+                this.covidData = data
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
             })
-        },
-        methods: {
-            changeTheMap: function (selection) {
-                const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
-                let sel = this.datamap.get(selection)
-                let mapAttributes = [["Country", "Country name", sel]]
 
-                axios.get(data_url).then((data) => {
-                    const json = data.data
-                    for (const jsonElement of json) {
+            getDistribution().then((data) => {
+                this.distribution = data
+                this.options = getDistributionOptions(data, filterNumberDataElements)
+                this.dataMapping = mapDistributionData(data)
+            }).catch((error) => {
+                // TODO handle errors gracefully
+                console.error(error)
+            })
+
+
+        },
+        watch: {
+            selectedCategory: function () {
+                let sel = this.dataMapping.get(this.selectedCategory)
+                let mapAttributes = [["Country", "Country name", this.camelCaseToSentenceCase(sel)]]
+
+                for (const jsonElement of this.covidData) {
                     if (jsonElement['year'] === "2020" && jsonElement['month'] === "4" && jsonElement['day'] === "13") {
                         mapAttributes.push([jsonElement['geoId'], jsonElement['reportingArea'], parseInt(jsonElement[sel])])
                     }
                 }
                 this.mapData = mapAttributes
-                }).catch((error) => {
-
-                })
+            },
+        },
+        methods: {
+            camelCaseToSentenceCase: (text) => {
+                let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
+                return result.charAt(0).toUpperCase() + result.slice(1)
             }
         }
     }

@@ -4,6 +4,16 @@ import axios from 'axios'
 
 const url = 'https://registry.aristotlemetadata.com/api/graphql/json'
 const headers = {'Authorization': `Token ${process.env.TOKEN}`}
+const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
+
+export function getCovidData() {
+    // Get the COVID-19 data and transform into JavaScript object
+    return axios.get(data_url).then((response) => {
+       return response.data
+    }).catch((response) => {
+        console.log(response)
+    })
+}
 
 // Query covid distribution data 
 export function getDistribution() {

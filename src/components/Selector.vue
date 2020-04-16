@@ -1,13 +1,16 @@
 <template>
     <div class="form-block">
-        <label for="select-id">
+        <p>
             {{ description }}
-        </label>
-        <select id="select-id" name="data element" v-model="selected" @change="updateMap(selected)">
+        </p>
+        <select
+                :value="value"
+                @input="emitInput"
+        >
             <option disabled value="">
                 {{ blankText }}
             </option>
-            <option v-for="o in options" :key="o.value" :value="o.value" :text="o.text">
+            <option v-for="o in options" :key="o.value" :value="o.value">
                 {{ o.text }}
             </option>
         </select>
@@ -16,34 +19,43 @@
 
 <script>
 
-    // Select form component with v-model support
-    export default {
-        props: {
-            // Description of selection
-            description: {
-                type: String,
-                required: true,
-            },
-            // Text to display when empty
-            blankText: {
-                type: String,
-                default: '----------',
-            },
-            // Options as an array of objects with value and text properties
-            options: {
-                type: Array,
-                default: () => [],
-            }
+// Select form component with v-model support
+export default {
+    props: {
+        // Selected value
+        value: {
+            type: String,
+            default: '',
         },
-        data: () => ({
-            selected: "",
-        }),
-        methods: {
-            updateMap: function(selectedOption) {
-                this.$emit('changeMap', selectedOption)
-            },
+        // Description of selection
+        description: {
+            type: String,
+            required: true,
+        },
+        // Text to display when empty
+        blankText: {
+            type: String,
+            default: '----------',
+        },
+        // Options as an array of objects with value and text properties
+        options: {
+            type: Array,
+            default: () => [],
+        }
+    },
+    methods: {
+        emitValue: function (event) {
+            console.log(event.target.value)
+            this.$emit('input', event.target.value)
+        },
+        emitInput: function (event) {
+            this.$emit('input', event.target.value)
+        },
+        updateMap: function (event) {
+            this.$emit('changeMap', event.target.value)
         }
     }
+}
 </script>
 
 <style scoped>
