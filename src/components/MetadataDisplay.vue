@@ -22,28 +22,71 @@ export default {
             required: true,
         }
     },
-    watch: {
-        // Compute dag based on selected
-        selected: function(selected) {
+    computed: {
+        // Construct graphlib graph with whole dss structure
+        graph: function() {
             let graph = new dagreD3.graphlib.Graph()
             graph.setGraph({})
 
             if (this.dss) {
                 // Create root dss node
                 graph.setNode(this.dss.uuid, {label: this.dss.name})
-                // Create test node with a selected uuid
-                graph.setNode("123", {"label": selected.values().next().value})
-                graph.setEdge(this.dss.uuid, "123", {})
+                for (let inc of this.dss.dssdeinclusionSet) {
+                    graph.setNode(inc.dataElement.uuid, {label: inc.dataElement.name})
+                    graph.setEdge(this.dss.uuid, inc.dataElement.uuid, {label: 'inclusion'})
+                    for (let input of inc.dataElement.dedinputsthroughSet) {
+                        graph.setNode(
+                            input.dataElementDerivation.uuid,
+                            {label: input.dataElementDerivation.name}
+                        )
+                        graph.setEdge(
+                            inc.dataElement.uuid,
+                            input.dataElementDerivation.uuid,
+                            {label: 'input'}
+                        )
+                        for (let derive of input.dataElementDerivation.dedderivesthroughSet) {
+                            graph.setNode(
+                                derive.dataElement.uuid,
+                                {label: derive.dataElement.name}
+                            )
+                            graph.setEdge(
+                                input.dataElementDerivation.uuid,
+                                derive.dataElement.uuid,
+                                {label: 'dervies'}
+                            )
+                        }
+                    }
+                }
             }
-            
+            return graph
+        },
+        // Return paths from nodes to source dss
+        sourcePaths: function() {
+            if (this.dss) {
+                return dagreD3.graphlib.alg.dijkstra(this.graph, this.dss.uuid)
+            }
+            return {}
+        }
+    },
+    watch: {
+        // Compute dag based on selected
+        selected: function(selected) {
+            let graph = this.graph
             let svg = d3.select(this.$refs.svg)
             let inner = svg.select('g')
             let render = new dagreD3.render()
             render(inner, graph)
 
+            // Zoom support
+            let zoom = d3.zoom().on('zoom', () => {
+                inner.attr('transform', d3.event.transform)
+            })
+            svg.call(zoom)
+
+            // Center graph
             let xOffset = (svg.attr('width') - graph.graph().width) / 2
             let yPadding = 20
-            inner.attr('transform', `translate(${xOffset}, ${yPadding})`)
+            svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
             svg.attr('height', graph.graph().height + (yPadding * 2))
         }
     }
