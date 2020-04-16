@@ -16,7 +16,7 @@
 </template>
 
 <script>
-    const json = require('../../data.json');
+
     import Selector from '@/components/Selector.vue'
     import MapDisplay from '@/components/MapDisplay.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
@@ -26,6 +26,7 @@
         mapDistributionData,
         filterNumberDataElements,
     } from '@/data/covid.js'
+    import axios from "axios";
 
     export default {
         data: () => ({
@@ -49,14 +50,21 @@
         },
         methods: {
             changeTheMap: function (selection) {
+                const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
                 let sel = this.datamap.get(selection)
                 let mapAttributes = [["Country", "Country name", sel]]
-                for (const jsonElement of json) {
+
+                axios.get(data_url).then((data) => {
+                    const json = data.data
+                    for (const jsonElement of json) {
                     if (jsonElement['year'] === "2020" && jsonElement['month'] === "4" && jsonElement['day'] === "13") {
                         mapAttributes.push([jsonElement['geoId'], jsonElement['reportingArea'], parseInt(jsonElement[sel])])
                     }
                 }
                 this.mapData = mapAttributes
+                }).catch((error) => {
+
+                })
             }
         }
     }

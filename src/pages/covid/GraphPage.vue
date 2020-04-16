@@ -27,7 +27,6 @@ import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
     getDistribution,
     getDistributionOptions,
-    mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
 } from '@/data/covid.js'
@@ -39,7 +38,6 @@ export default {
         selectedCategory: '',
         options: [],
         categoryOptions: [],
-        dataMap: new Map(),
     }),
     components: {
         'selector': Selector,
@@ -51,7 +49,6 @@ export default {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements)
-            this.datamap = mapDistributionData(data)
         }).catch((error) => {
             // TODO handle errors gracefully
             console.error(error)
