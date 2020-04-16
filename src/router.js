@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import CovidGraph from './pages/covid/Graph.vue'
-import CovidMap from './pages/covid/Map.vue'
+import CovidGraphPage from './pages/covid/GraphPage.vue'
+import CovidMapPage from './pages/covid/MapPage.vue'
 
 Vue.use(VueRouter)
 
@@ -11,12 +11,12 @@ const router = new VueRouter({
         {
             'path': '/covid/graph/',
             'name': 'covidGraph',
-            'component': CovidGraph
+            'component': CovidGraphPage
         },
         {
             'path': '/covid/map/',
             'name': 'covidMap',
-            'component': CovidMap
+            'component': CovidMapPage
         },
     ]
 })
