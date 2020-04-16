@@ -3,11 +3,17 @@
         <label for="select-id">
             {{ description }}
         </label>
-        <select id="select-id" name="data element" v-model="selected" @change="updateMap(selected)">
+        <select
+            id="select-id"
+            name="data element"
+            :value="value"
+            @input="emitInput"
+            @change="updateMap"
+        >
             <option disabled value="">
                 {{ blankText }}
             </option>
-            <option v-for="o in options" :key="o.value" :value="o.value" :text="o.text">
+            <option v-for="o in options" :key="o.value" :value="o.value">
                 {{ o.text }}
             </option>
         </select>
@@ -15,10 +21,14 @@
 </template>
 
 <script>
-
     // Select form component with v-model support
     export default {
         props: {
+            // Selected value
+            value: {
+                type: String,
+                default: ''
+            },
             // Description of selection
             description: {
                 type: String,
@@ -35,12 +45,13 @@
                 default: () => [],
             }
         },
-        data: () => ({
-            selected: "",
-        }),
         methods: {
-            updateMap: function(selectedOption) {
-                this.$emit('changeMap', selectedOption)
+            emitInput: function(event) {
+                this.$emit('input', event.target.value)
+            },
+            // TODO remove this event and have the map page use v-model
+            updateMap: function(event) {
+                this.$emit('changeMap', event.target.value)
             },
         }
     }
