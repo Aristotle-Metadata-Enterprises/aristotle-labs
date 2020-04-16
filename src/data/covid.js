@@ -17,7 +17,6 @@ export function getCovidData() {
     )
 }
 
-
 // Query covid distribution data 
 export function getDistribution() {
     const query = `
