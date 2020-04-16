@@ -52,7 +52,7 @@ export function getDistribution() {
 }
 
 // Get a distributions data elements as options array
-// Filter is an optional function that receive a data element and return a boolean
+// Filter is an optional function that receives a data element and returns a boolean
 // indicating its inclusion in the options
 export function getDistributionOptions(distribution, filter) {
     let options = []
