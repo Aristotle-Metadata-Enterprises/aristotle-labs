@@ -6,9 +6,9 @@
         <select
             id="select-id"
             name="data element"
-            v-model="selected"
+            :value="value"
             @input="emitInput"
-            @change="updateMap(selected)"
+            @change="updateMap"
         >
             <option disabled value="">
                 {{ blankText }}
@@ -24,6 +24,11 @@
     // Select form component with v-model support
     export default {
         props: {
+            // Selected value
+            value: {
+                type: String,
+                default: ''
+            },
             // Description of selection
             description: {
                 type: String,
@@ -40,16 +45,13 @@
                 default: () => [],
             }
         },
-        data: () => ({
-            selected: "",
-        }),
         methods: {
             emitInput: function(event) {
                 this.$emit('input', event.target.value)
             },
             // TODO remove this event and have the map page use v-model
-            updateMap: function(selectedOption) {
-                this.$emit('changeMap', selectedOption)
+            updateMap: function(event) {
+                this.$emit('changeMap', event.target.value)
             },
         }
     }
