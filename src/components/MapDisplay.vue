@@ -28,7 +28,7 @@
                 chartOptions: {
                     colorAxis: {colors: ['#ffffff', '#0066ff', '#bc00ff']},
                     backgroundColor: '#81d4fa',
-                    datalessRegionColor: '#000000',
+                    datalessRegionColor: '#d7cece',
                     defaultColor: '#14716e',
                 }
             }
