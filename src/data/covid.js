@@ -78,7 +78,7 @@ export function filterValueDataElements(data_element) {
 
 // Get map of data element uuid to logicalPath
 export function mapDistributionData(distribution) {
-    let map = new Map()
+    let map = new Map();
     for (let dep of distribution.distributiondataelementpathSet) {
         if (dep.dataElement) {
             map.set(dep.dataElement.uuid, dep.logicalPath)
