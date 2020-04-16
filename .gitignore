@@ -132,5 +132,5 @@ dmypy.json
 node_modules
 dist
 
-# Ignore the used data file.
-/data.json
+# Ignore the development data file.
+/src/data.json
