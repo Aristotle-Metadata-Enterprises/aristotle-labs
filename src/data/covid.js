@@ -8,9 +8,10 @@ const headers = {'Authorization': `Token ${process.env.TOKEN}`}
 const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
 
 export function getCovidData() {
-    // Get the COVID-19 data and transform into JavaScript object
+    // Get the COVID-19 data and return as javascript object
     return axios.get(data_url).then((response) => {
-       return JSON.parse(response.data)
+       return response.data;
+
     }).catch((response => {
         console.log(response)
         })

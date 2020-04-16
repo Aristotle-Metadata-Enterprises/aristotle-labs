@@ -25,6 +25,7 @@ import Selector from '@/components/Selector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
+    getCovidData,
     getDistribution,
     getDistributionOptions,
     mapDistributionData,
@@ -35,6 +36,7 @@ import {
 export default {
     data: () => ({
         distribution: {},
+        data: {},
         selected: '',
         selectedCategory: '',
         options: [],
@@ -47,10 +49,13 @@ export default {
         'metadata-display': MetadataDisplay,
     },
     mounted: function() {
+        getCovidData().then((data) => {
+            this.data = data
+        });
         getDistribution().then((data) => {
-            this.distribution = data
-            this.options = getDistributionOptions(data, filterNumberDataElements)
-            this.categoryOptions = getDistributionOptions(data, filterValueDataElements)
+            this.distribution = data;
+            this.options = getDistributionOptions(data, filterNumberDataElements);
+            this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
             this.datamap = mapDistributionData(data)
         }).catch((error) => {
             // TODO handle errors gracefully

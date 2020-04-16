@@ -28,7 +28,7 @@ export default {
             type: Array,
             required: true
         },
-        dataElementLabel: {
+        chartLabel: {
             type: String,
             default: "",
             required: true,
@@ -57,11 +57,12 @@ export default {
         }
     },
     mounted () {
+        // Render chart with data
       this.renderChart({
         labels: this.chartLabels,
         datasets: [
           {
-            label: this.dataElementLabel,
+            label: this.chartLabel,
             borderColor: '#249EBF',
             pointBackgroundColor: 'white',
             borderWidth: 1,
