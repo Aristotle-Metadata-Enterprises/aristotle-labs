@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>Metadata display</p>
-        <svg ref="svg" width="1000" height="500">
+        <svg class="metadata-display" ref="svg" width="1000" height="500">
             <g />
         </svg>
     </div>
@@ -51,19 +51,28 @@ export default {
 </script>
 
 <style>
-text {
+/*
+ * Can't use scoped css here since dynamically added elements wont have the attribute
+ * So we are using the metadata-display class for scoping the rules
+ */
+
+svg.metadata-display {
+    border: 1px solid black;
+}
+
+.metadata-display text {
   font-weight: 300;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
 }
 
-.node rect {
+.metadata-display .node rect {
   stroke: #999;
   fill: #fff;
   stroke-width: 1.5px;
 }
 
-.edgePath path {
+.metadata-display .edgePath path {
   stroke: #333;
   stroke-width: 1.5px;
 }
