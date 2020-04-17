@@ -5,11 +5,16 @@
             <map-display
                     :map-data="mapData"
             />
-            <selector
-                    v-model="selectedCategory"
-                    description="Choose a data element"
-                    :options="options"
-            />
+            <div class="vertical-container">
+                <selector
+                        v-model="selectedCategory"
+                        description="Choose a data element"
+                        :options="options"
+                />
+                <filters
+                        :options="filterTransmisionOptions"
+                />
+            </div>
         </div>
         <metadata-display :selected="allSelected" :dss="dss" />
     </div>
@@ -18,12 +23,14 @@
 <script>
 
     import Selector from '@/components/Selector.vue'
+    import Filters from '@/components/Filters.vue'
     import MapDisplay from '@/components/MapDisplay.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
     import {
         getCovidData,
         getDistribution,
         getDistributionOptions,
+        getMapFilterOptions,
         getDatasetSpecification,
         mapDistributionData,
         filterNumberDataElements,
@@ -34,17 +41,20 @@
             dss: {},
             selectedCategory: '',
             options: [],
+            filterTransmisionOptions: [],
             dataMapping: new Map()
         }),
         components: {
             'selector': Selector,
             'map-display': MapDisplay,
             'metadata-display': MetadataDisplay,
+            'filters': Filters,
         },
         mounted: function() {
 
             getCovidData().then((data) => {
                 this.covidData = data
+                this.filterTransmisionOptions = getMapFilterOptions(data, "transmissionClassification")
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
@@ -69,15 +79,25 @@
         },
         computed: {
             mapData: function () {
-                let sel = this.dataMapping.get(this.selectedCategory)
-                if (typeof sel === 'undefined') {
+
+                if (!this.dataMapping.has(this.selectedCategory)) {
                     return [["Country", "Country name"]]
                 }
+
+                let sel = this.dataMapping.get(this.selectedCategory)
+
                 let mapAttributes = [["Country", "Country name", this.camelCaseToSentenceCase(sel)]]
 
                 for (const jsonElement of this.covidData) {
                     if (jsonElement['year'] === "2020" && jsonElement['month'] === "4" && jsonElement['day'] === "13") {
-                        mapAttributes.push([jsonElement['geoId'], jsonElement['reportingArea'], parseInt(jsonElement[sel])])
+                        mapAttributes.push(
+                            [
+                                jsonElement['geoId'],
+                                jsonElement['reportingArea'],
+                                parseInt(jsonElement[sel])
+                            ]
+                        )
+
                     }
                 }
                 return mapAttributes
@@ -95,7 +115,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     h1 {
         border-bottom: 1px solid black;
     }
@@ -108,6 +128,11 @@
     .horizontal-container {
         display: flex;
         flex-direction: row;
+    }
+
+    .vertical-container {
+        display: flex;
+        flex-direction: column;
     }
 
     .placeholder-metadata {
