@@ -85,9 +85,21 @@ export default {
     },
     methods: {
         // Get a nodes label
-        getNodeLabel: function(uuid) {
-            let info = this.graph.nodeInfo.get(uuid)
-            return `${info.name}\n(${info.type})`
+        getNodeLabel: function(info) {
+            // Create metadata link
+            let link = document.createElement('a')
+            link.setAttribute('href', `https://registry.aristotlemetadata.com/item/${info.id}`)
+            link.appendChild(document.createTextNode(info.name))
+            // Add type description
+            let type = document.createElement('span')
+            type.className = 'metadata-type'
+            type.appendChild(document.createTextNode(`(${info.type})`))
+
+            // Create and return containing div
+            let div = document.createElement('div')
+            div.appendChild(link)
+            div.appendChild(type)
+            return div
         },
         // Create dagre graph filtered to contain all paths to selected metadata
         createDisplayGraph: function(selected) {
@@ -159,10 +171,14 @@ svg.metadata-display {
     border: 1px solid black;
 }
 
-.metadata-display text {
+.metadata-display a, .metadata-display span {
+  font-size: 11px;
   font-weight: 300;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
+}
+
+.metadata-display span.metadata-type {
+    display: block;
+    text-align: center;
 }
 
 .metadata-display .node rect {
