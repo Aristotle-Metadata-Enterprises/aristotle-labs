@@ -54,8 +54,6 @@
                 this.distribution = data
                 this.options = getDistributionOptions(data, filterNumberDataElements)
                 this.dataMapping = mapDistributionData(data)
-                console.log("THIS IS THE DATA MAPPING")
-                console.log(this.dataMapping)
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
