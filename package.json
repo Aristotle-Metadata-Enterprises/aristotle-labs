@@ -39,6 +39,7 @@
         "webpack-merge": "^4.2.2"
     },
     "dependencies": {
+        "@aristotle-metadata-enterprises/aristotle_tooltip": "^1.0.0",
         "axios": "^0.19.2",
         "d3": "^5.15.1",
         "dagre-d3": "^0.6.4",
