@@ -13,7 +13,9 @@
                 />
                 <filters
                         :options="filterTransmisionOptions"
+                        @updateCheckedOpt="updateOpts"
                 />
+                <span>Checked options: {{ checkedOptions }}</span>
             </div>
         </div>
         <metadata-display :selected="allSelected" :dss="dss" />
@@ -40,6 +42,7 @@
         data: () => ({
             dss: {},
             selectedCategory: '',
+            checkedOptions: [],
             options: [],
             filterTransmisionOptions: [],
             dataMapping: new Map()
@@ -89,7 +92,12 @@
                 let mapAttributes = [["Country", "Country name", this.camelCaseToSentenceCase(sel)]]
 
                 for (const jsonElement of this.covidData) {
-                    if (jsonElement['year'] === "2020" && jsonElement['month'] === "4" && jsonElement['day'] === "13") {
+
+                    if (jsonElement['year'] === "2020"  &&
+                        jsonElement['month'] === "4" &&
+                        jsonElement['day'] === "13" &&
+                        this.checkedOptions.includes(jsonElement['transmissionClassification'])
+                    ) {
                         mapAttributes.push(
                             [
                                 jsonElement['geoId'],
@@ -97,9 +105,13 @@
                                 parseInt(jsonElement[sel])
                             ]
                         )
-
                     }
                 }
+
+                if (mapAttributes.length === 1) {  // This is necessary to avoid an error with the Google API.
+                    return [["Country", "Country name"]]
+                }
+
                 return mapAttributes
             },
             allSelected: function() {
@@ -110,7 +122,10 @@
             camelCaseToSentenceCase: (text) => {
                 let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
                 return result.charAt(0).toUpperCase() + result.slice(1)
-            }
+            },
+            updateOpts: function (opts) {
+                this.checkedOptions = opts
+            },
         },
     }
 </script>

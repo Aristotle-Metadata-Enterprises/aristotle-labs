@@ -1,12 +1,9 @@
 <template>
     <div class="form-block">
-
         <div v-for="o in options" :key="o">
             <label :for="o">{{ o }}</label>
-            <input type="checkbox" :id="o" :value="o">
+            <input type="checkbox" :id="o" :value="o" @change="updateCheckedOptions" v-model="checkedOptions">
         </div>
-
-<!--        <span>Checked names: {{  }}</span>-->
     </div>
 </template>
 
@@ -19,6 +16,14 @@
                 default: () => [],
             }
         },
+        data: () => ({
+            checkedOptions: []
+        }),
+        methods: {
+            updateCheckedOptions: function () {
+                this.$emit('updateCheckedOpt', this.checkedOptions)
+            },
+        }
     }
 </script>
 
