@@ -1,14 +1,11 @@
 <template>
     <div class="form-block">
-        <label for="select-id">
+        <p>
             {{ description }}
-        </label>
+        </p>
         <select
-            id="select-id"
-            name="data element"
-            :value="value"
-            @input="emitInput"
-            @change="updateMap"
+                :value="value"
+                @input="emitInput"
         >
             <option value="">
                 {{ blankText }}
@@ -21,40 +18,37 @@
 </template>
 
 <script>
-    // Select form component with v-model support
-    export default {
-        props: {
-            // Selected value
-            value: {
-                type: String,
-                default: ''
-            },
-            // Description of selection
-            description: {
-                type: String,
-                required: true,
-            },
-            // Text to display when empty
-            blankText: {
-                type: String,
-                default: '----------',
-            },
-            // Options as an array of objects with value and text properties
-            options: {
-                type: Array,
-                default: () => [],
-            }
+
+// Select form component with v-model support
+export default {
+    props: {
+        // Selected value
+        value: {
+            type: String,
+            default: '',
         },
-        methods: {
-            emitInput: function(event) {
-                this.$emit('input', event.target.value)
-            },
-            // TODO remove this event and have the map page use v-model
-            updateMap: function(event) {
-                this.$emit('changeMap', event.target.value)
-            },
+        // Description of selection
+        description: {
+            type: String,
+            required: true,
+        },
+        // Text to display when empty
+        blankText: {
+            type: String,
+            default: '----------',
+        },
+        // Options as an array of objects with value and text properties
+        options: {
+            type: Array,
+            default: () => [],
         }
+    },
+    methods: {
+        emitInput: function (event) {
+            this.$emit('input', event.target.value)
+        },
     }
+}
 </script>
 
 <style scoped>
