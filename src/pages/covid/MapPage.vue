@@ -3,7 +3,6 @@
         <h1>Aristotle Covid Map</h1>
         <div class="horizontal-container">
             <map-display
-                    v-model="selected"
                     :map-data="mapData"
             />
             <selector
@@ -12,7 +11,7 @@
                     :options="options"
             />
         </div>
-        <metadata-display />
+        <metadata-display :selected="allSelected" :dss="dss" />
     </div>
 </template>
 
@@ -25,16 +24,17 @@
         getCovidData,
         getDistribution,
         getDistributionOptions,
+        getDatasetSpecification,
         mapDistributionData,
         filterNumberDataElements,
     } from '@/data/covid.js'
 
     export default {
         data: () => ({
-            selected: '',
+            dss: {},
             selectedCategory: '',
             options: [],
-            mapData: [['Country'],]
+            dataMapping: new Map()
         }),
         components: {
             'selector': Selector,
@@ -54,16 +54,27 @@
                 this.distribution = data
                 this.options = getDistributionOptions(data, filterNumberDataElements)
                 this.dataMapping = mapDistributionData(data)
+                console.log("THIS IS THE DATA MAPPING")
+                console.log(this.dataMapping)
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
             })
 
+            getDatasetSpecification().then((data) => {
+                this.dss = data
+            }).catch((error) => {
+                // TODO handle errors gracefully
+                console.error(error)
+            })
 
         },
-        watch: {
-            selectedCategory: function () {
+        computed: {
+            mapData: function () {
                 let sel = this.dataMapping.get(this.selectedCategory)
+                if (typeof sel === 'undefined') {
+                    return [["Country", "Country name"]]
+                }
                 let mapAttributes = [["Country", "Country name", this.camelCaseToSentenceCase(sel)]]
 
                 for (const jsonElement of this.covidData) {
@@ -71,7 +82,10 @@
                         mapAttributes.push([jsonElement['geoId'], jsonElement['reportingArea'], parseInt(jsonElement[sel])])
                     }
                 }
-                this.mapData = mapAttributes
+                return mapAttributes
+            },
+            allSelected: function() {
+                return [this.selectedCategory]
             },
         },
         methods: {
@@ -79,7 +93,7 @@
                 let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
                 return result.charAt(0).toUpperCase() + result.slice(1)
             }
-        }
+        },
     }
 </script>
 

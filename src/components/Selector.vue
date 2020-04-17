@@ -44,16 +44,9 @@ export default {
         }
     },
     methods: {
-        emitValue: function (event) {
-            console.log(event.target.value)
-            this.$emit('input', event.target.value)
-        },
         emitInput: function (event) {
             this.$emit('input', event.target.value)
         },
-        updateMap: function (event) {
-            this.$emit('changeMap', event.target.value)
-        }
     }
 }
 </script>
