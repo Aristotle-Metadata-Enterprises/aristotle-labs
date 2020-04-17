@@ -2,6 +2,15 @@
 /* global process */
 import axios from 'axios'
 
+// Get the COVID-19 data and transform into JavaScript object
+export function getCovidData() {
+    const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
+    return axios.get(data_url).then((response) => {
+       return response.data
+    }).catch((response) => {
+        console.log(response)
+    })
+}
 
 // Perform a graphql query on the aristotle registry
 function graphqlQuery(query, variables) {
@@ -15,21 +24,7 @@ function graphqlQuery(query, variables) {
     return axios.post(graphql_url, query_obj, {headers: headers})
 }
 
-const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
-
-export function getCovidData() {
-    // Get the COVID-19 data and return as javascript object
-    return axios.get(data_url).then((response) => {
-       return response.data;
-
-    }).catch((error => {
-        // TODO: handle errors gracefully
-        console.log(error)
-        })
-    )
-}
-
-// Query covid distribution data 
+// Query covid distribution data
 export function getDistribution() {
     // Identifier for covid distribution
     const uuid = "11c5d3ac-73d0-11ea-9c38-02d94c4bd698"
@@ -132,7 +127,7 @@ export function getDatasetSpecification() {
         }
       }
     }`
-    
+
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
         return response.data.data.datasetSpecifications.edges[0].node
     })
