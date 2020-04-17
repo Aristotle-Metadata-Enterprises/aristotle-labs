@@ -1,9 +1,3 @@
-<template>
-    <div class="placeholder-bar-graph">
-        <p>Bar graph goes here</p>
-    </div>
-</template>
-
 <style>
     .placeholder-bar-graph {
         width: 70%;
@@ -55,7 +49,7 @@
                                 beginAtZero: true
                             },
                             gridLines: {
-                                display: false
+                                display: true
                             }
                         }]
                     },
@@ -85,13 +79,15 @@
                         // Iterate across the JSON data and add data to each one
                         let aggregate = day[categoryDataElement];
                         if (aggregate) {
+                            let recordDate = new Date(day['year'], day['month'], day['day']);
                             dataSet[aggregate].data.push(
-                                {'t': day['dateRep'], 'y': day[accessKey]}
+                                {'t': recordDate, 'y': day[accessKey]}
                             )
                         }
                     }
                     // Return the dataSet as a list of objects, as this is what the object expects
-                    return Object.keys(dataSet).map((key) => dataSet[key]);
+                    dataSet = Object.keys(dataSet).map((key) => dataSet[key]);
+                    return dataSet
                 }
                 return [];
             },
@@ -104,10 +100,10 @@
         },
         methods: {
             drawBarGraph: function (chartData) {
-                this.renderChart({
-                    labels: this.chartLabels,
-                    datasets: chartData,
-                }, this.options)
+                console.log(chartData);
+                this.renderChart(
+                    {datasets: chartData}, this.options
+                )
             },
             generateRandomColour: function () {
                 // Generate colour from colour scheme, so colours are nicely selected
@@ -132,13 +128,8 @@
                 for (let category of categories) {
                     let dataset = {};
                     dataset.label = category;
+                    dataset.backgroundColor = '#D32F2F';
                     dataset.data = [];
-                    dataset.borderColor = '#249EBF';
-                    dataset.pointBackgroundColor = 'white';
-                    dataset.borderWidth = 1;
-                    dataset.pointBorderColor = '#249EBF';
-                    dataset.backgroundColor = 'transparent';
-                    dataset.backgroundColour = this.generateRandomColour();
 
                     datasets[category] = dataset
                 }

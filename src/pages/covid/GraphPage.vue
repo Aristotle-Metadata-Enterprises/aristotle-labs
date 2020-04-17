@@ -63,7 +63,6 @@ export default {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
-            console.log(this.categoryOptions)
             this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
             // TODO handle errors gracefully
