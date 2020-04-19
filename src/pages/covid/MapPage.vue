@@ -13,9 +13,15 @@
                 />
                 <filters
                         :options="filterTransmisionOptions"
-                        @updateCheckedOpt="updateOpts"
+                        @updateCheckedOpt="updateTransmitionOpts"
                 />
-                <span>Checked options: {{ checkedOptions }}</span>
+                <filters
+                        :options="filterRegionOptions"
+                        @updateCheckedOpt="updateRegionOpts"
+                />
+
+                <span>Checked transmition options: {{ checkedTransmitionOptions }}</span>
+                <span>Checked region options: {{ checkedRegionOptions }}</span>
             </div>
         </div>
         <metadata-display :selected="allSelected" :dss="dss" />
@@ -42,10 +48,12 @@
         data: () => ({
             dss: {},
             selectedCategory: '',
-            checkedOptions: [],
+            checkedTransmitionOptions: [],
+            checkedRegionOptions: [],
             options: [],
             filterTransmisionOptions: [],
-            dataMapping: new Map()
+            filterRegionOptions: [],
+            dataMapping: new Map(),
         }),
         components: {
             'selector': Selector,
@@ -58,6 +66,7 @@
             getCovidData().then((data) => {
                 this.covidData = data
                 this.filterTransmisionOptions = getMapFilterOptions(data, "transmissionClassification")
+                this.filterRegionOptions = getMapFilterOptions(data, "region")
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
@@ -96,7 +105,8 @@
                     if (jsonElement['year'] === "2020"  &&
                         jsonElement['month'] === "4" &&
                         jsonElement['day'] === "13" &&
-                        this.checkedOptions.includes(jsonElement['transmissionClassification'])
+                        this.checkedTransmitionOptions.includes(jsonElement['transmissionClassification']) &&
+                        this.checkedRegionOptions.includes(jsonElement['region'])
                     ) {
                         mapAttributes.push(
                             [
@@ -123,8 +133,11 @@
                 let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
                 return result.charAt(0).toUpperCase() + result.slice(1)
             },
-            updateOpts: function (opts) {
-                this.checkedOptions = opts
+            updateTransmitionOpts: function (opts) {
+                this.checkedTransmitionOptions = opts
+            },
+            updateRegionOpts: function (opts) {
+                this.checkedRegionOptions = opts
             },
         },
     }
