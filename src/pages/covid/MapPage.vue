@@ -11,6 +11,17 @@
                         description="Choose a data element"
                         :options="options"
                 />
+                <div class="form-block">
+                    <label>Date</label>
+                    {{ formattedDate }}
+                    <vue-slider
+                            v-model="sliderDateValue"
+                            :data="datesData"
+                    />
+                    <button @click="playMapDates">
+                        {{ buttonText }}
+                    </button>
+                </div>
                 <filters
                         :options="filterTransmisionOptions"
                         @updateCheckedOpt="updateTransmitionOpts"
@@ -20,8 +31,8 @@
                         @updateCheckedOpt="updateRegionOpts"
                 />
 
-                <span>Checked transmition options: {{ checkedTransmitionOptions }}</span>
-                <span>Checked region options: {{ checkedRegionOptions }}</span>
+<!--                <span>Checked transmition options: {{ checkedTransmitionOptions }}</span>-->
+<!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
             </div>
         </div>
         <metadata-display :selected="allSelected" :dss="dss" />
@@ -44,6 +55,10 @@
         filterNumberDataElements,
     } from '@/data/covid.js'
 
+    import VueSlider from 'vue-slider-component'
+    import 'vue-slider-component/theme/antd.css'
+    const moment = require('moment');
+
     export default {
         data: () => ({
             dss: {},
@@ -54,12 +69,16 @@
             filterTransmisionOptions: [],
             filterRegionOptions: [],
             dataMapping: new Map(),
+            sliderDateValue: 0,
+            datesData: [],
+            buttonText: "Play"
         }),
         components: {
             'selector': Selector,
             'map-display': MapDisplay,
             'metadata-display': MetadataDisplay,
             'filters': Filters,
+            'vue-slider': VueSlider,
         },
         mounted: function() {
 
@@ -67,6 +86,19 @@
                 this.covidData = data
                 this.filterTransmisionOptions = getMapFilterOptions(data, "transmissionClassification")
                 this.filterRegionOptions = getMapFilterOptions(data, "region")
+
+                this.datesData = getMapFilterOptions(data, "dateRep").sort(function (a, b) {
+                    return dateToNum(a) - dateToNum(b)
+                });
+
+                this.sliderDateValue = this.datesData[this.datesData.length - 1]
+
+
+                function dateToNum(date) {
+                    // Convert date "26/06/2016" to 20160626
+                    date = date.split("/");
+                    return Number(date[2] + date[1] + date[0]);
+                }
             }).catch((error) => {
                 // TODO handle errors gracefully
                 console.error(error)
@@ -102,9 +134,7 @@
 
                 for (const jsonElement of this.covidData) {
 
-                    if (jsonElement['year'] === "2020"  &&
-                        jsonElement['month'] === "4" &&
-                        jsonElement['day'] === "13" &&
+                    if (this.sliderDateValue === jsonElement['dateRep'] &&
                         this.checkedTransmitionOptions.includes(jsonElement['transmissionClassification']) &&
                         this.checkedRegionOptions.includes(jsonElement['region'])
                     ) {
@@ -127,6 +157,12 @@
             allSelected: function() {
                 return [this.selectedCategory]
             },
+            formattedDate: function () {
+                if (this.sliderDateValue !== 0) {
+                    return moment(this.sliderDateValue, "DD-MM-YYYY").format("dddd, DD MMMM YYYY")
+                }
+                return ""
+            },
         },
         methods: {
             camelCaseToSentenceCase: (text) => {
@@ -139,6 +175,21 @@
             updateRegionOpts: function (opts) {
                 this.checkedRegionOptions = opts
             },
+            playMapDates: function () {
+
+                this.buttonText === "Play" ? this.buttonText = "Pause" : this.buttonText = "Play"
+
+                let timeOut = 0
+                let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
+                for (let i = currentIndex; i < this.datesData.length - 1; i++) {
+                    if (this.buttonText === "Pause") {
+                        let that = this
+                        setTimeout (function () {
+                            that.sliderDateValue = moment(that.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
+                        }, timeOut += 100)
+                    }
+                }
+            }
         },
     }
 </script>
@@ -165,5 +216,10 @@
 
     .placeholder-metadata {
         margin-top: 50px;
+    }
+
+    .form-block {
+        display: block;
+        margin: 20px;
     }
 </style>
