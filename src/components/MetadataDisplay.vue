@@ -141,10 +141,9 @@ export default {
             text.appendChild(name)
             text.appendChild(type)
 
-            let link = this.createSvgElement(
-                'a',
-                {href: `https://registry.aristotlemetadata.com/item/${info.id}`}
-            )
+            let link = this.createSvgElement('a', {
+                href: `https://registry.aristotlemetadata.com/item/${info.id}`,
+            })
             link.appendChild(text)
 
             return link
@@ -209,9 +208,16 @@ export default {
             let render = new dagreD3.render()
             render(inner, graph)
 
+            inner.selectAll('g.node rect').attr('data-aristotle-concept-id', (node_id) => {
+                let node = graph.node(node_id)
+                return node.aristotleId
+            })
+
             if (this.tooltips) {
                 aristotleTooltip({
                     url: 'https://registry.aristotlemetadata.com',
+                    interactive: false,
+                    definitionWords: 40,
                 })
             }
 
