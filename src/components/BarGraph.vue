@@ -68,35 +68,15 @@
                             )
                         }
                     }
-                    // Return the dataSet as a list of objects, as this is what the object expects
+                    // Return the dataSet as a list of objects, as this is what chartData expects
                     let transformedDataSets = Object.keys(dataSets).map((key) => dataSets[key]);
                     return {
                         datasets: transformedDataSets,
                         labels: []
                     }
                 }
-                return {
-                    datasets: [
-                        {
-                            label: 'Low',
-                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
-                            backgroundColor: '#D6E9C6' // green
-                        },
-                        {
-                            label: 'Moderate',
-                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
-                            backgroundColor: '#FAEBCC' // yellow
-                        },
-                        {
-                            label: 'High',
-                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
-                            backgroundColor: '#EBCCD1' // red
-                        }
-                    ]
-                }
             }
-        }
-        ,
+        },
         watch: {
             selected: function () {
                 let chartData = this.chartData;
