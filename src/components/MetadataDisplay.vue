@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>Metadata Display</p>
-        <svg class="metadata-display" ref="svg" width="100%" height="500">
+        <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
         </svg>
     </div>
@@ -17,6 +17,9 @@ import { mapPush } from '@/utils/mapping.js'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 
 export default {
+    data: () => ({
+        svg_ns: 'http://www.w3.org/2000/svg'
+    }),
     props: {
         // Dss graphql data
         dss: {
@@ -116,23 +119,35 @@ export default {
         }
     },
     methods: {
+        // Create svg element given tag name, optional object of attributes and optional text
+        createSvgElement: function(tag, attrs, text) {
+            let e = document.createElementNS(this.svg_ns, tag)
+            if (attrs) {
+                for (let [attr, value] of Object.entries(attrs)) {
+                    e.setAttribute(attr, value)
+                }
+            }
+            if (text) {
+                e.appendChild(document.createTextNode(text))
+            }
+            return e
+        },
         // Get a nodes label
         getNodeLabel: function(info) {
-            // Create metadata link
-            let link = document.createElement('a')
-            link.setAttribute('href', `https://registry.aristotlemetadata.com/item/${info.id}`)
-            link.setAttribute('data-aristotle-concept-id', info.id)
-            link.appendChild(document.createTextNode(info.name))
-            // Create type description
-            let type = document.createElement('span')
-            type.className = 'metadata-type'
-            type.appendChild(document.createTextNode(`(${info.type})`))
+            let name = this.createSvgElement('tspan', {dy: '1em', x: '1'}, info.name)
+            let type = this.createSvgElement('tspan', {dy: '1em', x: '1'}, `(${info.type})`)
 
-            // Create and return containing div
-            let div = document.createElement('div')
-            div.appendChild(link)
-            div.appendChild(type)
-            return div
+            let text = this.createSvgElement('text')
+            text.appendChild(name)
+            text.appendChild(type)
+
+            let link = this.createSvgElement(
+                'a',
+                {href: `https://registry.aristotlemetadata.com/item/${info.id}`}
+            )
+            link.appendChild(text)
+
+            return link
         },
         // Create dagre graph filtered to contain all paths to selected metadata
         createDisplayGraph: function(selected) {
@@ -151,6 +166,7 @@ export default {
                             val,
                             {
                                 label: this.getNodeLabel(info),
+                                labelType: 'svg',
                                 class: 'selected',
                                 aristotleId: info.id,
                             }
@@ -168,7 +184,7 @@ export default {
                     let info = this.graph.nodeInfo.get(parent.parent)
                     dgraph.setNode(
                         parent.parent,
-                        {label: this.getNodeLabel(info), aristotleId: info.id}
+                        {label: this.getNodeLabel(info), labelType: 'svg', aristotleId: info.id}
                     )
                     dgraph.setEdge(parent.parent, uuid, {label: parent.edgeLabel})
                     nodeStack.push(parent.parent)
@@ -232,27 +248,32 @@ svg.metadata-display {
     border: 1px solid black;
 }
 
-.metadata-display a, .metadata-display span {
+/* Set text size */
+svg.metadata-display text {
   font-size: 11px;
   font-weight: 300;
 }
 
-.metadata-display span.metadata-type {
-    display: block;
-    text-align: center;
+/* Style for text within links */
+svg.metadata-display a text {
+    fill: black;
+    text-decoration: underline;
 }
 
-.metadata-display .node rect {
+/* Syle node boxes */
+svg.metadata-display .node rect {
   stroke: #999;
   fill: #fff;
   stroke-width: 1.5px;
 }
 
-.metadata-display .selected rect {
+/* Override for selected nodes */
+svg.metadata-display .selected rect {
     fill: lightgreen;
 }
 
-.metadata-display .edgePath path {
+/* Style edges */
+svg.metadata-display .edgePath path {
   stroke: #333;
   stroke-width: 1.5px;
 }
