@@ -2,7 +2,6 @@
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>    
         <div class="horizontal-container">
-            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
             <div>
                 <selector 
                     v-model="selected" 
@@ -15,6 +14,7 @@
                     :options="categoryOptions"
                 />
             </div>
+            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
         </div>
         <metadata-display :selected="allSelected" :dss="dss" />
     </div>

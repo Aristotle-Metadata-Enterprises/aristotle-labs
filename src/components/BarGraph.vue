@@ -1,15 +1,3 @@
-<style>
-    .placeholder-bar-graph {
-        width: 70%;
-        height: 300px;
-        background-color: gray;
-    }
-
-    .placeholder-bar-graph p {
-        text-align: center;
-        padding-top: 100px;
-    }
-</style>
 <script>
     import {Bar} from 'vue-chartjs'
     import ColorScheme from 'color-scheme';
@@ -34,84 +22,97 @@
                 default: () => [],
             }
         },
-        data() {
-            // Data function to return general purpose config
-            return {
-                options: {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                            type: 'time',
-                        }],
-                        yAxes: [{
-                            stacked: true,
-                            ticks: {
-                                beginAtZero: true
-                            },
-                            gridLines: {
-                                display: true
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: true
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
+        data: () => ({
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        gridLines: {
+                            display: true
+                        }
+                    }]
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
-        },
+        }),
         computed: {
             // Transformed data for display in the bar graph
             chartData: function () {
-                // Chart data is a list of points
+                // Chart data is a list of datasets
                 if (this.selected[0] && this.selected[1]) {
                     let dataElement = this.selected[0];
 
                     let categoryDataElement = this.selected[1];
                     categoryDataElement = this.distribution_map.get(categoryDataElement);
                     let categories = this.getCategoriesFromDataElement(categoryDataElement);
+                    let dataSets = this.generateChartDataFramework(categories);
 
-                    let dataSet = this.generateDataFramework(categories);
                     // Access key is the lookup key for the JSON field that was selected
                     let accessKey = this.distribution_map.get(dataElement);
+
                     for (let day of this.raw_data) {
                         // Iterate across the JSON data and add data to each one
                         let aggregate = day[categoryDataElement];
                         if (aggregate) {
-                            let recordDate = new Date(day['year'], day['month'], day['day']);
-                            dataSet[aggregate].data.push(
-                                {'t': recordDate, 'y': day[accessKey]}
+                            let recordDate = new Date(day['year'], day['month'] - 1, day['day']);
+                            dataSets[aggregate].data.push(
+                                {'t': recordDate, 'y': Number(day[accessKey])}
                             )
                         }
                     }
                     // Return the dataSet as a list of objects, as this is what the object expects
-                    dataSet = Object.keys(dataSet).map((key) => dataSet[key]);
-                    return dataSet
+                    let transformedDataSets = Object.keys(dataSets).map((key) => dataSets[key]);
+                    return {
+                        datasets: transformedDataSets,
+                        labels: []
+                    }
                 }
-                return [];
-            },
-        },
-        watch: {
-            // Compute graph based on Data Element and VD selections
-            selected: function () {
-                this.drawBarGraph(this.chartData);
+                return {
+                    datasets: [
+                        {
+                            label: 'Low',
+                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
+                            backgroundColor: '#D6E9C6' // green
+                        },
+                        {
+                            label: 'Moderate',
+                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
+                            backgroundColor: '#FAEBCC' // yellow
+                        },
+                        {
+                            label: 'High',
+                            data: [{'t': new Date(2000, 1, 1), 'y': 1}],
+                            backgroundColor: '#EBCCD1' // red
+                        }
+                    ]
+                }
             }
-        },
+        }
+        ,
+        watch: {
+            selected: function () {
+                let chartData = this.chartData;
+                this.renderChart(chartData, this.options)
+            }
+        }
+        ,
         methods: {
-            drawBarGraph: function (chartData) {
-                console.log(chartData);
-                this.renderChart(
-                    {datasets: chartData}, this.options
-                )
-            },
             generateRandomColour: function () {
                 // Generate colour from colour scheme, so colours are nicely selected
                 let scheme = new ColorScheme;
                 scheme.from_hue(21).scheme('triade').variation('pastel');
                 // Triade scheme generates 12 random colours, return one of them
                 return '#' + scheme.colors()[Math.floor(Math.random() * Math.floor(11))].toUpperCase();
-            },
+            }
+            ,
             getCategoriesFromDataElement: function (categoryAccessKey) {
                 // Return a list of categories from the dataset
                 // Used as aggregate for the stacked bar chart
@@ -121,14 +122,15 @@
                 categorySet.delete(undefined);
 
                 return [...categorySet];
-            },
-            generateDataFramework: function (categories) {
+            }
+            ,
+            generateChartDataFramework: function (categories) {
                 // Build the framework that Chart.js expects for stacked datasets
                 let datasets = {};
                 for (let category of categories) {
                     let dataset = {};
                     dataset.label = category;
-                    dataset.backgroundColor = '#D32F2F';
+                    dataset.backgroundColor = this.generateRandomColour();
                     dataset.data = [];
 
                     datasets[category] = dataset
