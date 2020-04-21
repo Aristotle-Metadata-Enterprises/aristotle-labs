@@ -1,6 +1,6 @@
 <template>
     <div class="covid-graph">
-        <h1>Aristotle Covid Graph</h1>    
+        <h1>Aristotle Covid Graph</h1>
         <div class="horizontal-container">
             <div>
                 <selector 
