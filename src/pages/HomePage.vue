@@ -2,7 +2,7 @@
     <div class="home-page">
         <div class="jumbotron bg-light">
             <div class="container">
-                <h1 class="display-4">Aristotle Labs</h1>
+                <h1 class="display-4"><i class="fas fa-flask"></i> Aristotle Labs</h1>
                 <p class="lead"> Metadata isn't just about describing data, it's about <em>empowering data</em>
                     to unlock its full potential. </p>
                 <hr class="my-4">
@@ -10,7 +10,9 @@
                     Metadata Registry</a>
                     that demonstrate how a metadata registry makes data make sense.</p>
                 <p class="lead">
-                    <a class="btn btn-primary btn-lg" href="https://aristotlemetadata.com" role="button">Learn more</a>
+                    <a class="btn btn-primary btn-lg" href="https://aristotlemetadata.com" role="button">
+                        Learn more &raquo
+                    </a>
                 </p>
             </div>
         </div>
@@ -38,7 +40,7 @@
                 </div>
             </div>
             <hr>
-        </div> <!-- /container -->
+        </div>
     </div>
 </template>
 

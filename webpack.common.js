@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -45,6 +45,10 @@ module.exports = {
                         },
                     },
                 ]
+            },
+            {
+                test: /\.(svg|eot|woff|woff2|ttf)$/,
+                use: ['file-loader']
             },
             {
                 test: /\.vue$/,

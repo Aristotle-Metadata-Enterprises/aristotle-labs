@@ -1,8 +1,8 @@
 <template>
     <div class="root">
         <nav class="navbar navbar-custom navbar-expand-lg">
-            <img class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
-            <a class="navbar-brand" href="#">Aristotle Labs</a>
+            <img class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png" alt="Aristotle Logo">
+            <router-link class="navbar-brand" :to="{name: 'homePage'}">Aristotle Labs</router-link>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,7 +12,9 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <router-link class="nav-link" :to="{name: 'homePage'}">
+                            Home <span class="sr-only">(current)</span>
+                        </router-link>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
