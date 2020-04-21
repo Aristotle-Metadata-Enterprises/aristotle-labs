@@ -11,7 +11,7 @@
                     that demonstrate how a metadata registry makes data make sense.</p>
                 <p class="lead">
                     <a class="btn btn-primary btn-lg" href="https://aristotlemetadata.com" role="button">
-                        Learn more &raquo
+                        Learn more &raquo;
                     </a>
                 </p>
             </div>
