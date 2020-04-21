@@ -218,8 +218,11 @@ export default {
                 let node_id = d3.select(node).datum();
                 let data = graph.node(node_id)
                 // Create link
-                let link = this.createSvgElement('a', {href: this.getItemUrl(data.aristotleId)})
-                link.setAttribute('data-aristotle-concept-id', data.aristotleId)
+                let link = this.createSvgElement('a', {
+                    href: this.getItemUrl(data.aristotleId),
+                    'data-aristotle-concept-id': data.aristotleId,
+                    target: '_blank'
+                })
                 // Insert link before node
                 node.parentNode.insertBefore(link, node)
                 // Move node inside link
@@ -273,9 +276,11 @@ svg.metadata-display text {
   font-weight: 300;
 }
 
-/* Style for text within links */
-svg.metadata-display a text {
-    fill: black;
+svg.metadata-display a:link, svg.metadata-display a:visited {
+    cursor: pointer;
+}
+
+svg.metadata-display a:hover, svg.metadata-display a:active {
     text-decoration: underline;
 }
 
