@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Cloudformation distribution used to serve static files"
+
+Parameters:
+  S3SourceBucketEndpoint:
+    Type: String
+    Description: "The bucket where the aristotle-labs code is stored"
+
+
+Resources:
+  # A special user for the CloudFormation distribution, allowing access
+  # to the S3 bucket to be restricted
+  OriginAccessId:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "Identity for the Aristotle Labs Bucket"
+
+  LabsDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: True
+        DefaultCacheBehavior:
+          Compress: True
+          ViewerProtocolPolicy: 'redirect-to-https'
+          TargetOriginId: 'Aristotle Labs Static Bucket'
+        Origins:
+          - DomainName: !Ref S3SourceBucketEndpoint
+            Id: 'Aristotle Labs Static Bucket'
+            S3OriginConfig:
+              # The CloudFront origin access identity to associate
+              # with the origin
+              OriginAccessIdentity:
+                !Join
+                - ''
+                - 'origin-access-identity/cloudfront/'
+                - !Ref OriginAccessId
+            PriceClass: "PriceClass_All"
+            ViewerCertificate:
+              CloudFrontDefaultCertificate: True
+
+
+
+
+
+
