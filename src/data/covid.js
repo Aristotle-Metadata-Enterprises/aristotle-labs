@@ -122,17 +122,21 @@ export function getDatasetSpecification() {
           node {
             name
             uuid
+            aristotleId
             dssdeinclusionSet {
               dataElement {
                 uuid
+                aristotleId
                 name
                 dedinputsthroughSet {
                   dataElementDerivation {
                     uuid
+                    aristotleId
                     name
                     dedderivesthroughSet {
                       dataElement {
                         uuid
+                        aristotleId
                         name
                       }
                     }

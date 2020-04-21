@@ -16,7 +16,7 @@
             </div>
             <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
         </div>
-        <metadata-display :selected="allSelected" :dss="dss" />
+        <metadata-display :selected="allSelected" :dss="dss" tooltips />
     </div>
 </template>
 
