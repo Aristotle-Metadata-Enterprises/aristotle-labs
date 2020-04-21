@@ -1,5 +1,4 @@
 // Covid data access functions to be used across vue components
-/* global process */
 import axios from 'axios'
 
 // Get the COVID-19 data and transform into JavaScript object
@@ -16,12 +15,8 @@ export function getCovidData() {
 function graphqlQuery(query, variables) {
     // Url for our registries graphql endpoint
     const graphql_url = 'https://registry.aristotlemetadata.com/api/graphql/json'
-    // Auth headers for api requests
-    // TODO remove once metadata is public
-    const headers = {'Authorization': `Token ${process.env.TOKEN}`}
-
     const query_obj = {query: query, variables: variables}
-    return axios.post(graphql_url, query_obj, {headers: headers})
+    return axios.post(graphql_url, query_obj)
 }
 
 // Query covid distribution data
