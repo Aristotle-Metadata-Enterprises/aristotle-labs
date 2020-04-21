@@ -4,6 +4,7 @@
         <div class="horizontal-container">
             <map-display
                     :map-data="mapData"
+                    :color-axis-max-value="colorAxisMaxValue"
             />
             <div class="vertical-container">
                 <selector
@@ -71,7 +72,7 @@
             dataMapping: new Map(),
             sliderDateValue: 0,
             datesData: [],
-            buttonText: "Play"
+            buttonText: "Play",
         }),
         components: {
             'selector': Selector,
@@ -92,7 +93,6 @@
                 });
 
                 this.sliderDateValue = this.datesData[this.datesData.length - 1]
-
 
                 function dateToNum(date) {
                     // Convert date "26/06/2016" to 20160626
@@ -142,7 +142,7 @@
                             [
                                 jsonElement['geoId'],
                                 jsonElement['reportingArea'],
-                                parseInt(jsonElement[sel])
+                                parseInt(jsonElement[sel]),
                             ]
                         )
                     }
@@ -153,6 +153,22 @@
                 }
 
                 return mapAttributes
+            },
+            colorAxisMaxValue: function () {
+                let sel = this.dataMapping.get(this.selectedCategory)
+                let maxValue = 0
+
+                if (!this.dataMapping.has(this.selectedCategory)) {
+                    return maxValue
+                }
+                const notBoundCovidData = this.getNotBoundCovidData()
+                for (const jsonElement of notBoundCovidData) {
+                    let currentValue = parseInt(jsonElement[sel])
+                    if (currentValue > maxValue) {
+                        maxValue = currentValue
+                    }
+                }
+                return maxValue
             },
             allSelected: function() {
                 return [this.selectedCategory]
@@ -189,7 +205,10 @@
                         }, timeOut += 100)
                     }
                 }
-            }
+            },
+            getNotBoundCovidData: function () {
+                return [...this.covidData]
+            },
         },
     }
 </script>
