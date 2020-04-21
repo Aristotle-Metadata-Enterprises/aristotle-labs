@@ -1,27 +1,46 @@
 <template>
     <div>
-        <p>Metadata display</p>
-        <svg class="metadata-display" ref="svg" width="100%" height="500">
+        <p>Metadata Display</p>
+        <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
         </svg>
     </div>
 </template>
 
 <script>
+import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+
 import * as d3 from 'd3'
 import dagreD3 from 'dagre-d3'
 
 import { mapPush } from '@/utils/mapping.js'
+import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 
 export default {
+    data: () => ({
+        svg_ns: 'http://www.w3.org/2000/svg'
+    }),
     props: {
+        // Dss graphql data
         dss: {
             type: Object,
             required: true,
         },
+        // uuid's of selected elements to display in graph
+        // Falsy elements will be ignored
         selected: {
             type: Array,
             default: () => [],
+        },
+        // Whether the graph can be panned and zoomed with mouse
+        zoomable: {
+            type: Boolean,
+            default: false,
+        },
+        // Whether to display tooltips on hover of graph elements
+        tooltips: {
+            type: Boolean,
+            default: false,
         }
     },
     computed: {
@@ -36,13 +55,21 @@ export default {
                 // Create root dss node
                 nodeInfo.set(
                     this.dss.uuid,
-                    {name: this.dss.name, type: 'Dataset Specification'}
+                    {
+                        id: this.dss.aristotleId,
+                        name: this.dss.name,
+                        type: 'Dataset Specification',
+                    }
                 )
                 parents.set(this.dss.uuid, [])
                 for (let inc of this.dss.dssdeinclusionSet) {
                     nodeInfo.set(
                         inc.dataElement.uuid,
-                        {name: inc.dataElement.name, type: 'Data Element'}
+                        {
+                            id: inc.dataElement.aristotleId,
+                            name: inc.dataElement.name,
+                            type: 'Data Element',
+                        }
                     )
                     mapPush(
                         parents,
@@ -52,7 +79,11 @@ export default {
                     for (let input of inc.dataElement.dedinputsthroughSet) {
                         nodeInfo.set(
                             input.dataElementDerivation.uuid,
-                            {name: input.dataElementDerivation.name, type: 'Data Element Derivation'}
+                            {
+                                id: input.dataElementDerivation.aristotleId,
+                                name: input.dataElementDerivation.name,
+                                type: 'Data Element Derivation',
+                            }
                         )
                         mapPush(
                             parents,
@@ -62,7 +93,11 @@ export default {
                         for (let derive of input.dataElementDerivation.dedderivesthroughSet) {
                             nodeInfo.set(
                                 derive.dataElement.uuid,
-                                {name: derive.dataElement.name, type: 'Data Element'}
+                                {
+                                    id: derive.dataElement.aristotleId,
+                                    name: derive.dataElement.name,
+                                    type: 'Data Element',
+                                }
                             )
                             mapPush(
                                 parents,
@@ -84,10 +119,50 @@ export default {
         }
     },
     methods: {
+        getItemUrl: function(id) {
+            return `https://registry.aristotlemetadata.com/item/${id}`
+        },
+        // Create svg element given tag name, optional object of attributes and optional text
+        createSvgElement: function(tag, attrs, text) {
+            let e = document.createElementNS(this.svg_ns, tag)
+            if (attrs) {
+                for (let [attr, value] of Object.entries(attrs)) {
+                    e.setAttribute(attr, value)
+                }
+            }
+            if (text) {
+                e.appendChild(document.createTextNode(text))
+            }
+            return e
+        },
         // Get a nodes label
-        getNodeLabel: function(uuid) {
-            let info = this.graph.nodeInfo.get(uuid)
-            return `${info.name}\n(${info.type})`
+        getNodeLabel: function(info) {
+            // Create 2 lines of text
+            let name = this.createSvgElement('tspan', {dy: '1em', x: '1'}, info.name)
+            let type = this.createSvgElement('tspan', {dy: '1em', x: '1'}, `(${info.type})`)
+
+            // Add to text element
+            let text = this.createSvgElement('text')
+            text.appendChild(name)
+            text.appendChild(type)
+            return text
+        },
+        // Get the data to be associated with display graphs node
+        // nodeInfo is object retrieve from graph
+        // cls is optional name of html class to give node for styling
+        getNodeData: function(nodeInfo, cls) {
+            let data = {
+                rx: 5,
+                ry: 5,
+                shape: 'rect',
+                label: this.getNodeLabel(nodeInfo),
+                labelType: 'svg',
+                aristotleId: nodeInfo.id,
+            }
+            if (cls) {
+                data.class = cls
+            }
+            return data
         },
         // Create dagre graph filtered to contain all paths to selected metadata
         createDisplayGraph: function(selected) {
@@ -97,11 +172,15 @@ export default {
 
             // Start with selected values
             for (let val of selected) {
-                if (val && this.graph.nodeInfo.has(val)) {
-                    nodeStack.push(val)
-                    dgraph.setNode(val, {label: this.getNodeLabel(val), class: 'selected'})
-                } else {
-                    console.error(`${val} is not a valid node`)
+                // Ignore empty values
+                if (val) {
+                    if (this.graph.nodeInfo.has(val)) {
+                        nodeStack.push(val)
+                        let info = this.graph.nodeInfo.get(val)
+                        dgraph.setNode(val, this.getNodeData(info, 'selected'))
+                    } else {
+                        console.error(`${val} is not a valid node`)
+                    }
                 }
             }
 
@@ -109,7 +188,8 @@ export default {
             while (nodeStack.length > 0) {
                 let uuid = nodeStack.pop()
                 for (let parent of this.graph.parents.get(uuid)) {
-                    dgraph.setNode(parent.parent, {label: this.getNodeLabel(parent.parent)})
+                    let info = this.graph.nodeInfo.get(parent.parent)
+                    dgraph.setNode(parent.parent, this.getNodeData(info))
                     dgraph.setEdge(parent.parent, uuid, {label: parent.edgeLabel})
                     nodeStack.push(parent.parent)
                 }
@@ -117,32 +197,63 @@ export default {
 
             return dgraph
         },
+        // draw given display graph in svg element
         drawGraph: function(graph) {
             // Layout
             let options = graph.graph()
             options.rankdir = 'LR'
-            // node options
-            graph.nodes().forEach((n) => {
-                let node = graph.node(n)
-                node.ry = 5
-                node.rx = 5
-            })
 
             let svg = d3.select(this.$refs.svg)
             let inner = svg.select('g')
+            // We need to clear graph due to link wrapping changes
+            inner.select('g').remove()
             let render = new dagreD3.render()
+
+            // Render the graph using d3
             render(inner, graph)
 
+            // Wrap node groups in links
+            for (let node of this.$refs.svg.querySelectorAll('g.node')) {
+                // Get d3 data associated with node
+                let node_id = d3.select(node).datum();
+                let data = graph.node(node_id)
+                // Create link
+                let link = this.createSvgElement('a', {
+                    href: this.getItemUrl(data.aristotleId),
+                    'data-aristotle-concept-id': data.aristotleId,
+                    target: '_blank'
+                })
+                // Insert link before node
+                node.parentNode.insertBefore(link, node)
+                // Move node inside link
+                link.appendChild(node)
+            }
+
+            if (this.tooltips) {
+                aristotleTooltip({
+                    url: 'https://registry.aristotlemetadata.com',
+                    interactive: false,
+                    definitionWords: 40,
+                })
+            }
+
             // Zoom support
-            let zoom = d3.zoom().on('zoom', () => {
-                inner.attr('transform', d3.event.transform)
-            })
-            svg.call(zoom)
+            let zoom
+            if (this.zoomable) {
+                zoom = d3.zoom().on('zoom', () => {
+                    inner.attr('transform', d3.event.transform)
+                })
+                svg.call(zoom)
+            }
 
             // Center graph
             let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
             let yPadding = 20
-            svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
+            if (this.zoomable) {
+                svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
+            } else {
+                inner.attr('transform', `translate(${xOffset}, ${yPadding})`)
+            }
             svg.attr('height', graph.graph().height + (yPadding * 2))
         }
     }
@@ -159,23 +270,34 @@ svg.metadata-display {
     border: 1px solid black;
 }
 
-.metadata-display text {
+/* Set text size */
+svg.metadata-display text {
+  font-size: 11px;
   font-weight: 300;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
 }
 
-.metadata-display .node rect {
+svg.metadata-display a:link, svg.metadata-display a:visited {
+    cursor: pointer;
+}
+
+svg.metadata-display a:hover, svg.metadata-display a:active {
+    text-decoration: underline;
+}
+
+/* Syle node boxes */
+svg.metadata-display .node rect {
   stroke: #999;
   fill: #fff;
   stroke-width: 1.5px;
 }
 
-.metadata-display .selected rect {
+/* Override for selected nodes */
+svg.metadata-display .selected rect {
     fill: lightgreen;
 }
 
-.metadata-display .edgePath path {
+/* Style edges */
+svg.metadata-display .edgePath path {
   stroke: #333;
   stroke-width: 1.5px;
 }

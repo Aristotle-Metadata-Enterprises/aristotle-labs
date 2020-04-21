@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List, Dict
 
 s3_client = boto3.client("s3")
-covid_data_bucket = 'aristotle-edcc-covid19-data'
+covid_data_bucket = 'aristotle-ecdc-covid19-data'
 csv_url = "https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/covid_spreadsheet.csv"
 
 
@@ -57,19 +57,47 @@ class DataTransformer:
         data.sort(key=lambda x: x['geoId'])
 
         previous_region = data[0]['geoId']
+
         cumulative_cases = 0
         cumulative_deaths = 0
+        cases_last_7_days = 0
+        days_since_last_case = 0
 
+        index = 0
         for record in data:
             if record['geoId'] != previous_region:
                 # We're on to a new country, reset the cumulative total count
-                cumulative_cases = cumulative_deaths = 0
-            cumulative_cases += int(record['cases'])
-            cumulative_deaths += int(record['deaths'])
+                cumulative_cases = cumulative_deaths = cases_last_7_days = days_since_last_case = 0
+
+            daily_cases = int(record['cases'])
+            daily_deaths = int(record['cases'])
+
+            cumulative_cases += daily_cases
+            cumulative_deaths += daily_deaths
+
+            # Calculate cases in the last 7 days, per region
+            day = 0
+            cases_last_7_days = 0
+
+            while 7 - day >= 0:
+                if record['geoId'] == previous_region:
+                    # Remove the record
+                    cases_last_7_days += int(data[index-day]['cases'])
+                day += 1
+
+            if daily_cases == 0:
+                days_since_last_case += 1
+            else:
+                days_since_last_case = 0
+
+            record['casesreportedLast7Days'] = cases_last_7_days
             record['cumulativeCases'] = cumulative_cases
             record['cumulativeDeaths'] = cumulative_deaths
+            record['daysSinceLastCase'] = days_since_last_case
 
             previous_region = record['geoId']
+
+            index += 1
 
         return data
 
@@ -106,12 +134,12 @@ def handler(event, context):
         Body=data,
         Bucket=covid_data_bucket,
         Key=f'{datetime.now().strftime("%Y-%m-%d")}-COVID-19-Cases',
-        ExtraArgs={'ACL': 'public-read'}
+        ACL='public-read'
     )
     # Upload to S3 as most recent
     response = s3_client.put_object(
         Body=data,
         Bucket=covid_data_bucket,
-        Key='daily_data',
-        ExtraArgs={'ACL': 'public-read'}
+        Key='daily_data.json',
+        ACL='public-read'
     )

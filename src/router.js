@@ -3,11 +3,17 @@ import VueRouter from 'vue-router'
 
 import CovidGraphPage from './pages/covid/GraphPage.vue'
 import CovidMapPage from './pages/covid/MapPage.vue'
+import HomePage from './pages/HomePage.vue'
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
     'routes': [
+        {
+            'path': '/',
+            'name': 'homePage',
+            'component': HomePage
+        },
         {
             'path': '/covid/graph/',
             'name': 'covidGraph',

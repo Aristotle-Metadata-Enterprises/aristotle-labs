@@ -1,8 +1,7 @@
 <template>
     <div class="covid-graph">
-        <h1>Aristotle Covid Graph</h1>    
+        <h1>Aristotle Covid Graph</h1>
         <div class="horizontal-container">
-            <bar-graph />
             <div>
                 <selector 
                     v-model="selected" 
@@ -15,8 +14,9 @@
                     :options="categoryOptions"
                 />
             </div>
+            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
         </div>
-        <metadata-display :selected="allSelected" :dss="dss" />
+        <metadata-display :selected="allSelected" :dss="dss" tooltips />
     </div>
 </template>
 
@@ -25,6 +25,7 @@ import Selector from '@/components/Selector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
+    getCovidData,
     getDistribution,
     getDistributionOptions,
     getDatasetSpecification,
@@ -37,11 +38,13 @@ export default {
     data: () => ({
         distribution: {},
         dss: {},
+        raw_data: {},
         selected: '',
         selectedCategory: '',
         options: [],
         categoryOptions: [],
         dataMap: new Map(),
+        distributionDataMap: {},
     }),
     components: {
         'selector': Selector,
@@ -49,11 +52,18 @@ export default {
         'metadata-display': MetadataDisplay,
     },
     mounted: function() {
+        getCovidData().then((raw_data) => {
+            this.raw_data = raw_data;
+        }).catch((error) =>
+        {
+            // TODO: handle errors gracefully
+            console.log(error)
+        });
         getDistribution().then((data) => {
-            this.distribution = data
-            this.options = getDistributionOptions(data, filterNumberDataElements)
-            this.categoryOptions = getDistributionOptions(data, filterValueDataElements)
-            this.datamap = mapDistributionData(data)
+            this.distribution = data;
+            this.options = getDistributionOptions(data, filterNumberDataElements);
+            this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
+            this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
             // TODO handle errors gracefully
             console.error(error)
@@ -93,3 +103,4 @@ h1 {
     margin-top: 50px;
 }
 </style>
+k
