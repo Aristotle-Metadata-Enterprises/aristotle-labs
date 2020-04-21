@@ -161,7 +161,7 @@
                 if (!this.dataMapping.has(this.selectedCategory)) {
                     return maxValue
                 }
-                const notBoundCovidData = this.getNotBoundCovidData()
+                const notBoundCovidData = [...this.covidData]
                 for (const jsonElement of notBoundCovidData) {
                     let currentValue = parseInt(jsonElement[sel])
                     if (currentValue > maxValue) {
@@ -205,9 +205,6 @@
                         }, timeOut += 100)
                     }
                 }
-            },
-            getNotBoundCovidData: function () {
-                return [...this.covidData]
             },
         },
     }
