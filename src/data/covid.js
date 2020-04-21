@@ -79,6 +79,23 @@ export function getDistributionOptions(distribution, filter) {
     return options
 }
 
+
+/**
+ * The purpose of this function is to get the filter options for the map page.
+ * @param data
+ * @param filterName string
+ * @returns {*}
+ */
+export function getMapFilterOptions(data, filterName) {
+    let options = new Set()
+    for (const option of data) {
+        if (typeof option[filterName] !== 'undefined') {
+            options.add(option[filterName])
+        }
+    }
+    return [...options]
+}
+
 // Filter for data elements to use with getDistributionOptions
 export function filterNumberDataElements(data_element) {
     if (data_element.valueDomain && data_element.valueDomain.dataType) {
