@@ -82,8 +82,7 @@
                 let chartData = this.chartData;
                 this.renderChart(chartData, this.options)
             }
-        }
-        ,
+        },
         methods: {
             generateRandomColour: function () {
                 // Generate colour from colour scheme, so colours are nicely selected
@@ -91,8 +90,7 @@
                 scheme.from_hue(21).scheme('triade').variation('pastel');
                 // Triade scheme generates 12 random colours, return one of them
                 return '#' + scheme.colors()[Math.floor(Math.random() * Math.floor(11))].toUpperCase();
-            }
-            ,
+            },
             getCategoriesFromDataElement: function (categoryAccessKey) {
                 // Return a list of categories from the dataset
                 // Used as aggregate for the stacked bar chart
@@ -102,8 +100,7 @@
                 categorySet.delete(undefined);
 
                 return [...categorySet];
-            }
-            ,
+            },
             generateChartDataFramework: function (categories) {
                 // Build the framework that Chart.js expects for stacked datasets
                 let datasets = {};
