@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-custom navbar-expand-lg">
             <img class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
             <a class="navbar-brand" href="#">Aristotle Labs</a>
 
@@ -33,6 +33,18 @@
         </nav>
 
         <router-view/>
+        <footer class="footer footer-custom">
+            <div class="container">
+                <p class="text-center text-white">Aristotle Labs - powered by the Aristotle Metadata Registry
+                    <img class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
+                </p>
+                <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
+                    <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Cloud Services Australia</a>
+                </div>
+
+            </div>
+        </footer>
+
     </div>
 </template>
 
@@ -42,27 +54,47 @@
         width: 5% !important;
     }
 
+    .footer-custom {
+        background-color: #356a69;
+    }
+
     /* Custom styling for navbar to make it aristotle green */
     .navbar-custom {
-        background-color: #ff5500;
+        background-color: #356a69;
     }
 
     /* change the brand and text color */
     .navbar-custom .navbar-brand,
     .navbar-custom .navbar-text {
-        color: rgba(255, 255, 255, .8);
+        color: white;
     }
 
     /* change the link color */
     .navbar-custom .navbar-nav .nav-link {
-        color: rgba(255, 255, 255, .5);
+        color: white;
     }
 
     /* change the color of active or hovered links */
     .navbar-custom .nav-item.active .nav-link,
     .navbar-custom .nav-item:hover .nav-link {
-        color: #ffffff;
+        color: white;
     }
+
+    /* for dropdown only - change the color of droodown */
+    .navbar-custom .dropdown-menu {
+        background-color: white;
+    }
+
+    .navbar-custom .dropdown-item {
+        color: black;
+    }
+
+    .navbar-custom .dropdown-item:hover,
+    .navbar-custom .dropdown-item:focus {
+        color: black;
+        background-color: white;
+    }
+
 
 </style>
 
