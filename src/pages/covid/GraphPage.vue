@@ -16,7 +16,7 @@
                 />
             </div>
         </div>
-        <metadata-display :selected="allSelected" :dss="dss" />
+        <metadata-display :selected="allSelected" :dss="dss" tooltips />
     </div>
 </template>
 
