@@ -119,6 +119,9 @@ export default {
         }
     },
     methods: {
+        getItemUrl: function(id) {
+            return `https://registry.aristotlemetadata.com/item/${id}`
+        },
         // Create svg element given tag name, optional object of attributes and optional text
         createSvgElement: function(tag, attrs, text) {
             let e = document.createElementNS(this.svg_ns, tag)
@@ -134,19 +137,32 @@ export default {
         },
         // Get a nodes label
         getNodeLabel: function(info) {
+            // Create 2 lines of text
             let name = this.createSvgElement('tspan', {dy: '1em', x: '1'}, info.name)
             let type = this.createSvgElement('tspan', {dy: '1em', x: '1'}, `(${info.type})`)
 
+            // Add to text element
             let text = this.createSvgElement('text')
             text.appendChild(name)
             text.appendChild(type)
-
-            let link = this.createSvgElement('a', {
-                href: `https://registry.aristotlemetadata.com/item/${info.id}`,
-            })
-            link.appendChild(text)
-
-            return link
+            return text
+        },
+        // Get the data to be associated with display graphs node
+        // nodeInfo is object retrieve from graph
+        // cls is optional name of html class to give node for styling
+        getNodeData: function(nodeInfo, cls) {
+            let data = {
+                rx: 5,
+                ry: 5,
+                shape: 'rect',
+                label: this.getNodeLabel(nodeInfo),
+                labelType: 'svg',
+                aristotleId: nodeInfo.id,
+            }
+            if (cls) {
+                data.class = cls
+            }
+            return data
         },
         // Create dagre graph filtered to contain all paths to selected metadata
         createDisplayGraph: function(selected) {
@@ -161,15 +177,7 @@ export default {
                     if (this.graph.nodeInfo.has(val)) {
                         nodeStack.push(val)
                         let info = this.graph.nodeInfo.get(val)
-                        dgraph.setNode(
-                            val,
-                            {
-                                label: this.getNodeLabel(info),
-                                labelType: 'svg',
-                                class: 'selected',
-                                aristotleId: info.id,
-                            }
-                        )
+                        dgraph.setNode(val, this.getNodeData(info, 'selected'))
                     } else {
                         console.error(`${val} is not a valid node`)
                     }
@@ -181,10 +189,7 @@ export default {
                 let uuid = nodeStack.pop()
                 for (let parent of this.graph.parents.get(uuid)) {
                     let info = this.graph.nodeInfo.get(parent.parent)
-                    dgraph.setNode(
-                        parent.parent,
-                        {label: this.getNodeLabel(info), labelType: 'svg', aristotleId: info.id}
-                    )
+                    dgraph.setNode(parent.parent, this.getNodeData(info))
                     dgraph.setEdge(parent.parent, uuid, {label: parent.edgeLabel})
                     nodeStack.push(parent.parent)
                 }
@@ -192,26 +197,34 @@ export default {
 
             return dgraph
         },
+        // draw given display graph in svg element
         drawGraph: function(graph) {
             // Layout
             let options = graph.graph()
             options.rankdir = 'LR'
-            // node options
-            graph.nodes().forEach((n) => {
-                let node = graph.node(n)
-                node.ry = 5
-                node.rx = 5
-            })
 
             let svg = d3.select(this.$refs.svg)
             let inner = svg.select('g')
+            // We need to clear graph due to link wrapping changes
+            inner.select('g').remove()
             let render = new dagreD3.render()
+
+            // Render the graph using d3
             render(inner, graph)
 
-            inner.selectAll('g.node rect').attr('data-aristotle-concept-id', (node_id) => {
-                let node = graph.node(node_id)
-                return node.aristotleId
-            })
+            // Wrap node groups in links
+            for (let node of this.$refs.svg.querySelectorAll('g.node')) {
+                // Get d3 data associated with node
+                let node_id = d3.select(node).datum();
+                let data = graph.node(node_id)
+                // Create link
+                let link = this.createSvgElement('a', {href: this.getItemUrl(data.aristotleId)})
+                link.setAttribute('data-aristotle-concept-id', data.aristotleId)
+                // Insert link before node
+                node.parentNode.insertBefore(link, node)
+                // Move node inside link
+                link.appendChild(node)
+            }
 
             if (this.tooltips) {
                 aristotleTooltip({
