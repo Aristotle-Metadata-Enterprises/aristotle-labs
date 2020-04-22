@@ -1,6 +1,6 @@
 <template>
     <div class="covid-map">
-        <h1>Aristotle Covid Map</h1>
+        <h1>Aristotle Covid-19 Map</h1>
         <div class="row">
             <div class="col-md-8 col-12">
                 <map-display
@@ -25,16 +25,14 @@
                         {{ buttonText }}
                     </button>
                 </div>
-                <filters
-                        :options="filterTransmisionOptions"
-                        @updateCheckedOpt="updateTransmitionOpts"
-                />
-                <filters
-                        :options="filterRegionOptions"
-                        @updateCheckedOpt="updateRegionOpts"
-                />
-
-<!--                <span>Checked transmition options: {{ checkedTransmitionOptions }}</span>-->
+                <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyUUID">
+                    <checkbox-section
+                            :name="checkboxSection.propertyName"
+                            :options="checkboxSection.options"
+                            @updateCheckedOpt="updateCheckedOptions"
+                    />
+                </div>
+<!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
 <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
             </div>
         </div>
@@ -49,17 +47,19 @@
 <script>
 
     import Selector from '@/components/Selector.vue'
-    import Filters from '@/components/Filters.vue'
+    import CheckboxSection from '@/components/CheckboxSection.vue'
     import MapDisplay from '@/components/MapDisplay.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
     import {
         getCovidData,
         getDistribution,
         getDistributionOptions,
-        getMapFilterOptions,
+        getDistributionCheckboxSections,
         getDatasetSpecification,
+        getMapFilterOptions,
         mapDistributionData,
         filterNumberDataElements,
+        filterValueDataElements,
     } from '@/data/covid.js'
 
     import VueSlider from 'vue-slider-component'
@@ -70,11 +70,10 @@
         data: () => ({
             dss: {},
             selectedCategory: '',
-            checkedTransmitionOptions: [],
+            checkboxSections: [],
+            checkedTransmissionOptions: [],
             checkedRegionOptions: [],
             options: [],
-            filterTransmisionOptions: [],
-            filterRegionOptions: [],
             dataMapping: new Map(),
             sliderDateValue: 0,
             datesData: [],
@@ -84,15 +83,13 @@
             'selector': Selector,
             'map-display': MapDisplay,
             'metadata-display': MetadataDisplay,
-            'filters': Filters,
+            'checkbox-section': CheckboxSection,
             'vue-slider': VueSlider,
         },
         mounted: function() {
 
             getCovidData().then((data) => {
                 this.covidData = data
-                this.filterTransmisionOptions = getMapFilterOptions(data, "transmissionClassification")
-                this.filterRegionOptions = getMapFilterOptions(data, "region")
 
                 this.datesData = getMapFilterOptions(data, "dateRep").sort(function (a, b) {
                     return dateToNum(a) - dateToNum(b)
@@ -113,6 +110,7 @@
             getDistribution().then((data) => {
                 this.distribution = data
                 this.options = getDistributionOptions(data, filterNumberDataElements)
+                this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
                 this.dataMapping = mapDistributionData(data)
             }).catch((error) => {
                 // TODO handle errors gracefully
@@ -141,7 +139,7 @@
                 for (const jsonElement of this.covidData) {
 
                     if (this.sliderDateValue === jsonElement['dateRep'] &&
-                        this.checkedTransmitionOptions.includes(jsonElement['transmissionClassification']) &&
+                        this.checkedTransmissionOptions.includes(jsonElement['transmissionClassification']) &&
                         this.checkedRegionOptions.includes(jsonElement['region'])
                     ) {
                         mapAttributes.push(
@@ -191,11 +189,13 @@
                 let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
                 return result.charAt(0).toUpperCase() + result.slice(1)
             },
-            updateTransmitionOpts: function (opts) {
-                this.checkedTransmitionOptions = opts
-            },
-            updateRegionOpts: function (opts) {
-                this.checkedRegionOptions = opts
+            updateCheckedOptions: function (opts, name) {
+                if (name === "Transmission classification") {
+                    this.checkedTransmissionOptions = opts
+                }
+                else if (name === "Region Identifier") {
+                    this.checkedRegionOptions = opts
+                }
             },
             playMapDates: function () {
 
