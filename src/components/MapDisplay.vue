@@ -34,7 +34,7 @@
             chartOptions: function () {
                 return {
                     colorAxis: {
-                        colors: ['#ffffff', '#66a6a8', '#668ba8', '#0066ff', '#bc00ff'],
+                        colors: ['#ffffff', '#ff6e00'],
                         maxValue: this.colorAxisMaxValue,
                     },
                     backgroundColor: '#81d4fa',
