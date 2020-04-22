@@ -1,13 +1,35 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Cloudformation distribution used to serve static files"
+Description: "CloudFormation distribution used to serve static files"
 
 Parameters:
-  S3SourceBucketEndpoint:
+  SourceBucketName:
     Type: String
-    Description: "The bucket where the aristotle-labs code is stored"
-
+    Description: "The name for the bucket where the source for aristotle-labs is stored"
 
 Resources:
+  LabsCodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref SourceBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  DistributionAccessBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LabsCodeBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - "s3:GetObject"
+            Effect: "Allow"
+            Principal:
+              CanonicalUser: !GetAtt OriginAccessId.S3CanonicalUserId
+            Resource: !Sub "${LabsCodeBucket.Arn}/*"
+
   # A special user for the CloudFormation distribution, allowing access
   # to the S3 bucket to be restricted
   OriginAccessId:
@@ -25,8 +47,10 @@ Resources:
           Compress: True
           ViewerProtocolPolicy: 'redirect-to-https'
           TargetOriginId: 'Aristotle Labs Static Bucket'
+          ForwardedValues:
+            QueryString: True
         Origins:
-          - DomainName: !Ref S3SourceBucketEndpoint
+          - DomainName: !GetAtt LabsCodeBucket.DomainName
             Id: 'Aristotle Labs Static Bucket'
             S3OriginConfig:
               # The CloudFront origin access identity to associate
@@ -34,11 +58,11 @@ Resources:
               OriginAccessIdentity:
                 !Join
                 - ''
-                - 'origin-access-identity/cloudfront/'
-                - !Ref OriginAccessId
-            PriceClass: "PriceClass_All"
-            ViewerCertificate:
-              CloudFrontDefaultCertificate: True
+                - - 'origin-access-identity/cloudfront/'
+                  - !Ref OriginAccessId
+        PriceClass: "PriceClass_All"
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: True
 
 
 
