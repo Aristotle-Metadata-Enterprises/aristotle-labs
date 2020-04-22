@@ -1,12 +1,14 @@
 <template>
     <div class="covid-map">
         <h1>Aristotle Covid Map</h1>
-        <div class="horizontal-container">
-            <map-display
+        <div class="row">
+            <div class="col-md-8 col-12">
+                <map-display
                     :map-data="mapData"
                     :color-axis-max-value="colorAxisMaxValue"
-            />
-            <div class="vertical-container">
+                />
+            </div>
+            <div class="col-md-4 col-12 vertical-container">
                 <selector
                         v-model="selectedCategory"
                         description="Choose a data element"
@@ -36,7 +38,11 @@
 <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
             </div>
         </div>
-        <metadata-display :selected="allSelected" :dss="dss" />
+        <div class="row">
+            <div class="col-12">
+                <metadata-display :selected="allSelected" :dss="dss" />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -218,11 +224,6 @@
     .root {
         display: flex;
         flex-direction: column;
-    }
-
-    .horizontal-container {
-        display: flex;
-        flex-direction: row;
     }
 
     .vertical-container {

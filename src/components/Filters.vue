@@ -1,8 +1,8 @@
 <template>
-    <div class="form-block">
+    <div class="form-block form-check">
         <div v-for="o in options" :key="o">
-            <input type="checkbox" :id="o" :value="o" @change="updateCheckedOptions" v-model="checkedOptions">
-            <label :for="o">{{ o }}</label>
+            <input type="checkbox" class="form-check-input" :id="o" :value="o" @change="updateCheckedOptions" v-model="checkedOptions">
+            <label :for="o" class="form-check-label">{{ o }}</label>
         </div>
     </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <div class="placeholder-bar-graph">
+    <div>
         <GChart
                 type="GeoChart"
                 :data="mapData"
@@ -46,7 +46,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .placeholder-bar-graph {
         width: 70%;
         height: 300px;
