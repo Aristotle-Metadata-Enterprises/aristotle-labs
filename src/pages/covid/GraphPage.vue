@@ -27,12 +27,14 @@ import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
     getCovidData,
     getDistribution,
-    getDistributionOptions,
     getDatasetSpecification,
+} from '@/data/covid.js'
+import {
+    getDistributionOptions,
     mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
-} from '@/data/covid.js'
+} from '@/data/api.js'
 
 export default {
     data: () => ({
@@ -54,11 +56,11 @@ export default {
     mounted: function() {
         getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
-        }).catch((error) =>
-        {
+        }).catch((error) => {
             // TODO: handle errors gracefully
             console.log(error)
         });
+
         getDistribution().then((data) => {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);

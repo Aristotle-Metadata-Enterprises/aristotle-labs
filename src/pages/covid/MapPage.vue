@@ -48,12 +48,14 @@
     import {
         getCovidData,
         getDistribution,
-        getDistributionOptions,
         getMapFilterOptions,
         getDatasetSpecification,
+    } from '@/data/covid.js'
+    import {
+        getDistributionOptions,
         mapDistributionData,
         filterNumberDataElements,
-    } from '@/data/covid.js'
+    } from '@/data/api.js'
 
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
