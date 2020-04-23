@@ -19,11 +19,34 @@ export function getDistribution() {
 }
 
 /**
- * The purpose of this function is to get the filter options for the map page.
- * @param data
- * @param filterName string
+ * The purpose of this function is to get the distribution options for the checkboxes in the map page.
+ * @param distribution
+ * @param filter string
  * @returns {*}
  */
+export function getDistributionCheckboxSections(distribution, filter) {
+    let checkboxSections = []
+    for (let dep of distribution.distributiondataelementpathSet) {
+        if (filter && !filter(dep.dataElement)) {
+            continue
+        }
+        let sectionOptions = []
+        for (let permissibleValue of dep.dataElement.valueDomain.permissiblevalueSet) {
+            if (permissibleValue.valueMeaning) {
+                sectionOptions.push({id: permissibleValue.valueMeaning.id, name: permissibleValue.valueMeaning.name})
+            } else {
+                sectionOptions.push({id: permissibleValue.id, name: permissibleValue.meaning})
+            }
+        }
+        checkboxSections.push({
+            propertyId: dep.dataElement.dataElementConcept.property.aristotleId,
+            propertyName: dep.dataElement.dataElementConcept.property.name,
+            options: sectionOptions,
+        })
+    }
+    return checkboxSections
+}
+
 export function getMapFilterOptions(data, filterName) {
     let options = new Set()
     for (const option of data) {

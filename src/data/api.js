@@ -35,11 +35,18 @@ export function queryDistribution(uuid) {
                     name
                   }
                   permissiblevalueSet {
+                    id
                     value
+                    meaning
+                    valueMeaning {
+                      id
+                      name
+                    }
                   }
                 }
                 dataElementConcept{
                   property {
+                    aristotleId
                     name
                   }
                 }
@@ -49,6 +56,7 @@ export function queryDistribution(uuid) {
         }
       }
     }`
+
 
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
         validateGraphqlResponse(response.data, 'distributions')
@@ -113,17 +121,17 @@ export function getDistributionOptions(distribution, filter) {
 }
 
 // Filter for data elements to use with getDistributionOptions
-export function filterNumberDataElements(data_element) {
-    if (data_element.valueDomain && data_element.valueDomain.dataType) {
-        return data_element.valueDomain.dataType.name === 'Number'
+export function filterNumberDataElements(dataElement) {
+    if (dataElement.valueDomain && dataElement.valueDomain.dataType) {
+        return dataElement.valueDomain.dataType.name === 'Number'
     }
     return false
 }
 
 // Filter for data element that have permissible values
-export function filterValueDataElements(data_element) {
-    if (data_element.valueDomain) {
-        return data_element.valueDomain.permissiblevalueSet.length > 0
+export function filterValueDataElements(dataElement) {
+    if (dataElement.valueDomain) {
+        return dataElement.valueDomain.permissiblevalueSet.length > 0
     }
     return false
 }

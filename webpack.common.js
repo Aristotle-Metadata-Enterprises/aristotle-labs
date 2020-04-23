@@ -24,7 +24,8 @@ module.exports = {
         }),
         new webpack.BannerPlugin(() => {
             return `${info.name}, ${info.version}\n\n${fs.readFileSync('./LICENSE', 'utf-8')}`
-        })
+        }),
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ],
     module: {
         strictExportPresence: true,  // Missing exports fail the build
