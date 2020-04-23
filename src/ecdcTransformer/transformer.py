@@ -34,7 +34,7 @@ class DataTransformer:
 
         return record
 
-    def load_data_from_csv(self) -> List[Dict]:
+    def load_data_from_csv(self) -> Dict:
         """Load the CSV file containing additional metadata and convert to dictionary"""
         response = requests.get(csv_url)
 
@@ -52,7 +52,7 @@ class DataTransformer:
         """Calculate a running cumulative total and attach to records"""
         data = data['records']
         # Sort by date
-        data.sort(key=lambda x: time.mktime(time.strptime(x['dateRep'],"%d/%m/%Y")))
+        data.sort(key=lambda x: time.mktime(time.strptime(x['dateRep'], "%d/%m/%Y")))
         # Sort by country code
         data.sort(key=lambda x: x['geoId'])
 
@@ -90,7 +90,7 @@ class DataTransformer:
             else:
                 days_since_last_case = 0
 
-            record['casesreportedLast7Days'] = cases_last_7_days
+            record['casesReportedLast7Days'] = cases_last_7_days
             record['cumulativeCases'] = cumulative_cases
             record['cumulativeDeaths'] = cumulative_deaths
             record['daysSinceLastCase'] = days_since_last_case

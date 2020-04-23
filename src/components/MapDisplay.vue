@@ -1,5 +1,5 @@
 <template>
-    <div class="placeholder-bar-graph">
+    <div>
         <GChart
                 type="GeoChart"
                 :data="mapData"
@@ -10,41 +10,51 @@
 </template>
 
 <script>
-    import { GChart } from 'vue-google-charts'
+import { GChart } from 'vue-google-charts'
 
-    export default {
-        name: 'MapDisplay',
-        components: {
-            GChart,
+export default {
+    name: 'MapDisplay',
+    components: {
+        GChart,
+    },
+    props: {
+        mapData: {
+            type: Array,
+            default: () => [],
         },
-        props: {
-            mapData: {
-                type: Array,
-                default: () => [],
-            }
-        },
-        data () {
+        colorAxisMaxValue: {
+            type: Number,
+            default: 0,
+        }
+    },
+    data () {
+        return {}
+    },
+    computed: {
+        chartOptions: function () {
             return {
-                chartOptions: {
-                    colorAxis: {colors: ['#ffffff', '#66a6a8', '#668ba8', '#0066ff', '#bc00ff']},
-                    backgroundColor: '#81d4fa',
-                    datalessRegionColor: '#d7cece',
-                    defaultColor: '#14716e',
-                }
+                colorAxis: {
+                    colors: ['#ffffff', '#ff6e00'],
+                    maxValue: this.colorAxisMaxValue,
+                },
+                backgroundColor: '#81d4fa',
+                datalessRegionColor: '#d7cece',
+                defaultColor: '#14716e',
             }
-        },
-    }
+        }
+    },
+}
 </script>
 
-<style>
-    .placeholder-bar-graph {
-        width: 70%;
-        height: 300px;
-        background-color: gray;
-    }
+<style scoped>
+.placeholder-bar-graph {
+    width: 70%;
+    height: 300px;
+    background-color: gray;
+}
 
-    .placeholder-bar-graph p {
-        text-align: center;
-        padding-top: 100px;
-    }
+.placeholder-bar-graph p {
+    text-align: center;
+    padding-top: 100px;
+}
 </style>
