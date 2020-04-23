@@ -25,9 +25,10 @@
                         {{ buttonText }}
                     </button>
                 </div>
-                <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyUUID">
+                <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
                     <checkbox-section
                             :name="checkboxSection.propertyName"
+                            :id="checkboxSection.propertyId"
                             :options="checkboxSection.options"
                             @updateCheckedOpt="updateCheckedOptions"
                     />

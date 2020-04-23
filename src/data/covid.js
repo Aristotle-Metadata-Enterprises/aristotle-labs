@@ -51,7 +51,7 @@ export function getDistribution() {
                 }
                 dataElementConcept{
                   property {
-                    uuid
+                    aristotleId
                     name
                   }
                 }
@@ -97,13 +97,13 @@ export function getDistributionCheckboxSections(distribution, filter) {
         let sectionOptions = []
         for (let permissibleValue of dep.dataElement.valueDomain.permissiblevalueSet) {
             if (permissibleValue.valueMeaning) {
-                sectionOptions.push({permissibleValueID: permissibleValue.valueMeaning.id, permissibleValueName: permissibleValue.valueMeaning.name})
+                sectionOptions.push({permissibleValueId: permissibleValue.valueMeaning.id, permissibleValueName: permissibleValue.valueMeaning.name})
             } else {
-                sectionOptions.push({permissibleValueID: permissibleValue.id, permissibleValueName: permissibleValue.meaning})
+                sectionOptions.push({permissibleValueId: permissibleValue.id, permissibleValueName: permissibleValue.meaning})
             }
         }
         checkboxSections.push({
-            propertyUUID: dep.dataElement.dataElementConcept.property.uuid,
+            propertyId: dep.dataElement.dataElementConcept.property.aristotleId,
             propertyName: dep.dataElement.dataElementConcept.property.name,
             options: sectionOptions,
         })
