@@ -97,9 +97,9 @@ export function getDistributionCheckboxSections(distribution, filter) {
         let sectionOptions = []
         for (let permissibleValue of dep.dataElement.valueDomain.permissiblevalueSet) {
             if (permissibleValue.valueMeaning) {
-                sectionOptions.push({permissibleValueId: permissibleValue.valueMeaning.id, permissibleValueName: permissibleValue.valueMeaning.name})
+                sectionOptions.push({id: permissibleValue.valueMeaning.id, name: permissibleValue.valueMeaning.name})
             } else {
-                sectionOptions.push({permissibleValueId: permissibleValue.id, permissibleValueName: permissibleValue.meaning})
+                sectionOptions.push({id: permissibleValue.id, name: permissibleValue.meaning})
             }
         }
         checkboxSections.push({

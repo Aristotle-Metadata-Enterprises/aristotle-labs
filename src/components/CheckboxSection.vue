@@ -1,9 +1,9 @@
 <template>
     <div class="form-block form-check">
         <span :data-aristotle-concept-id="id">{{ name }}</span>
-        <div v-for="o in options" :key="o.permissibleValueId">
-            <input type="checkbox" class="form-check-input" :id="o.permissibleValueId" :value="o.permissibleValueName" @change="updateCheckedOptions" v-model="checkedOptions">
-            <label :for="o.permissibleValueId" class="form-check-label">{{ o.permissibleValueName }}</label>
+        <div v-for="o in options" :key="o.id">
+            <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
+            <label :for="o.id" class="form-check-label">{{ o.name }}</label>
         </div>
     </div>
 </template>

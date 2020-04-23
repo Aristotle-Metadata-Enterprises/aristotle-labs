@@ -165,8 +165,7 @@ export default {
             if (!this.dataMapping.has(this.selectedCategory)) {
                 return maxValue
             }
-            const notBoundCovidData = [...this.covidData]
-            for (const jsonElement of notBoundCovidData) {
+            for (const jsonElement of this.covidData) {
                 let currentValue = parseInt(jsonElement[sel])
                 if (currentValue > maxValue) {
                     maxValue = currentValue
@@ -205,9 +204,8 @@ export default {
             let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
             for (let i = currentIndex; i < this.datesData.length - 1; i++) {
                 if (this.buttonText === "Pause") {
-                    let that = this
-                    setTimeout (function () {
-                        that.sliderDateValue = moment(that.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
+                    setTimeout (() => {
+                        this.sliderDateValue = moment(this.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
                     }, timeOut += 100)
                 }
             }
