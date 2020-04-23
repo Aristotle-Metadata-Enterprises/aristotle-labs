@@ -9,47 +9,47 @@
 </template>
 
 <script>
-    import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
-    import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
+import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
 
-    export default {
-        name: "CheckboxSection",
-        props: {
-            name: {
-                type: String,
-                default: "",
-            },
-            id: {
-                type: String,
-                default: "",
-            },
-            options: {
-                type: Array,
-                default: () => [],
-            }
+export default {
+    name: "CheckboxSection",
+    props: {
+        name: {
+            type: String,
+            default: "",
         },
-        data: () => ({
-            checkedOptions: []
-        }),
-        mounted() {
-            aristotleTooltip({
-                'url': 'https://registry.aristotlemetadata.com',
-                'definitionWords': 50,
-                'longDefinitionWords': 75,
-                'placement': 'top',
-            });
+        id: {
+            type: String,
+            default: "",
         },
-        methods: {
-            updateCheckedOptions: function () {
-                this.$emit('updateCheckedOpt', this.checkedOptions, this.name)
-            },
+        options: {
+            type: Array,
+            default: () => [],
         }
+    },
+    data: () => ({
+        checkedOptions: []
+    }),
+    mounted() {
+        aristotleTooltip({
+            'url': 'https://registry.aristotlemetadata.com',
+            'definitionWords': 50,
+            'longDefinitionWords': 75,
+            'placement': 'top',
+        });
+    },
+    methods: {
+        updateCheckedOptions: function () {
+            this.$emit('updateCheckedOpt', this.checkedOptions, this.name)
+        },
     }
+}
 </script>
 
 <style scoped>
-    .form-block {
-        display: block;
-        margin: 20px;
-    }
+.form-block {
+    display: block;
+    margin: 20px;
+}
 </style>
