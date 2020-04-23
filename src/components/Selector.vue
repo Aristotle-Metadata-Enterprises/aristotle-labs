@@ -6,6 +6,7 @@
         <select
                 :value="value"
                 @input="emitInput"
+                class="form-control"
         >
             <option value="">
                 {{ blankText }}
