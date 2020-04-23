@@ -1,14 +1,15 @@
 <template>
     <div class="alert alert-danger">
-        {{ message }}
+        {{ error.message }}
     </div>
 </template>
 
 <script>
+import { NiceError } from '@/error/class.js'
 export default {
     props: {
-        message: {
-            type: String,
+        error: {
+            type: NiceError,
             required: true,
         }
     }

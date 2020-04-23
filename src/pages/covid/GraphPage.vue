@@ -1,18 +1,20 @@
 <template>
     <div class="covid-graph">
         <h1>Aristotle Covid Graph</h1>
-        <div class="horizontal-container">
+        <error-group :errors="errors" />
+        <loading v-if="loading" />
+        <div v-else class="horizontal-container">
             <div>
                 <selector 
                     v-model="selected" 
                     description="Choose a data element" 
                     :options="options" 
-                />
+                    />
                 <selector 
                     v-model="selectedCategory" 
                     description="Choose a category data element" 
                     :options="categoryOptions"
-                />
+                    />
             </div>
             <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
         </div>
@@ -24,6 +26,9 @@
 import Selector from '@/components/Selector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import ErrorGroup from '@/components/error/ErrorGroup.vue'
+import Loading from '@/components/Loading.vue'
+import { NiceError } from '@/error/class.js'
 import {
     getCovidData,
     getDistribution,
@@ -47,18 +52,21 @@ export default {
         categoryOptions: [],
         dataMap: new Map(),
         distributionDataMap: {},
+        loading: true,
+        errors: [],
     }),
     components: {
         'selector': Selector,
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
+        'error-group': ErrorGroup,
+        'loading': Loading,
     },
     mounted: function() {
         getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
         }).catch((error) => {
-            // TODO: handle errors gracefully
-            console.log(error)
+            this.errors.push(new NiceError('Could not fetch display data', error))
         });
 
         getDistribution().then((data) => {
@@ -67,16 +75,16 @@ export default {
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
             this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(new NiceError('Could not fetch distribution metadata', error))
         })
 
         getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(new NiceError('Could not fetch dataset metadata', error))
         })
+
+        this.loading = false;
     },
     computed: {
         allSelected: function() {

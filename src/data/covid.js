@@ -8,8 +8,6 @@ export function getCovidData() {
     const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
     return axios.get(data_url).then((response) => {
        return response.data
-    }).catch((response) => {
-        console.log(response)
     })
 }
 

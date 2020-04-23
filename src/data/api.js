@@ -2,11 +2,18 @@
 import axios from 'axios'
 
 // Perform a graphql query on the aristotle registry
-export function graphqlQuery(query, variables) {
+function graphqlQuery(query, variables) {
     // Url for our registries graphql endpoint
     const graphql_url = 'https://registry.aristotlemetadata.com/api/graphql/json'
     const query_obj = {query: query, variables: variables}
     return axios.post(graphql_url, query_obj)
+}
+
+// Check that graphql response is valid
+function validateGraphqlResponse(data, root) {
+    if (data.errors || data.data[root].edges.length === 0) {
+        throw new Error("Graphql query was not successful")
+    }
 }
 
 // Query a distribution and its components
@@ -44,6 +51,7 @@ export function queryDistribution(uuid) {
     }`
 
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
+        validateGraphqlResponse(response.data, 'distributions')
         return response.data.data.distributions.edges[0].node
     })
 }
@@ -85,6 +93,7 @@ export function queryDss(uuid) {
     }`
 
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
+        validateGraphqlResponse(response.data, 'datasetSpecifications')
         return response.data.data.datasetSpecifications.edges[0].node
     })
 }
