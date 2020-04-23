@@ -17,15 +17,15 @@ export default {
     props: {
         name: {
             type: String,
-            default: "",
+            required: true,
         },
         id: {
             type: String,
-            default: "",
+            required: true,
         },
         options: {
             type: Array,
-            default: () => [],
+            required: true,
         }
     },
     data: () => ({
