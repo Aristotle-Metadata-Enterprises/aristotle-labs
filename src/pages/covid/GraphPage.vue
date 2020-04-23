@@ -30,7 +30,6 @@ import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import Loading from '@/components/Loading.vue'
-import { NiceError } from '@/error/class.js'
 import {
     getCovidData,
     getDistribution,
@@ -68,7 +67,7 @@ export default {
         let dataPromise = getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
         }).catch((error) => {
-            this.errors.push(new NiceError('Could not fetch display data', error))
+            this.errors.push(error)
         });
 
         let distPromise = getDistribution().then((data) => {
@@ -77,13 +76,13 @@ export default {
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
             this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
-            this.errors.push(new NiceError('Could not fetch distribution metadata', error))
+            this.errors.push(error)
         })
 
         let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
-            this.errors.push(new NiceError('Could not fetch dataset metadata', error))
+            this.errors.push(error)
         })
 
         // Stop loading once all promises resolved
