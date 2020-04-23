@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Pipeline for updating the aristotle-labs code"
+
+Parameters:
+  AccessLogBucket:
+    Type: String
+    Description: "Bucket to log s3 access events to"
+  GithubRepo:
+    Type: String
+    Description: "Name of github repo to connect Pipeline to"
+    Default: "aristotle-labs"
+
+Resources:
+  ### --------- S3 ---------
+  BuildArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'
+        LoggingConfiguration:
+          DestinationBucketName: !Ref AccessLogBucket
+          LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: True
+          BlockPublicPolicy: True
+          IgnorePublicAcls: True
+          RestrictPublicBuckets: True
+
+    ### -------- IAM ---------
+    ArtifactBucketAccess:
+      Type: AWS::IAM::Role
+      Properties:
+        # Allow codebuild to assume this role
+        Description: "Give access to artifacts bucket"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 's3:GetObject'
+                - 's3:GetObjectVersion'
+                - 's3:PutObject'
+              Resource:
+                - !Sub '${Artifacts.Arn}/*'
+
+    # Role used for CodeBuild section of the Pipeline, allows Cloudwatch logs about build results to be created
+    BuildServiceRole:
+      Type: AWS::IAM:Role
+      Properties:
+        # Allow codebuild to assume this role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: "codebuild.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - !Ref ArtifactBucketAccess
+        Policies:
+          # Allow code build to publish logs to cloudwatch
+          - PolicyName: "CodeBuildLogs"
+            PolicyDocument:
+              Version: '2012-10-17'
+              Action:
+                - 'logs:CreateLogGroup'
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Resource:
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}:*'
+
+    PipelineRole:
+      Type: AWS::IAM:Role
+      Properties:
+        # Allow codepipeline to assume this role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: "codepipeline.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - !Ref ArtifactBucketAccess
+        Policies:
+          # Allow codepipeline to start builds
+          - PolicyName: "CodeBuild"
+            PolicyDocument: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "codebuild:BatchGetBuilds"
+                  - "codebuild:StartBuild"
+            # Allow codepipeline to push to s3 bucket
+          - PolicyName: "PushBundletoS3Bucket"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "s3:PutObject"
+                    - "s3:GetObject"
+                    - "s3:GetObjectVersion"
+                  Resource:
+                    - !Sub '${Artifacts.Arn}/*'
