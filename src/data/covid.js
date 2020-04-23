@@ -2,12 +2,15 @@
 import axios from 'axios'
 
 import { queryDistribution, queryDss } from '@/data/api.js'
+import { NiceError } from '@/error/class.js'
 
 // Get the COVID-19 data and transform into JavaScript object
 export function getCovidData() {
     const data_url = 'https://aristotle-ecdc-covid19-data.s3-ap-southeast-2.amazonaws.com/daily_data.json';
     return axios.get(data_url).then((response) => {
        return response.data
+    }).catch((error) => {
+        throw new NiceError('Could not fetch virus data', error)
     })
 }
 

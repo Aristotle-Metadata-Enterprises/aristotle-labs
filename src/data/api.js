@@ -1,5 +1,6 @@
 // General api access functions
 import axios from 'axios'
+import { NiceError } from '@/error/class.js'
 
 // Perform a graphql query on the aristotle registry
 function graphqlQuery(query, variables) {
@@ -61,6 +62,8 @@ export function queryDistribution(uuid) {
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
         validateGraphqlResponse(response.data, 'distributions')
         return response.data.data.distributions.edges[0].node
+    }).catch((error) => {
+        throw new NiceError('Could not fetch distribution metadata', error)
     })
 }
 
@@ -103,6 +106,8 @@ export function queryDss(uuid) {
     return graphqlQuery(query, {uuid: uuid}).then((response) => {
         validateGraphqlResponse(response.data, 'datasetSpecifications')
         return response.data.data.datasetSpecifications.edges[0].node
+    }).catch((error) => {
+        throw new NiceError('Could not fetch dataset metadata', error)
     })
 }
 
