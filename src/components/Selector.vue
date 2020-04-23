@@ -1,19 +1,12 @@
 <template>
     <div class="form-block">
-        <p>
-            {{ description }}
-        </p>
-        <select
-                :value="value"
-                @input="emitInput"
-        >
-            <option value="">
-                {{ blankText }}
-            </option>
-            <option v-for="o in options" :key="o.value" :value="o.value">
-                {{ o.text }}
-            </option>
-        </select>
+        <p class="font-weight-bold">{{ description }}</p>
+        <div class="form-group">
+            <template v-for="o in options">
+                <label :for="o.value">{{ o.text }}</label>
+                <input type="radio" :key="o.value" :value="o.value" :id="o.value" @input="emitInput">
+            </template>
+        </div>
     </div>
 </template>
 
