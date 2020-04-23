@@ -9,7 +9,7 @@
                 />
             </div>
             <div class="col-md-4 col-12 vertical-container">
-                <selector
+                <radio-selector
                         v-model="selectedCategory"
                         description="Choose a data element"
                         :options="options"
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Selector from '@/components/Selector.vue'
+import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
@@ -80,7 +80,7 @@ export default {
         buttonText: "Play",
     }),
     components: {
-        'selector': Selector,
+        'radio-selector': RadioSelector,
         'map-display': MapDisplay,
         'metadata-display': MetadataDisplay,
         'checkbox-section': CheckboxSection,
