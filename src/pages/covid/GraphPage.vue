@@ -3,22 +3,24 @@
         <h1>Aristotle Covid Graph</h1>
         <error-group :errors="errors" />
         <loading v-if="loading" />
-        <div v-else class="horizontal-container">
-            <div>
-                <selector 
-                    v-model="selected" 
-                    description="Choose a data element" 
-                    :options="options" 
-                    />
-                <selector 
-                    v-model="selectedCategory" 
-                    description="Choose a category data element" 
-                    :options="categoryOptions"
-                    />
+        <template v-else>
+            <div class="horizontal-container">
+                <div>
+                    <selector 
+                        v-model="selected" 
+                        description="Choose a data element" 
+                        :options="options" 
+                        />
+                    <selector 
+                        v-model="selectedCategory" 
+                        description="Choose a category data element" 
+                        :options="categoryOptions"
+                        />
+                </div>
+                <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
             </div>
-            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
-        </div>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+            <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        </template>
     </div>
 </template>
 
@@ -63,13 +65,13 @@ export default {
         'loading': Loading,
     },
     mounted: function() {
-        getCovidData().then((raw_data) => {
+        let dataPromise = getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
         }).catch((error) => {
             this.errors.push(new NiceError('Could not fetch display data', error))
         });
 
-        getDistribution().then((data) => {
+        let distPromise = getDistribution().then((data) => {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
@@ -78,13 +80,16 @@ export default {
             this.errors.push(new NiceError('Could not fetch distribution metadata', error))
         })
 
-        getDatasetSpecification().then((data) => {
+        let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
             this.errors.push(new NiceError('Could not fetch dataset metadata', error))
         })
 
-        this.loading = false;
+        // Stop loading once all promises resolved
+        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            this.loading = false;
+        })
     },
     computed: {
         allSelected: function() {
