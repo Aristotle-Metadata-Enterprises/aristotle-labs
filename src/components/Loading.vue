@@ -1,11 +1,14 @@
 <template>
-    <span>
+    <div>
         <i class="fas fa-spinner fa-pulse"></i> Loading
-    </span>
+    </div>
 </template>
 
 <style scoped>
-span {
+div {
     font-size: 20pt;
+    width: 10%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>
