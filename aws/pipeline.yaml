@@ -108,4 +108,4 @@ Resources:
                     - "s3:GetObject"
                     - "s3:GetObjectVersion"
                   Resource:
-                    - !Sub '${Artifacts.Arn}/*'
+                    - !Sub '${BuildArtifactsBucket.Arn}/*'
