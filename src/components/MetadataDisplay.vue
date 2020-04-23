@@ -234,6 +234,7 @@ export default {
                     url: 'https://registry.aristotlemetadata.com',
                     interactive: false,
                     definitionWords: 40,
+                    placement: 'top',
                 })
             }
 
