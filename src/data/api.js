@@ -29,6 +29,7 @@ export function queryDistribution(uuid) {
               logicalPath
               dataElement {
                 name
+                aristotleId
                 uuid
                 valueDomain {
                   uuid
@@ -120,7 +121,7 @@ export function getDistributionOptions(distribution, filter) {
         if (filter && !filter(dep.dataElement)) {
             continue
         }
-        options.push({value: dep.dataElement.uuid, text: dep.dataElement.dataElementConcept.property.name})
+        options.push({value: dep.dataElement.uuid, id: dep.dataElement.aristotleId, text: dep.dataElement.dataElementConcept.property.name})
     }
     return options
 }
