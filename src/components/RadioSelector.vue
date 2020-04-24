@@ -15,49 +15,49 @@
 </template>
 
 <script>
-    import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
-    import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
-    // Radio buttons with v-model support
-    export default {
-        name: "RadioSelector",
-        props: {
-            // Selected value
-            value: {
-                type: String,
-                default: '',
-            },
-            // Description of selection
-            description: {
-                type: String,
-                required: true,
-            },
-            // Options as an array of objects with value and text properties
-            options: {
-                type: Array,
-                default: () => [],
-            }
+import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
+import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+// Radio buttons with v-model support
+export default {
+    name: "RadioSelector",
+    props: {
+        // Selected value
+        value: {
+            type: String,
+            default: '',
         },
-        data() {
-            return {
-                id: null
-            }
+        // Description of selection
+        description: {
+            type: String,
+            required: true,
         },
-        mounted() {
-            this.id = this._uid;
-            // Initialize the aristotle tooltip
-            aristotleTooltip({
-                'url': 'https://registry.aristotlemetadata.com',
-                'definitionWords': 50,
-                'longDefinitionWords': 75,
-                'placement': 'top'
-            })
-        },
-        methods: {
-            emitInput: function (event) {
-                this.$emit('input', event.target.value)
-            },
+        // Options as an array of objects with value and text properties
+        options: {
+            type: Array,
+            default: () => [],
         }
+    },
+    data() {
+        return {
+            id: null
+        }
+    },
+    mounted() {
+        this.id = this._uid;
+        // Initialize the aristotle tooltip
+        aristotleTooltip({
+            'url': 'https://registry.aristotlemetadata.com',
+            'definitionWords': 50,
+            'longDefinitionWords': 75,
+            'placement': 'top'
+        })
+    },
+    methods: {
+        emitInput: function (event) {
+            this.$emit('input', event.target.value)
+        },
     }
+}
 </script>
 
 <style scoped>
