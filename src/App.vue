@@ -66,7 +66,7 @@ body {
 }
 .aristotle-logo {
     height: auto;
-    width: 5% !important;
+    width: 3% !important;
 }
 
 .footer-custom {
