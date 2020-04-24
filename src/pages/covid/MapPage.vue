@@ -18,15 +18,18 @@
                             :options="options"
                     />
                     <div class="form-block">
-                        <label>Date</label>
-                        {{ formattedDate }}
-                        <vue-slider
-                                v-model="sliderDateValue"
-                                :data="datesData"
-                        />
-                        <button @click="playMapDates">
-                            {{ buttonText }}
-                        </button>
+                        <strong>Date</strong><br>
+                        {{ formattedDate }}<br>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                                <i v-if="!datesPlaying" class="fas fa-play"></i>
+                                <i v-else class="fas fa-pause"></i>
+                            </button>
+                            <vue-slider class="flex-grow-1 align-self-center pl-1"
+                                    v-model="sliderDateValue"
+                                    :data="datesData"
+                            />
+                        </div>
                     </div>
                     <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
                         <checkbox-section
@@ -87,7 +90,8 @@ export default {
         dataMapping: new Map(),
         sliderDateValue: 0,
         datesData: [],
-        buttonText: "Play",
+        datesPlaying: false,
+        timer: '',
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -212,16 +216,20 @@ export default {
         },
         playMapDates: function () {
 
-            this.buttonText === "Play" ? this.buttonText = "Pause" : this.buttonText = "Play"
+            this.datesPlaying === false ? this.datesPlaying = true : this.datesPlaying = false
 
-            let timeOut = 0
-            let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
-            for (let i = currentIndex; i < this.datesData.length - 1; i++) {
-                if (this.buttonText === "Pause") {
-                    setTimeout (() => {
+            if (this.datesPlaying) {
+                this.timer = setInterval(() => {
+                    let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
+                    if (currentIndex < this.datesData.length - 1) {
                         this.sliderDateValue = moment(this.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
-                    }, timeOut += 100)
-                }
+                    } else {
+                        clearInterval(this.timer)
+                        this.datesPlaying = false
+                    }
+                }, 100)
+            } else {
+                clearInterval(this.timer)
             }
         },
     },

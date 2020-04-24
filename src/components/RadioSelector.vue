@@ -1,11 +1,11 @@
 <template>
     <div class="form-block">
-        <p>
+        <span class="font-weight-bold">
             {{ description }}
-        </p>
-        <div class="form-check" v-for="o in options" :key="o.value">
+        </span>
+        <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
             <input class="form-check-input" type="radio" :id="o.value" :value="o.value" @input="emitInput" v-model="picked">
-            <label class="form-check-label" :for="o.value" :data-aristotle-concept-id="o.id">{{ o.text }}</label>
+            <label class="form-check-label" :for="o.value">{{ o.text }}</label>
         </div>
     </div>
 </template>
@@ -13,6 +13,7 @@
 <script>
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+// Radio buttons with v-model support
 export default {
     name: "RadioSelector",
     props: {
@@ -36,11 +37,12 @@ export default {
         picked: '',
     }),
     mounted() {
+        // Initialize the aristotle tooltip
         aristotleTooltip({
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
-            'placement': 'top',  // TODO: Change this option to 'left' after PR of tooltip selector fix is merged.
+            'placement': 'left',
         });
     },
     methods: {
@@ -52,5 +54,11 @@ export default {
 </script>
 
 <style scoped>
-
+.form-block {
+    display: block;
+    margin: 20px;
+}
+input[type=radio] {
+    transform: scale(1.25);
+}
 </style>
