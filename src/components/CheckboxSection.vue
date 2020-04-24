@@ -38,7 +38,7 @@ export default {
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
-            'placement': 'top',
+            'placement': 'left',
         });
         this.initialiseOptions()
     },
