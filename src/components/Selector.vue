@@ -1,11 +1,13 @@
 <template>
     <div class="form-block">
-        <p class="font-weight-bold">{{ description }}</p>
+        <p class="font-weight-bold">{{ description }}:</p>
         <div class="form-group">
             <ul v-for="o in options">
                 <li class="no-dots">
-                    <input type="radio" :key="o.value" :value="o.value" :id="o.value" @input="emitInput">
-                    <label :for="o.value">{{ o.text }}</label>
+                    <input class="form-check-input" :name="id" type="radio" :key="o.value" :value="o.value"
+                           :id="o.value" @input="emitInput">
+                    <label class="form-check-label" :for="o.value" :data-aristotle-concept-id="o.id">{{ o.text
+                        }}</label>
                 </li>
             </ul>
         </div>
@@ -13,7 +15,8 @@
 </template>
 
 <script>
-
+    import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
+    import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
     // Select form component with v-model support
     export default {
         props: {
@@ -27,16 +30,26 @@
                 type: String,
                 required: true,
             },
-            // Text to display when empty
-            blankText: {
-                type: String,
-                default: '----------',
-            },
             // Options as an array of objects with value and text properties
             options: {
                 type: Array,
                 default: () => [],
             }
+        },
+        data() {
+            return {
+                id: null
+            }
+        },
+        mounted() {
+            this.id = this._uid;
+            // Initialize the aristotle tooltip
+            aristotleTooltip({
+                'url': 'https://registry.aristotlemetadata.com',
+                'definitionWords': 50,
+                'longDefinitionWords': 75,
+                'placement': 'top'
+            })
         },
         methods: {
             emitInput: function (event) {
@@ -50,6 +63,7 @@
     .no-dots {
         list-style-type: none;
     }
+
     .form-block {
         display: block;
         margin: 20px;

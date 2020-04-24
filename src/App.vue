@@ -51,12 +51,27 @@
 </template>
 
 <style>
+html, body {
+    min-height: 100vh;
+    height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+}
+
 .aristotle-logo {
     height: auto;
     width: 5% !important;
 }
 
 .footer-custom {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background-color: #356a69;
 }
 
