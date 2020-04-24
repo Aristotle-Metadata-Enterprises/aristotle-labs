@@ -11,7 +11,6 @@
 </template>
 
 <script>
-// Select form component with v-model support
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
 export default {
@@ -26,11 +25,6 @@ export default {
         description: {
             type: String,
             required: true,
-        },
-        // Text to display when empty
-        blankText: {
-            type: String,
-            default: '----------',
         },
         // Options as an array of objects with value and text properties
         options: {
