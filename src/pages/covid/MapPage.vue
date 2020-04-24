@@ -1,66 +1,77 @@
 <template>
     <div class="covid-map">
         <h1>Aristotle Covid-19 Map</h1>
-        <div class="row">
-            <div class="col-md-8 col-12">
-                <map-display
-                    :map-data="mapData"
-                    :color-axis-max-value="colorAxisMaxValue"
-                />
-            </div>
-            <div class="col-md-4 col-12 vertical-container">
-                <selector
-                        v-model="selectedCategory"
-                        description="Choose a data element"
-                        :options="options"
-                />
-                <div class="form-block">
-                    <label>Date</label>
-                    {{ formattedDate }}
-                    <vue-slider
-                            v-model="sliderDateValue"
-                            :data="datesData"
-                    />
-                    <button @click="playMapDates">
-                        {{ buttonText }}
-                    </button>
-                </div>
-                <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
-                    <checkbox-section
-                            :name="checkboxSection.propertyName"
-                            :id="checkboxSection.propertyId"
-                            :options="checkboxSection.options"
-                            @updateCheckedOpt="updateCheckedOptions"
+        <error-group :errors="errors" />
+        <loading v-if="loading" />
+        <template v-else>
+            <div class="row">
+                <div class="col-md-8 col-12">
+                    <map-display
+                        :map-data="mapData"
+                        :color-axis-max-value="colorAxisMaxValue"
                     />
                 </div>
-<!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
-<!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
+                <div class="col-md-4 col-12 vertical-container">
+                    <radio-selector
+                            v-model="selectedCategory"
+                            description="Choose a data element"
+                            :options="options"
+                    />
+                    <div class="form-block">
+                        <strong>Date</strong><br>
+                        {{ formattedDate }}<br>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                                <i v-if="!datesPlaying" class="fas fa-play"></i>
+                                <i v-else class="fas fa-pause"></i>
+                            </button>
+                            <vue-slider class="flex-grow-1 align-self-center pl-1"
+                                    v-model="sliderDateValue"
+                                    :data="datesData"
+                            />
+                        </div>
+                    </div>
+                    <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
+                        <checkbox-section
+                                :name="checkboxSection.propertyName"
+                                :id="checkboxSection.propertyId"
+                                :options="checkboxSection.options"
+                                @updateCheckedOpt="updateCheckedOptions"
+                        />
+                    </div>
+    <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
+    <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <metadata-display :selected="allSelected" :dss="dss" tooltips />
+            <div class="row">
+                <div class="col-12">
+                    <metadata-display :selected="allSelected" :dss="dss" tooltips />
+                </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
-import Selector from '@/components/Selector.vue'
+import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import ErrorGroup from '@/components/error/ErrorGroup.vue'
+import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
     getDistribution,
-    getDistributionOptions,
     getDistributionCheckboxSections,
     getDatasetSpecification,
     getMapFilterOptions,
+} from '@/data/covid.js'
+import {
+    getDistributionOptions,
     mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
-} from '@/data/covid.js'
+} from '@/data/api.js'
 
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
@@ -68,6 +79,8 @@ const moment = require('moment');
 
 export default {
     data: () => ({
+        loading: true,
+        errors: [],
         dss: {},
         selectedCategory: '',
         checkboxSections: [],
@@ -77,18 +90,21 @@ export default {
         dataMapping: new Map(),
         sliderDateValue: 0,
         datesData: [],
-        buttonText: "Play",
+        datesPlaying: false,
+        timer: '',
     }),
     components: {
-        'selector': Selector,
+        'radio-selector': RadioSelector,
         'map-display': MapDisplay,
         'metadata-display': MetadataDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,
+        'error-group': ErrorGroup,
+        'loading': Loading,
     },
     mounted: function() {
 
-        getCovidData().then((data) => {
+        let dataPromise = getCovidData().then((data) => {
             this.covidData = data
 
             this.datesData = getMapFilterOptions(data, "dateRep").sort(function (a, b) {
@@ -103,25 +119,27 @@ export default {
                 return Number(date[2] + date[1] + date[0]);
             }
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(error)
         })
 
-        getDistribution().then((data) => {
+        let distPromise = getDistribution().then((data) => {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
             this.dataMapping = mapDistributionData(data)
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(error)
         })
 
-        getDatasetSpecification().then((data) => {
+        let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(error)
+        })
+
+        // Stop loading once all promises resolved
+        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            this.loading = false;
         })
 
     },
@@ -198,16 +216,20 @@ export default {
         },
         playMapDates: function () {
 
-            this.buttonText === "Play" ? this.buttonText = "Pause" : this.buttonText = "Play"
+            this.datesPlaying === false ? this.datesPlaying = true : this.datesPlaying = false
 
-            let timeOut = 0
-            let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
-            for (let i = currentIndex; i < this.datesData.length - 1; i++) {
-                if (this.buttonText === "Pause") {
-                    setTimeout (() => {
+            if (this.datesPlaying) {
+                this.timer = setInterval(() => {
+                    let currentIndex = this.datesData.findIndex((elem) => {return elem === this.sliderDateValue})
+                    if (currentIndex < this.datesData.length - 1) {
                         this.sliderDateValue = moment(this.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
-                    }, timeOut += 100)
-                }
+                    } else {
+                        clearInterval(this.timer)
+                        this.datesPlaying = false
+                    }
+                }, 100)
+            } else {
+                clearInterval(this.timer)
             }
         },
     },

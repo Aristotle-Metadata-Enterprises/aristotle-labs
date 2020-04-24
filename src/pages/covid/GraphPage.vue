@@ -1,38 +1,47 @@
 <template>
     <div class="covid-graph">
-        <h1>Aristotle Covid Graph</h1>
-        <div class="horizontal-container">
-            <div>
-                <selector 
-                    v-model="selected" 
-                    description="Choose a data element" 
-                    :options="options" 
-                />
-                <selector 
-                    v-model="selectedCategory" 
-                    description="Choose a category data element" 
-                    :options="categoryOptions"
-                />
+        <h1 class="text-center">COVID-19 Bar Chart</h1>
+        <div class="container padding-above-2x">
+            <div class="row">
+                <div class="col-sm-9">
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"/>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card bg-light">
+                        <radio-selector
+                                v-model="selected"
+                                description="Choose a data element"
+                                :options="options"
+                        />
+                        <radio-selector
+                                v-model="selectedCategory"
+                                description="Choose a category data element"
+                                :options="categoryOptions"
+                        />
+                    </div>
+                </div>
             </div>
-            <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+            <metadata-display :selected="allSelected" :dss="dss" tooltips class="padding-below"/>
         </div>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
     </div>
 </template>
 
 <script>
-import Selector from '@/components/Selector.vue'
+import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import {
     getCovidData,
     getDistribution,
-    getDistributionOptions,
     getDatasetSpecification,
+} from '@/data/covid.js'
+
+import {
+    getDistributionOptions,
     mapDistributionData,
     filterNumberDataElements,
     filterValueDataElements,
-} from '@/data/covid.js'
+} from '@/data/api.js'
 
 export default {
     data: () => ({
@@ -47,37 +56,39 @@ export default {
         distributionDataMap: {},
     }),
     components: {
-        'selector': Selector,
+        'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
     },
     mounted: function() {
-        getCovidData().then((raw_data) => {
+        let dataPromise = getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
-        }).catch((error) =>
-        {
-            // TODO: handle errors gracefully
-            console.log(error)
+        }).catch((error) => {
+            this.errors.push(error)
         });
-        getDistribution().then((data) => {
+
+        let distPromise = getDistribution().then((data) => {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
             this.distributionDataMap = mapDistributionData(data)
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(error)
         })
 
-        getDatasetSpecification().then((data) => {
+        let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
-            // TODO handle errors gracefully
-            console.error(error)
+            this.errors.push(error)
+        })
+
+        // Stop loading once all promises resolved
+        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            this.loading = false;
         })
     },
     computed: {
-        allSelected: function() {
+        allSelected: function () {
             return [this.selected, this.selectedCategory]
         }
     }
@@ -85,22 +96,15 @@ export default {
 </script>
 
 <style>
-h1 {
-    border-bottom: 1px solid black;
-}
+    .padding-above {
+        margin-top: 20px;
+    }
 
-.root {
-    display: flex;
-    flex-direction: column;
-}
+    .padding-above-2x {
+        margin-top: 40px;
+    }
 
-.horizontal-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.placeholder-metadata {
-    margin-top: 50px;
-}
+    .padding-below {
+        margin-bottom: 20px;
+    }
 </style>
-k
