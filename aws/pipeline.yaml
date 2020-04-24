@@ -130,7 +130,8 @@ Resources:
                       Provider: "Amazon S3"
                       Version: "1"
                     Configuration:
-                      BucketName: !Ref
+                      BucketName: !Ref LabsCodeBucket
+                      Extract: True
                     InputArtifacts:
                       - Name: "WebPackBundle"
                     RunOrder: 1
