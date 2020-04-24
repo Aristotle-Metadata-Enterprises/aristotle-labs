@@ -27,68 +27,68 @@
 </template>
 
 <script>
-    import RadioSelector from '@/components/RadioSelector.vue'
-    import BarGraph from '@/components/BarGraph.vue'
-    import MetadataDisplay from '@/components/MetadataDisplay.vue'
-    import {
-        getCovidData,
-        getDistribution,
-        getDatasetSpecification,
-    } from '@/data/covid.js'
-    import {
-        getDistributionOptions,
-        mapDistributionData,
-        filterNumberDataElements,
-        filterValueDataElements,
-    } from '@/data/api.js'
+import RadioSelector from '@/components/RadioSelector.vue'
+import BarGraph from '@/components/BarGraph.vue'
+import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import {
+    getCovidData,
+    getDistribution,
+    getDatasetSpecification,
+} from '@/data/covid.js'
+import {
+    getDistributionOptions,
+    mapDistributionData,
+    filterNumberDataElements,
+    filterValueDataElements,
+} from '@/data/api.js'
 
-    export default {
-        data: () => ({
-            distribution: {},
-            dss: {},
-            raw_data: {},
-            selected: '',
-            selectedCategory: '',
-            options: [],
-            categoryOptions: [],
-            dataMap: new Map(),
-            distributionDataMap: {},
-        }),
-        components: {
-            'radio-selector': RadioSelector,
-            'bar-graph': BarGraph,
-            'metadata-display': MetadataDisplay,
-        },
-        mounted: function () {
-            let dataPromise = getCovidData().then((raw_data) => {
-                this.raw_data = raw_data;
-            }).catch((error) => {
-                this.errors.push(error)
-            });
-            let distPromise = getDistribution().then((data) => {
-                this.distribution = data;
-                this.options = getDistributionOptions(data, filterNumberDataElements);
-                this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
-                this.distributionDataMap = mapDistributionData(data)
-            }).catch((error) => {
-                this.errors.push(error)
-            })
-            let dssPromise = getDatasetSpecification().then((data) => {
-                this.dss = data
-            }).catch((error) => {
-                this.errors.push(error)
-            })
-            // Stop loading once all promises resolved
-            Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
-                this.loading = false;
-            })
-        },
-        computed: {
-            allSelected: function () {
-                return [this.selected, this.selectedCategory]
-            }
+export default {
+    data: () => ({
+        distribution: {},
+        dss: {},
+        raw_data: {},
+        selected: '',
+        selectedCategory: '',
+        options: [],
+        categoryOptions: [],
+        dataMap: new Map(),
+        distributionDataMap: {},
+    }),
+    components: {
+        'radio-selector': RadioSelector,
+        'bar-graph': BarGraph,
+        'metadata-display': MetadataDisplay,
+    },
+    mounted: function () {
+        let dataPromise = getCovidData().then((raw_data) => {
+            this.raw_data = raw_data;
+        }).catch((error) => {
+            this.errors.push(error)
+        });
+        let distPromise = getDistribution().then((data) => {
+            this.distribution = data;
+            this.options = getDistributionOptions(data, filterNumberDataElements);
+            this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
+            this.distributionDataMap = mapDistributionData(data)
+        }).catch((error) => {
+            this.errors.push(error)
+        })
+        let dssPromise = getDatasetSpecification().then((data) => {
+            this.dss = data
+        }).catch((error) => {
+            this.errors.push(error)
+        })
+        // Stop loading once all promises resolved
+        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            this.loading = false;
+        })
+    },
+    computed: {
+        allSelected: function () {
+            return [this.selected, this.selectedCategory]
         }
     }
+}
 </script>
 
 <style>
