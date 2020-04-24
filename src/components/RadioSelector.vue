@@ -1,11 +1,15 @@
 <template>
     <div class="form-block">
-        <p>
-            {{ description }}
-        </p>
-        <div class="form-check" v-for="o in options" :key="o.value">
-            <input class="form-check-input" type="radio" :id="o.value" :value="o.value" @input="emitInput" v-model="picked">
-            <label class="form-check-label" :for="o.value" :data-aristotle-concept-id="o.id">{{ o.text }}</label>
+        <p class="font-weight-bold">{{ description }}:</p>
+        <div class="form-group">
+            <ul v-for="o in options">
+                <li class="no-dots">
+                    <input class="form-check-input" :name="id" type="radio" :key="o.value" :value="o.value"
+                           :id="o.value" @input="emitInput">
+                    <label class="form-check-label" :for="o.value" :data-aristotle-concept-id="o.id">{{ o.text
+                        }}</label>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -13,6 +17,7 @@
 <script>
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+// Radio buttons with v-model support
 export default {
     name: "RadioSelector",
     props: {
@@ -32,16 +37,20 @@ export default {
             default: () => [],
         }
     },
-    data: () => ({
-        picked: '',
-    }),
+    data() {
+        return {
+            id: null
+        }
+    },
     mounted() {
+        this.id = this._uid;
+        // Initialize the aristotle tooltip
         aristotleTooltip({
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
-            'placement': 'top',  // TODO: Change this option to 'left' after PR of tooltip selector fix is merged.
-        });
+            'placement': 'top'
+        })
     },
     methods: {
         emitInput: function (event) {
@@ -52,5 +61,16 @@ export default {
 </script>
 
 <style scoped>
+    .no-dots {
+        list-style-type: none;
+    }
 
+    .form-block {
+        display: block;
+        margin: 20px;
+    }
+
+    input[type=radio] {
+        transform: scale(1.5);
+    }
 </style>
