@@ -1,5 +1,5 @@
 <template>
-    <div class="form-block form-check">
+    <div ref="block" class="form-block form-check">
         <span :data-aristotle-concept-id="id">{{ name }}</span>
         <div v-for="o in options" :key="o.id">
             <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
@@ -31,9 +31,9 @@ export default {
     data: () => ({
         checkedOptions: []
     }),
-    mounted() {
+    mounted: function() {
         aristotleTooltip({
-            'url': 'https://registry.aristotlemetadata.com',
+            'selector': this.$refs.block,
             'definitionWords': 50,
             'longDefinitionWords': 75,
             'placement': 'top',

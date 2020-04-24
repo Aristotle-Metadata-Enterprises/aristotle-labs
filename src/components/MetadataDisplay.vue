@@ -231,7 +231,7 @@ export default {
 
             if (this.tooltips) {
                 aristotleTooltip({
-                    url: 'https://registry.aristotlemetadata.com',
+                    selector: this.$refs.svg,
                     interactive: false,
                     definitionWords: 40,
                     placement: 'top',

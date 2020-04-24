@@ -39,7 +39,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <metadata-display :selected="allSelected" :dss="dss" />
+                <metadata-display :selected="allSelected" :dss="dss" tooltips />
             </div>
         </div>
     </div>
