@@ -17,8 +17,9 @@
 <script>
     import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
     import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
-    // Select form component with v-model support
+    // Radio buttons with v-model support
     export default {
+        name: "RadioSelector",
         props: {
             // Selected value
             value: {

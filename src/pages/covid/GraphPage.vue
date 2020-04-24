@@ -8,12 +8,12 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="card bg-light">
-                        <selector
+                        <radio-selector
                                 v-model="selected"
                                 description="Choose a data element"
                                 :options="options"
                         />
-                        <selector
+                        <radio-selector
                                 v-model="selectedCategory"
                                 description="Choose a category data element"
                                 :options="categoryOptions"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import Selector from '@/components/Selector.vue'
+    import RadioSelector from '@/components/RadioSelector.vue'
     import BarGraph from '@/components/BarGraph.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
     import {
@@ -53,7 +53,7 @@
             distributionDataMap: {},
         }),
         components: {
-            'selector': Selector,
+            'radio-selector': RadioSelector,
             'bar-graph': BarGraph,
             'metadata-display': MetadataDisplay,
         },

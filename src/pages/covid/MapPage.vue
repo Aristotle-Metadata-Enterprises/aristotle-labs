@@ -41,7 +41,7 @@
 
 <script>
 
-    import Selector from '@/components/Selector.vue'
+    import Selector from '@/components/RadioSelector.vue'
     import Filters from '@/components/Filters.vue'
     import MapDisplay from '@/components/MapDisplay.vue'
     import MetadataDisplay from '@/components/MetadataDisplay.vue'
