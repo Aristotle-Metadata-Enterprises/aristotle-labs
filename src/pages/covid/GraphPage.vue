@@ -33,12 +33,14 @@
     import {
         getCovidData,
         getDistribution,
-        getDistributionOptions,
         getDatasetSpecification,
+    } from '@/data/covid.js'
+    import {
+        getDistributionOptions,
         mapDistributionData,
         filterNumberDataElements,
         filterValueDataElements,
-    } from '@/data/covid.js'
+    } from '@/data/api.js'
 
     export default {
         data: () => ({
@@ -58,39 +60,35 @@
             'metadata-display': MetadataDisplay,
         },
         mounted: function () {
-            getCovidData().then((raw_data) => {
+            let dataPromise = getCovidData().then((raw_data) => {
                 this.raw_data = raw_data;
             }).catch((error) => {
-                // TODO: handle errors gracefully
-                console.log(error)
+                this.errors.push(error)
             });
-            getDistribution().then((data) => {
+            let distPromise = getDistribution().then((data) => {
                 this.distribution = data;
                 this.options = getDistributionOptions(data, filterNumberDataElements);
                 this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
                 this.distributionDataMap = mapDistributionData(data)
             }).catch((error) => {
-                // TODO handle errors gracefully
-                console.error(error)
+                this.errors.push(error)
             })
-
-        let dssPromise = getDatasetSpecification().then((data) => {
-            this.dss = data
-        }).catch((error) => {
-            this.errors.push(error)
-        })
-
-        // Stop loading once all promises resolved
-        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
-            this.loading = false;
-        })
-    },
-    computed: {
-        allSelected: function() {
-            return [this.selected, this.selectedCategory]
+            let dssPromise = getDatasetSpecification().then((data) => {
+                this.dss = data
+            }).catch((error) => {
+                this.errors.push(error)
+            })
+            // Stop loading once all promises resolved
+            Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+                this.loading = false;
+            })
+        },
+        computed: {
+            allSelected: function () {
+                return [this.selected, this.selectedCategory]
+            }
         }
     }
-}
 </script>
 
 <style>
