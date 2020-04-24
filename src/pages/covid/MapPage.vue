@@ -231,14 +231,6 @@ export default {
             } else {
                 clearInterval(this.timer)
             }
-
-            // for (let i = currentIndex; i < this.datesData.length - 1; i++) {
-            //     if (this.buttonText === "Pause") {
-            //         setTimeout (() => {
-            //             this.sliderDateValue = moment(this.sliderDateValue, "DD/MM/YYYY").add(1, 'day').format("DD/MM/YYYY")
-            //         }, 100)
-            //     }
-            // }
         },
     },
 }
