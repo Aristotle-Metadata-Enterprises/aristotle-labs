@@ -13,9 +13,9 @@
                 </div>
                 <div class="col-md-4 col-12 vertical-container">
                     <radio-selector
-                            v-model="selectedCategory"
                             description="Choose a data element"
                             :options="options"
+                            @updateInput="updateRadioSelectorInput"
                     />
                     <div class="form-block">
                         <strong>Date</strong><br>
@@ -213,6 +213,9 @@ export default {
             else if (name === "Region Identifier") {
                 this.checkedRegionOptions = opts
             }
+        },
+        updateRadioSelectorInput: function (selectedCategory) {
+            this.selectedCategory = selectedCategory
         },
         playMapDates: function () {
 
