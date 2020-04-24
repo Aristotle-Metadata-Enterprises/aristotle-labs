@@ -74,19 +74,23 @@
                 console.error(error)
             })
 
-            getDatasetSpecification().then((data) => {
-                this.dss = data
-            }).catch((error) => {
-                // TODO handle errors gracefully
-                console.error(error)
-            })
-        },
-        computed: {
-            allSelected: function () {
-                return [this.selected, this.selectedCategory]
-            }
+        let dssPromise = getDatasetSpecification().then((data) => {
+            this.dss = data
+        }).catch((error) => {
+            this.errors.push(error)
+        })
+
+        // Stop loading once all promises resolved
+        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            this.loading = false;
+        })
+    },
+    computed: {
+        allSelected: function() {
+            return [this.selected, this.selectedCategory]
         }
     }
+}
 </script>
 
 <style>
