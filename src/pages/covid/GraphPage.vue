@@ -1,40 +1,41 @@
 <template>
     <div class="covid-graph">
-        <h1>Aristotle Covid Graph</h1>
-        <error-group :errors="errors" />
-        <loading v-if="loading" />
-        <template v-else>
-            <div class="horizontal-container">
-                <div>
-                    <selector 
-                        v-model="selected" 
-                        description="Choose a data element" 
-                        :options="options" 
-                        />
-                    <selector 
-                        v-model="selectedCategory" 
-                        description="Choose a category data element" 
-                        :options="categoryOptions"
-                        />
+        <h1 class="text-center">COVID-19 Bar Chart</h1>
+        <div class="container padding-above-2x">
+            <div class="row">
+                <div class="col-sm-9">
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"/>
                 </div>
-                <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+                <div class="col-sm-3">
+                    <div class="card bg-light">
+                        <radio-selector
+                                v-model="selected"
+                                description="Choose a data element"
+                                :options="options"
+                        />
+                        <radio-selector
+                                v-model="selectedCategory"
+                                description="Choose a category data element"
+                                :options="categoryOptions"
+                        />
+                    </div>
+                </div>
             </div>
-            <metadata-display :selected="allSelected" :dss="dss" tooltips />
-        </template>
+            <metadata-display :selected="allSelected" :dss="dss" tooltips class="padding-below"/>
+        </div>
     </div>
 </template>
 
 <script>
-import Selector from '@/components/Selector.vue'
+import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
-import ErrorGroup from '@/components/error/ErrorGroup.vue'
-import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
     getDistribution,
     getDatasetSpecification,
 } from '@/data/covid.js'
+
 import {
     getDistributionOptions,
     mapDistributionData,
@@ -53,15 +54,11 @@ export default {
         categoryOptions: [],
         dataMap: new Map(),
         distributionDataMap: {},
-        loading: true,
-        errors: [],
     }),
     components: {
-        'selector': Selector,
+        'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
-        'error-group': ErrorGroup,
-        'loading': Loading,
     },
     mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {
@@ -91,7 +88,7 @@ export default {
         })
     },
     computed: {
-        allSelected: function() {
+        allSelected: function () {
             return [this.selected, this.selectedCategory]
         }
     }
@@ -99,21 +96,15 @@ export default {
 </script>
 
 <style>
-h1 {
-    border-bottom: 1px solid black;
-}
+    .padding-above {
+        margin-top: 20px;
+    }
 
-.root {
-    display: flex;
-    flex-direction: column;
-}
+    .padding-above-2x {
+        margin-top: 40px;
+    }
 
-.horizontal-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.placeholder-metadata {
-    margin-top: 50px;
-}
+    .padding-below {
+        margin-bottom: 20px;
+    }
 </style>
