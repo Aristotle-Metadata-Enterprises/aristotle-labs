@@ -3,9 +3,9 @@
         <p>
             {{ description }}
         </p>
-        <div class="form-check" v-for="o in options" :key="o.value">
+        <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
             <input class="form-check-input" type="radio" :id="o.value" :value="o.value" @input="emitInput" v-model="picked">
-            <label class="form-check-label" :for="o.value" :data-aristotle-concept-id="o.id">{{ o.text }}</label>
+            <label class="form-check-label" :for="o.value">{{ o.text }}</label>
         </div>
     </div>
 </template>
@@ -40,7 +40,7 @@ export default {
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
-            'placement': 'top',  // TODO: Change this option to 'left' after PR of tooltip selector fix is merged.
+            'placement': 'left',
         });
     },
     methods: {
