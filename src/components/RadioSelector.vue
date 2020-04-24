@@ -58,4 +58,7 @@ export default {
     display: block;
     margin: 20px;
 }
+input[type=radio] {
+    transform: scale(1.25);
+}
 </style>
