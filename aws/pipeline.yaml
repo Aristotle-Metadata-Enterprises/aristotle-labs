@@ -2,11 +2,6 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: "Pipeline for updating the aristotle-labs code"
 
 Parameters:
-
-  StagingStack:
-    Type: String
-    Description: "Name of the services stack to use as staging env"
-
   RepoBranch:
     Type: String
     Description: "Branch to check for changes on"
@@ -26,33 +21,59 @@ Parameters:
     Type: String
     Description: "ARN for secrets manager secret containing github api token"
 
-  ContainerRegistryStack:
-    Type: String
-    Description: "Name of the container registry stack"
-    Default: "DockerRegistry"
-
   AccessLogBucket:
     Type: String
     Description: "Bucket to logs s3 access events to"
-    Default: 'aristotle-s3-access-logs'
 
+  LabsCodeBucket:
+    Type: String
+    Description: "Bucket to put the webpack bundle into"
 Resources:
-  ### --------- S3 ---------
-  BuildArtifactsBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: 'aws:kms'
-        LoggingConfiguration:
-          DestinationBucketName: !Ref AccessLogBucket
-          LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: True
-          BlockPublicPolicy: True
-          IgnorePublicAcls: True
-          RestrictPublicBuckets: True
+
+    ### --------- S3 ---------
+    AristotleLabsWebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: 'aws:kms'
+    BuildArtifactsBucket:
+      # A temporary bucket
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: 'aws:kms'
+          LoggingConfiguration:
+            DestinationBucketName: !Ref AccessLogBucket
+            LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: True
+            BlockPublicPolicy: True
+            IgnorePublicAcls: True
+            RestrictPublicBuckets: True
+
+
+  # ---------- CodeBuild ----------
+  # Code build project for building webpack bundle
+    Build:
+      Type: AWS::CodeBuild::Project
+      Properties:
+        Name: !Ref GithubRepo
+        Description: "Build webpack distribution"
+        Artifacts:
+          Type: "CODEPIPELINE"
+        Source:
+          Type: "CODEPIPELINE"
+        Environment:
+          ComputeType: "BUILD_GENERAL1_SMALL"
+          Image: "aws/codebuild/standard:2.0"
+          Type: "LINUX_CONTAINER"
+          # Must be privileged to access docker daemon
+          PrivilegedMode: True
+        ServiceRole: !GetAtt BuildServiceRole.Arn
 
 
     ### -------- Pipeline ---------
@@ -98,24 +119,20 @@ Resources:
                     InputArtifacts:
                       - Name: "SourceAsZip"
                     OutputArtifacts:
-                      - Name: "ImageDefinitions"
+                      - Name: "WebpackBundle"
                     RunOrder: 1
               - Name: "Staging"
                 Actions:
-                  - Name: "WebDeploy"
+                  - Name: "DeployToS3"
                     ActionTypeId:
                       Category: "Deploy"
                       Owner: "AWS"
-                      Provider: "ECS"
+                      Provider: "Amazon S3"
                       Version: "1"
                     Configuration:
-                      ClusterName:
-                        Fn::ImportValue: !Sub "${StagingStack}-Cluster"
-                      ServiceName:
-                        Fn::ImportValue: !Sub "${StagingStack}-WebServiceName"
-                      FileName: "web_imagedefinitions.json"
+                      BucketName: !Ref
                     InputArtifacts:
-                      - Name: "ImageDefinitions"
+                      - Name: "WebPackBundle"
                     RunOrder: 1
 
     ### -------- IAM ---------
