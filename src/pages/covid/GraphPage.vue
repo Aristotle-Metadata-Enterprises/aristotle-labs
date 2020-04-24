@@ -35,6 +35,7 @@ import {
     getDistribution,
     getDatasetSpecification,
 } from '@/data/covid.js'
+
 import {
     getDistributionOptions,
     mapDistributionData,
@@ -59,12 +60,13 @@ export default {
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
     },
-    mounted: function () {
+    mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {
             this.raw_data = raw_data;
         }).catch((error) => {
             this.errors.push(error)
         });
+
         let distPromise = getDistribution().then((data) => {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
@@ -73,11 +75,13 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
+
         let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
             this.errors.push(error)
         })
+
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
             this.loading = false;
