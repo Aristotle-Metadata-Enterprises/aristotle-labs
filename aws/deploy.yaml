@@ -59,7 +59,7 @@ Resources:
                 !Join
                 - ''
                 - - 'origin-access-identity/cloudfront/'
-                  - !Ref OriginAccessIda
+                  - !Ref OriginAccessId
         PriceClass: "PriceClass_All"
         ViewerCertificate:
           CloudFrontDefaultCertificate: True
