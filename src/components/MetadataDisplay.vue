@@ -68,6 +68,7 @@ export default {
                         {
                             id: inc.dataElement.aristotleId,
                             name: inc.dataElement.name,
+                            displayName: inc.dataElement.dataElementConcept.property.name,
                             type: 'Data Element',
                         }
                     )
@@ -96,6 +97,7 @@ export default {
                                 {
                                     id: derive.dataElement.aristotleId,
                                     name: derive.dataElement.name,
+                                    displayName: derive.dataElement.dataElementConcept.property.name,
                                     type: 'Data Element',
                                 }
                             )
@@ -137,8 +139,12 @@ export default {
         },
         // Get a nodes label
         getNodeLabel: function(info) {
+            let nameText = info.name
+            if (info.displayName) {
+                nameText = info.displayName
+            }
             // Create 2 lines of text
-            let name = this.createSvgElement('tspan', {dy: '1em', x: '1'}, info.name)
+            let name = this.createSvgElement('tspan', {class: 'title', dy: '1em', x: '1'}, nameText)
             let type = this.createSvgElement('tspan', {dy: '1em', x: '1'}, `(${info.type})`)
 
             // Add to text element
@@ -275,6 +281,12 @@ svg.metadata-display {
 svg.metadata-display text {
   font-size: 11px;
   font-weight: 300;
+}
+
+/* Make title larger and bolder */
+svg.metadata-display tspan.title {
+    font-size: 12px;
+    font-weight: 500;
 }
 
 svg.metadata-display a:link, svg.metadata-display a:visited {
