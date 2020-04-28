@@ -64,6 +64,22 @@ Resources:
         ViewerCertificate:
           CloudFrontDefaultCertificate: True
 
+Outputs:
+  SourceBucketArn:
+    Description: "The ARN of the code bucket for aristotle-labs source code"
+    Value: !GetAtt LabsCodeBucket.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-SourceBucketArn"
+
+  SourceBucketName:
+    Description: "The name of the S3 bucket where the webpack bundle of aristotle-labs code lives"
+    Value: !Ref LabsCodeBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-SourceBucketName"
+
+
+
+
 
 
 
