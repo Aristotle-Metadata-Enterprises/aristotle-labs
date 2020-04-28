@@ -3,6 +3,9 @@
         <p>Metadata Display</p>
         <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
+            <g ref="headings" class="headings">
+                <text v-for="h in headings" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
+            </g>
         </svg>
     </div>
 </template>
@@ -18,7 +21,14 @@ import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 
 export default {
     data: () => ({
-        svg_ns: 'http://www.w3.org/2000/svg'
+        // Padding between svg groups (headings and graph)
+        groupPadding: 20,
+        svg_ns: 'http://www.w3.org/2000/svg',
+        headings: [
+            {id: 'inputsHeading', text: 'Inputs', x: 0, y: 0},
+            {id: 'transHeading', text: 'Transformations', x: 0, y: 0},
+            {id: 'outputsHeading', text: 'Outputs', x: 0, y: 0},
+        ]
     }),
     props: {
         // Dss graphql data
@@ -203,6 +213,47 @@ export default {
 
             return dgraph
         },
+        // Initialise aristotle tooltips
+        setupTooltips: function() {
+            if (this.tooltips) {
+                aristotleTooltip({
+                    selector: this.$refs.svg,
+                    interactive: false,
+                    definitionWords: 40,
+                    placement: 'top',
+                })
+            }
+        },
+        // Move heading to correct positions above graph
+        positionHeadings: function(xOffset) {
+            let svgBox = this.$refs.svg.getBBox()
+            let g = this.$refs.svg.firstChild
+            let graphWidth = g.getBBox().width
+
+            let headings = this.$refs.headings
+            let x = 0
+            let increment = graphWidth / (this.headings.length - 1)
+            for (let i = 0; i < this.headings.length; i++) {
+                let h = this.headings[i]
+                let element = document.getElementById(h.id)
+                // Set position
+                h.y = this.groupPadding
+                if (i === 0) {
+                    // Float left for first element
+                    h.x = x
+                } else if ( i === (this.headings.length - 1)) {
+                    // float right for last element
+                    h.x = x - element.getComputedTextLength()
+                } else {
+                    // Center for middle elements
+                    h.x = x - (element.getComputedTextLength() / 2)
+                }
+                // Update x
+                x += increment
+            }
+
+            headings.setAttribute('transform', `translate(${xOffset}, ${this.groupPadding})`)
+        },
         // draw given display graph in svg element
         drawGraph: function(graph) {
             // Layout
@@ -235,14 +286,7 @@ export default {
                 link.appendChild(node)
             }
 
-            if (this.tooltips) {
-                aristotleTooltip({
-                    selector: this.$refs.svg,
-                    interactive: false,
-                    definitionWords: 40,
-                    placement: 'top',
-                })
-            }
+            this.setupTooltips()
 
             // Zoom support
             let zoom
@@ -255,14 +299,20 @@ export default {
 
             // Center graph
             let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
-            let yPadding = 20
+            // Set y padding to text height plus some
+            let headingsHeight = this.$refs.headings.getBBox().height
+            let yOffset = headingsHeight + this.groupPadding * 2;
+
             if (this.zoomable) {
                 svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
             } else {
-                inner.attr('transform', `translate(${xOffset}, ${yPadding})`)
+                inner.attr('transform', `translate(${xOffset}, ${yOffset})`)
             }
-            svg.attr('height', graph.graph().height + (yPadding * 2))
-        }
+            svg.attr('height', graph.graph().height + yOffset + this.groupPadding)
+
+            // Move headings
+            this.positionHeadings(xOffset)
+        },
     }
 }
 </script>
@@ -286,6 +336,11 @@ svg.metadata-display text {
 /* Make title larger and bolder */
 svg.metadata-display tspan.title {
     font-size: 12px;
+    font-weight: 500;
+}
+
+svg.metadata-display g.headings text {
+    font-size: 16px;
     font-weight: 500;
 }
 
