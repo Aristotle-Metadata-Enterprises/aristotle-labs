@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         emitInput: function (event) {
-            this.$emit('updateInput', event.target.value)
+            this.$emit('input', event.target.value)
         },
     },
 }
