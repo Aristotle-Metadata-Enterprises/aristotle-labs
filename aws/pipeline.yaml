@@ -138,7 +138,6 @@ Resources:
     ArtifactBucketAccess:
       Type: AWS::IAM::ManagedPolicy
       Properties:
-        # Allow codebuild to assume this role
           Description: "Allow access to the Artifact Bucket"
           PolicyDocument:
             Version: "2012-10-17"
