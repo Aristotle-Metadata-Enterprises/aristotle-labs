@@ -201,7 +201,7 @@ Resources:
                     - "codebuild:StartBuild"
                   Resource:
                     - "*"
-            # Allow codepipeline to push to s3 build artifact and final result bucket
+            # Allow codepipeline to push to s3 build artifact and final result buckets
           - PolicyName: "PushBundletoS3Bucket"
             PolicyDocument:
               Version: "2012-10-17"
