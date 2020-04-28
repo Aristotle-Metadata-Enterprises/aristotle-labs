@@ -4,7 +4,7 @@
             {{ description }}
         </span>
         <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
-            <input class="form-check-input" type="radio" :id="o.value" :value="o.value" @change="emitInput" v-model="picked">
+            <input class="form-check-input" type="radio" :id="o.value" :value="o.value" :checked="o.value === value" @change="emitInput">
             <label class="form-check-label" :for="o.value">{{ o.text }}</label>
         </div>
     </div>
@@ -33,9 +33,6 @@ export default {
             default: () => [],
         }
     },
-    data: () => ({
-        picked: '',
-    }),
     mounted() {
         // Initialize the aristotle tooltip
         aristotleTooltip({
@@ -44,14 +41,10 @@ export default {
             'longDefinitionWords': 75,
             'placement': 'left',
         });
-
-        // Select the first radio button when initialized:
-        this.picked = this.options[0].value
-        this.emitInput()
     },
     methods: {
-        emitInput: function () {
-            this.$emit('updateInput', this.picked)
+        emitInput: function (event) {
+            this.$emit('updateInput', event.target.value)
         },
     },
 }

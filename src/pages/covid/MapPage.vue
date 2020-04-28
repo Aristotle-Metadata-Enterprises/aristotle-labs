@@ -13,6 +13,7 @@
                 </div>
                 <div class="col-md-4 col-12 vertical-container">
                     <radio-selector
+                            v-model="selectedCategory"
                             description="Choose a data element"
                             :options="options"
                             @updateInput="updateRadioSelectorInput"
@@ -22,8 +23,8 @@
                         {{ formattedDate }}<br>
                         <div class="d-flex">
                             <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
-                                <i v-if="!datesPlaying" class="fas fa-play"></i>
-                                <i v-else class="fas fa-pause"></i>
+                                <i v-if="!datesPlaying" class="fas fa-play" />
+                                <i v-else class="fas fa-pause" />
                             </button>
                             <vue-slider class="flex-grow-1 align-self-center pl-1"
                                     v-model="sliderDateValue"
@@ -125,6 +126,7 @@ export default {
         let distPromise = getDistribution().then((data) => {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
+            this.selectedCategory = this.options[0].value
             this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
             this.dataMapping = mapDistributionData(data)
         }).catch((error) => {
