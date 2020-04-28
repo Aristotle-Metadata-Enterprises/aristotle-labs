@@ -31,13 +31,6 @@ Parameters:
 Resources:
 
     ### --------- S3 ---------
-    AristotleLabsWebsiteBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketEncryption:
-          ServerSideEncryptionConfiguration:
-            - ServerSideEncryptionByDefault:
-                SSEAlgorithm: 'aws:kms'
     BuildArtifactsBucket:
       # A temporary bucket
       Type: AWS::S3::Bucket
