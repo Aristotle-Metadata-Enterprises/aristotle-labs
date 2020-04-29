@@ -1,6 +1,6 @@
 <template>
     <div class="covid-map">
-        <h1>Aristotle Covid-19 Map</h1>
+        <h1>Aristotle COVID-19 Map</h1>
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else>
@@ -39,13 +39,13 @@
                                 @updateCheckedOpt="updateCheckedOptions"
                         />
                     </div>
-    <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
+    <!--                <span>Checked transmission options: {{ checkedTransmissionOptions }}</span>-->
     <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <metadata-display :selected="allSelected" :dss="dss" />
+                    <metadata-display :selected="allSelected" :dss="dss" tooltips class="mb-4" />
                 </div>
             </div>
         </template>
@@ -140,7 +140,7 @@ export default {
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
-            this.loading = false;
+            this.loading = false
         })
 
     },

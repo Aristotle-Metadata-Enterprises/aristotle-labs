@@ -43,6 +43,7 @@ export function getDistributionCheckboxSections(distribution, filter) {
         }
         checkboxSections.push({
             propertyId: dep.dataElement.dataElementConcept.property.aristotleId,
+            propertyUUID: dep.dataElement.dataElementConcept.property.uuid,
             propertyName: dep.dataElement.dataElementConcept.property.name,
             options: sectionOptions,
         })

@@ -49,6 +49,7 @@ export function queryDistribution(uuid) {
                 dataElementConcept{
                   property {
                     aristotleId
+                    uuid
                     name
                   }
                 }

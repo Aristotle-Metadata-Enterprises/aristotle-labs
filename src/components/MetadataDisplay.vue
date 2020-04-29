@@ -44,7 +44,7 @@ export default {
         }
     },
     computed: {
-        // Construct maps representing graph, used to contruct final filtered graph
+        // Construct maps representing graph, used to construct final filtered graph
         graph: function() {
             // Map of id to id of parents along with edge description
             let parents = new Map()
@@ -62,7 +62,8 @@ export default {
                     }
                 )
                 parents.set(this.dss.uuid, [])
-                for (let inc of this.dss.dssdeinclusionSet) {
+                if (this.dss.dssdeinclusionSet) {
+                    for (let inc of this.dss.dssdeinclusionSet) {
                     nodeInfo.set(
                         inc.dataElement.uuid,
                         {
@@ -107,14 +108,15 @@ export default {
                         }
                     }
                 }
+                }
             }
             return {parents: parents, nodeInfo: nodeInfo}
         },
     },
     watch: {
         // Compute dag based on selected
-        selected: function(selected) {
-            let graph = this.createDisplayGraph(selected)
+        selected: function() {
+            let graph = this.createDisplayGraph(this.selected)
             this.drawGraph(graph)
         }
     },
@@ -255,7 +257,7 @@ export default {
                 inner.attr('transform', `translate(${xOffset}, ${yPadding})`)
             }
             svg.attr('height', graph.graph().height + (yPadding * 2))
-        }
+        },
     }
 }
 </script>
