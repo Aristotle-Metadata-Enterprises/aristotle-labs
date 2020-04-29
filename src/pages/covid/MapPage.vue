@@ -1,9 +1,13 @@
 <template>
-    <div class="covid-map">
-        <h1>Aristotle Covid-19 Map</h1>
+    <div class="covid-map mt-3 mb-3">
+        <h1 class="text-center">
+            Aristotle Covid-19 Map
+        </h1>
+        <hr>
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else>
+            <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-md-8 col-12">
                     <map-display
@@ -43,6 +47,10 @@
     <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                 </div>
             </div>
+
+            <h2 class="text-center">
+                How the data was created
+            </h2>
             <div class="row">
                 <div class="col-12">
                     <metadata-display :selected="allSelected" :dss="dss" />
@@ -72,6 +80,7 @@ import {
     filterNumberDataElements,
     filterValueDataElements,
 } from '@/data/api.js'
+import { getTextForValue } from '@/utils/options.js'
 
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
@@ -144,6 +153,14 @@ export default {
 
     },
     computed: {
+        graphTitle: function() {
+            let selectedText = getTextForValue(this.options, this.selectedCategory)
+            if (selectedText) {
+                return `Map showing ${selectedText} over time`
+            }
+            // Fallback title
+            return 'Covid Map'
+        },
         mapData: function () {
 
             if (!this.dataMapping.has(this.selectedCategory)) {
@@ -237,10 +254,6 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-    border-bottom: 1px solid black;
-}
-
 .root {
     display: flex;
     flex-direction: column;
@@ -249,10 +262,6 @@ h1 {
 .vertical-container {
     display: flex;
     flex-direction: column;
-}
-
-.placeholder-metadata {
-    margin-top: 50px;
 }
 
 .form-block {
