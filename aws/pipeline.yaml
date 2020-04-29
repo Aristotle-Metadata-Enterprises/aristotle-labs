@@ -25,19 +25,13 @@ Parameters:
     Type: String
     Description: "Bucket to logs s3 access events to"
 
-  LabsCodeBucket:
+  CloudFrontStack:
     Type: String
-    Description: "Bucket to put the webpack bundle into"
+    Description: "The name of the cloudfront template where the source code bucket
+                 and the distribution is located"
 Resources:
 
     ### --------- S3 ---------
-    AristotleLabsWebsiteBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketEncryption:
-          ServerSideEncryptionConfiguration:
-            - ServerSideEncryptionByDefault:
-                SSEAlgorithm: 'aws:kms'
     BuildArtifactsBucket:
       # A temporary bucket
       Type: AWS::S3::Bucket
@@ -128,7 +122,8 @@ Resources:
                   Provider: "S3"
                   Version: "1"
                 Configuration:
-                  BucketName: !Ref LabsCodeBucket
+                  BucketName:
+                    Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketName"
                   Extract: True
                 InputArtifacts:
                   - Name: "WebPackBundle"
@@ -206,7 +201,7 @@ Resources:
                     - "codebuild:StartBuild"
                   Resource:
                     - "*"
-            # Allow codepipeline to push to s3 bucket
+            # Allow codepipeline to push to s3 build artifact and final result buckets
           - PolicyName: "PushBundletoS3Bucket"
             PolicyDocument:
               Version: "2012-10-17"
@@ -218,4 +213,7 @@ Resources:
                     - "s3:GetObjectVersion"
                   Resource:
                     - !Sub '${BuildArtifactsBucket.Arn}/*'
-
+                    - Fn::Join:
+                      - ""
+                      - - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
+                        - "/*"
