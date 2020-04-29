@@ -6,11 +6,27 @@ Parameters:
     Type: String
     Description: "The name for the bucket where the source for aristotle-labs is stored"
 
+  AccessLogBucket:
+    Type: String
+    Description: "Bucket to logs s3 access events to"
+
+  DomainName:
+    Type: String
+    Description: "Domain name to use for distribution"
+
+  CertARN:
+    Type: String
+    Description: "ARN of acm certificate for domain (cloudfront requires a us-east-1 cert)"
+
 Resources:
+
   LabsCodeBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref SourceBucketName
+      LoggingConfiguration:
+          DestinationBucketName: !Ref AccessLogBucket
+          LogFilePrefix: !Sub "${AWS::StackName}/"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
         BlockPublicPolicy: True
@@ -43,6 +59,9 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: True
+        DefaultRootObject: 'index.html'
+        Aliases:
+          - !Ref DomainName
         DefaultCacheBehavior:
           Compress: True
           ViewerProtocolPolicy: 'redirect-to-https'
@@ -62,7 +81,9 @@ Resources:
                   - !Ref OriginAccessId
         PriceClass: "PriceClass_All"
         ViewerCertificate:
-          CloudFrontDefaultCertificate: True
+          AcmCertificateArn: !Ref CertARN
+          MinimumProtocolVersion: "TLSv1.2_2018"
+          SslSupportMethod: "sni-only"
 
 Outputs:
   SourceBucketArn:
@@ -76,12 +97,3 @@ Outputs:
     Value: !Ref LabsCodeBucket
     Export:
       Name: !Sub "${AWS::StackName}-SourceBucketName"
-
-
-
-
-
-
-
-
-
