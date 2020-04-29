@@ -213,5 +213,7 @@ Resources:
                     - "s3:GetObjectVersion"
                   Resource:
                     - !Sub '${BuildArtifactsBucket.Arn}/*'
-                    - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
-
+                    - Fn::Join:
+                      - ""
+                      - - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
+                        - "/*"

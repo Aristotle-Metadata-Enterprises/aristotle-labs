@@ -70,7 +70,7 @@ class DataTransformer:
                 cumulative_cases = cumulative_deaths = cases_last_7_days = days_since_last_case = 0
 
             daily_cases = int(record['cases'])
-            daily_deaths = int(record['cases'])
+            daily_deaths = int(record['deaths'])
 
             cumulative_cases += daily_cases
             cumulative_deaths += daily_deaths
