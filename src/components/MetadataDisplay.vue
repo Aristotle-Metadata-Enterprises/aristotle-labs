@@ -241,7 +241,7 @@ export default {
                 if (i === 0) {
                     // Float left for first element
                     h.x = x
-                } else if ( i === (this.headings.length - 1)) {
+                } else if (i === (this.headings.length - 1)) {
                     // float right for last element
                     h.x = x - element.getComputedTextLength()
                 } else {
