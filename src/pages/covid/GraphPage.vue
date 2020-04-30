@@ -4,7 +4,8 @@
             COVID-19 Bar Chart
         </h1>
         <hr>
-        <div class="container">
+        <loading v-if="loading" />
+        <div v-else class="container">
             <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-sm-9">
@@ -37,6 +38,7 @@
 import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
     getDistribution,
@@ -53,6 +55,7 @@ import { getTextForValue } from '@/utils/options.js'
 
 export default {
     data: () => ({
+        loading: true,
         distribution: {},
         dss: {},
         raw_data: {},
@@ -67,6 +70,7 @@ export default {
         'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
         'metadata-display': MetadataDisplay,
+        'loading': Loading,
     },
     mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {
@@ -90,8 +94,15 @@ export default {
             this.errors.push(error)
         })
 
+
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            if (this.options.length > 0) {
+                this.selected = this.options[0].value
+            }
+            if (this.categoryOptions.length > 0) {
+                this.selectedCategory = this.categoryOptions[0].value
+            }
             this.loading = false;
         })
     },

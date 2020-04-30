@@ -155,6 +155,9 @@ export default {
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+            if (this.options.length > 0) {
+                this.selectedCategory = this.options[0].value
+            }
             this.loading = false;
         })
 
