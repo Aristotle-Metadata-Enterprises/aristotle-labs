@@ -5,7 +5,7 @@
         </h1>
         <hr>
         <loading v-if="loading" />
-        <div v-else class="container">
+        <template v-else class="container">
             <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-sm-9">
@@ -30,7 +30,7 @@
                 How the data was created
             </h2>
             <metadata-display :selected="allSelected" :dss="dss" tooltips />
-        </div>
+        </template>
     </div>
 </template>
 
