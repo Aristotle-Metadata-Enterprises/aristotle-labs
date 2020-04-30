@@ -38,6 +38,9 @@ export default {
                     }
                 }]
             },
+            legend: {
+                position: 'bottom',
+            },
             responsive: true,
             maintainAspectRatio: false
         }
