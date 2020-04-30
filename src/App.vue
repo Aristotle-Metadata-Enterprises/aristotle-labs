@@ -21,17 +21,6 @@ export default {
 </script>
 
 <style scoped>
-html, body {
-    min-height: 100vh;
-    height: 100%;
-}
-
-body {
-    display: -ms-flexbox;
-    display: flex;
-    flex-direction: column;
-}
-
 .content-container {
     width: 80%;
     margin-left: auto;
