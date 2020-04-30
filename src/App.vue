@@ -37,7 +37,7 @@
                 </ul>
             </div>
         </nav>
-        <div class="container-fluid">
+        <div class="content-container">
             <router-view />
         </div>
         <footer class="footer footer-custom">
@@ -66,6 +66,13 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.content-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .aristotle-logo {
     height: auto;
     width: 3% !important;

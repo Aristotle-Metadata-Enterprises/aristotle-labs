@@ -4,7 +4,7 @@
             COVID-19 Bar Chart
         </h1>
         <hr>
-        <div class="container">
+        <template>
             <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-sm-9">
@@ -29,7 +29,7 @@
                 How the data was created
             </h2>
             <metadata-display :selected="allSelected" :dss="dss" tooltips />
-        </div>
+        </template>
     </div>
 </template>
 
