@@ -14,25 +14,24 @@
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
                     />
-                    <div class="form-block">
-                        <strong>Date</strong><br>
-                        {{ formattedDate }}<br>
-                        <div class="d-flex">
-                            <div class="btn-group-justified">
-                                <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
-                                    <i v-if="!datesPlaying" class="fas fa-play" />
-                                    <i v-else class="fas fa-pause" />
-                                </button>
-                                <button type="button" :disabled="restartedAndPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying }" @click="restartAndPlayMapDates">
-                                    <i class="fas fa-redo-alt" />
-                                </button>
-                            </div>
-                            <vue-slider class="flex-grow-1 align-self-center pl-1"
-                                    v-model="sliderDateValue"
-                                    :data="datesData"
-                            />
+                    <strong>Date</strong><br>
+                    {{ formattedDate }}<br>
+                    <div class="d-flex">
+                        <div class="btn-group-justified">
+                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                                <i v-if="!datesPlaying" class="fas fa-play" />
+                                <i v-else class="fas fa-pause" />
+                            </button>
+                            <button type="button" :disabled="restartedAndPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying }" @click="restartAndPlayMapDates">
+                                <i class="fas fa-redo-alt" />
+                            </button>
                         </div>
+                        <vue-slider class="flex-grow-1 align-self-center pl-1"
+                                v-model="sliderDateValue"
+                                :data="datesData"
+                        />
                     </div>
+                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-md-4 col-12 vertical-container">
                     <radio-selector
@@ -97,6 +96,7 @@ export default {
         errors: [],
         dss: {},
         selectedCategory: '',
+        currentDataElementDefinition: '',
         checkboxSections: [],
         checkedTransmissionOptions: [],
         checkedRegionOptions: [],
@@ -137,6 +137,7 @@ export default {
         })
 
         let distPromise = getDistribution().then((data) => {
+
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.selectedCategory = this.options[0].value
@@ -157,6 +158,13 @@ export default {
             this.loading = false;
         })
 
+    },
+    watch: {
+        selectedCategory: function () {
+            this.currentDataElementDefinition = this.$sanitize(this.options.find(obj => {
+                return obj.value === this.selectedCategory
+            }).definition)
+        }
     },
     computed: {
         graphTitle: function() {
@@ -269,18 +277,9 @@ export default {
 </script>
 
 <style scoped>
-.root {
-    display: flex;
-    flex-direction: column;
-}
 
 .vertical-container {
     display: flex;
     flex-direction: column;
-}
-
-.form-block {
-    display: block;
-    margin: 20px;
 }
 </style>
