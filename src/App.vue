@@ -37,18 +37,23 @@
                 </ul>
             </div>
         </nav>
-        <div class="content-container">
+        <div class="content-container container-main">
             <router-view />
         </div>
         <footer class="footer footer-custom">
-            <div class="container">
-                <p class="text-center text-white">
-                    Aristotle Labs - powered by the Aristotle Metadata Registry
-                    <img alt="Aristotle logo" class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
-                </p>
-                <div class="footer-copyright text-center text-white py-3">
-                    © 2020 Copyright:
-                    <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Cloud Services Australia</a>
+            <div class="container text-center text-white">
+                <div class="promo">
+                    <div>
+                        <img alt="Aristotle logo" class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
+                    </div>
+                    <div>
+                        <p>
+                            Aristotle Labs - powered by the Aristotle Metadata Registry
+                        </p>
+                        <p>© 2020 Copyright:
+                            <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Cloud Services Australia</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </footer>
@@ -73,9 +78,21 @@ body {
     margin-right: auto;
 }
 
+.root {
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
+.container-main {
+    flex-grow: 2;
+}
+
 .aristotle-logo {
-    height: auto;
-    width: 3% !important;
+    /* height: auto;
+    width: 3% !important; */
+    margin-top: 5px;
 }
 
 .footer-custom {
@@ -121,6 +138,18 @@ body {
 .navbar-custom .dropdown-item:focus {
     color: black;
     background-color: white;
+}
+
+footer .promo {
+    display: table;
+    margin: auto;
+}
+footer .promo > div {
+    display:table-cell;
+    vertical-align: middle;
+}
+footer .promo p {
+    margin: 0.1em;
 }
 </style>
 

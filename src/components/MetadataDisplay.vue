@@ -3,7 +3,7 @@
         <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
             <g ref="headings" class="headings">
-                <text v-for="h in headings" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
+                <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
             </g>
         </svg>
     </div>
@@ -51,6 +51,9 @@ export default {
             type: Boolean,
             default: false,
         }
+    },
+    mounted: function() {
+        this.show()
     },
     computed: {
         // Construct maps representing graph, used to contruct final filtered graph
@@ -124,12 +127,16 @@ export default {
     },
     watch: {
         // Compute dag based on selected
-        selected: function(selected) {
-            let graph = this.createDisplayGraph(selected)
-            this.drawGraph(graph)
+        selected: function() {
+            this.show()
         }
     },
     methods: {
+        // Render graph based on current selection
+        show: function() {
+            this.drawGraph(this.createDisplayGraph(this.selected))
+        },
+        // Get url for item
         getItemUrl: function(id) {
             return `https://registry.aristotlemetadata.com/item/${id}`
         },
