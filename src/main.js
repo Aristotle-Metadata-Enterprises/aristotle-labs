@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 import Router from './router.js'
 import App from './App.vue'
+import VueSanitize from "vue-sanitize"
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,3 +14,9 @@ new Vue({
     router: Router,
     render: h => h(App)
 })
+let defaultOptions = {
+    allowedTags: [],
+    allowedAttributes: {
+    }
+};
+Vue.use(VueSanitize, defaultOptions)

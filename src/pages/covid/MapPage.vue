@@ -14,6 +14,24 @@
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
                     />
+                    <strong>Date</strong><br>
+                    {{ formattedDate }}<br>
+                    <div class="d-flex">
+                        <div class="btn-group-justified">
+                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                                <i v-if="!datesPlaying" class="fas fa-play" />
+                                <i v-else class="fas fa-pause" />
+                            </button>
+                            <button type="button" :disabled="restartedAndPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying }" @click="restartAndPlayMapDates">
+                                <i class="fas fa-redo-alt" />
+                            </button>
+                        </div>
+                        <vue-slider class="flex-grow-1 align-self-center pl-1"
+                                v-model="sliderDateValue"
+                                :data="datesData"
+                        />
+                    </div>
+                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-md-4 col-12">
                     <radio-selector
@@ -21,20 +39,6 @@
                             description="Choose a data element"
                             :options="options"
                     />
-                    <div class="form-block">
-                        <strong>Date</strong><br>
-                        {{ formattedDate }}<br>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
-                                <i v-if="!datesPlaying" class="fas fa-play"></i>
-                                <i v-else class="fas fa-pause"></i>
-                            </button>
-                            <vue-slider class="flex-grow-1 align-self-center pl-1"
-                                    v-model="sliderDateValue"
-                                    :data="datesData"
-                            />
-                        </div>
-                    </div>
                     <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
                         <checkbox-section
                                 :name="checkboxSection.propertyName"
@@ -84,7 +88,7 @@ import { getTextForValue } from '@/utils/options.js'
 
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
-const moment = require('moment');
+const moment = require('moment')
 
 export default {
     data: () => ({
@@ -92,6 +96,7 @@ export default {
         errors: [],
         dss: {},
         selectedCategory: '',
+        currentDataElementDefinition: '',
         checkboxSections: [],
         checkedTransmissionOptions: [],
         checkedRegionOptions: [],
@@ -101,6 +106,7 @@ export default {
         datesData: [],
         datesPlaying: false,
         timer: '',
+        restartedAndPlaying: false,
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -112,7 +118,6 @@ export default {
         'loading': Loading,
     },
     mounted: function() {
-
         let dataPromise = getCovidData().then((data) => {
             this.covidData = data
 
@@ -132,8 +137,10 @@ export default {
         })
 
         let distPromise = getDistribution().then((data) => {
+
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
+            this.selectedCategory = this.options[0].value
             this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
             this.dataMapping = mapDistributionData(data)
         }).catch((error) => {
@@ -155,11 +162,18 @@ export default {
         })
 
     },
+    watch: {
+        selectedCategory: function () {
+            this.currentDataElementDefinition = this.$sanitize(this.options.find(obj => {
+                return obj.value === this.selectedCategory
+            }).definition)
+        }
+    },
     computed: {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `Map showing ${selectedText} over time`
+                return `Map showing ${selectedText} on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
@@ -246,11 +260,20 @@ export default {
                     } else {
                         clearInterval(this.timer)
                         this.datesPlaying = false
+                        this.restartedAndPlaying = false
                     }
                 }, 100)
             } else {
                 clearInterval(this.timer)
+                this.restartedAndPlaying = false
             }
+        },
+        restartAndPlayMapDates: function () {
+            this.restartedAndPlaying = true
+            this.sliderDateValue = this.datesData[0]
+            setTimeout(() => {
+                this.playMapDates()
+            }, 600)
         },
     },
 }
