@@ -4,17 +4,17 @@ phases:
   install:
     runtime-versions:
       nodejs: 10
+    commands:
+      - npm install
+      - npm -v
   build:
     commands:
-      - npm -v
       - echo "build started on $(date)"
-      - npm install
-      - npm run lint
       - npm run build
-      - ./scripts/docker_push.py aristotle_cloud --definitions
       - echo "build completed on $(date)"
 
 artifacts:
   files:
-    - web_imagedefinitions.json
-    - worker_imagedefinitions.json
+    - dist/**
+  discard-paths: true
+

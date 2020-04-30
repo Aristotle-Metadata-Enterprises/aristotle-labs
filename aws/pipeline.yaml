@@ -2,11 +2,6 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: "Pipeline for updating the aristotle-labs code"
 
 Parameters:
-
-  StagingStack:
-    Type: String
-    Description: "Name of the services stack to use as staging env"
-
   RepoBranch:
     Type: String
     Description: "Branch to check for changes on"
@@ -26,33 +21,53 @@ Parameters:
     Type: String
     Description: "ARN for secrets manager secret containing github api token"
 
-  ContainerRegistryStack:
-    Type: String
-    Description: "Name of the container registry stack"
-    Default: "DockerRegistry"
-
   AccessLogBucket:
     Type: String
     Description: "Bucket to logs s3 access events to"
-    Default: 'aristotle-s3-access-logs'
 
+  CloudFrontStack:
+    Type: String
+    Description: "The name of the cloudfront template where the source code bucket
+                 and the distribution is located"
 Resources:
-  ### --------- S3 ---------
-  BuildArtifactsBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: 'aws:kms'
+
+    ### --------- S3 ---------
+    BuildArtifactsBucket:
+      # A temporary bucket
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: 'aws:kms'
         LoggingConfiguration:
-          DestinationBucketName: !Ref AccessLogBucket
-          LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
+            DestinationBucketName: !Ref AccessLogBucket
+            LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
         PublicAccessBlockConfiguration:
-          BlockPublicAcls: True
-          BlockPublicPolicy: True
-          IgnorePublicAcls: True
-          RestrictPublicBuckets: True
+            BlockPublicAcls: True
+            BlockPublicPolicy: True
+            IgnorePublicAcls: True
+            RestrictPublicBuckets: True
+
+
+  # ---------- CodeBuild ----------
+  # Code build project for building webpack bundle
+    Build:
+      Type: AWS::CodeBuild::Project
+      Properties:
+        Name: !Ref GithubRepo
+        Description: "Build webpack distribution"
+        Artifacts:
+          Type: "CODEPIPELINE"
+        Source:
+          Type: "CODEPIPELINE"
+        Environment:
+          ComputeType: "BUILD_GENERAL1_SMALL"
+          Image: "aws/codebuild/standard:2.0"
+          Type: "LINUX_CONTAINER"
+          # Must be privileged to access docker daemon
+          PrivilegedMode: True
+        ServiceRole: !GetAtt BuildServiceRole.Arn
 
 
     ### -------- Pipeline ---------
@@ -63,10 +78,8 @@ Resources:
           Type: S3
           Location:
             Ref: BuildArtifactsBucket
-        DisableInboundStageTransitions:
-          - StageTransition
-        Name: String
-        RestartExecutionOnUpdate: Boolean
+        Name: !Sub '${AWS::StackName}-CodePipeline'
+        RestartExecutionOnUpdate: True
         RoleArn: !GetAtt PipelineRole.Arn
         Stages:
           - Name: "Source"
@@ -85,59 +98,56 @@ Resources:
                 OutputArtifacts:
                   - Name: "SourceAsZip"
                 RunOrder: 1
-              - Name: "Build"
-                Actions:
-                  - Name: "NPMBuild"
-                    ActionTypeId:
-                      Category: "Build"
-                      Owner: "AWS"
-                      Provider: "CodeBuild"
-                      Version: "1"
-                    Configuration:
-                      ProjectName: !Ref Build
-                    InputArtifacts:
-                      - Name: "SourceAsZip"
-                    OutputArtifacts:
-                      - Name: "ImageDefinitions"
-                    RunOrder: 1
-              - Name: "Staging"
-                Actions:
-                  - Name: "WebDeploy"
-                    ActionTypeId:
-                      Category: "Deploy"
-                      Owner: "AWS"
-                      Provider: "ECS"
-                      Version: "1"
-                    Configuration:
-                      ClusterName:
-                        Fn::ImportValue: !Sub "${StagingStack}-Cluster"
-                      ServiceName:
-                        Fn::ImportValue: !Sub "${StagingStack}-WebServiceName"
-                      FileName: "web_imagedefinitions.json"
-                    InputArtifacts:
-                      - Name: "ImageDefinitions"
-                    RunOrder: 1
+          - Name: "Build"
+            Actions:
+              - Name: "NPMBuild"
+                ActionTypeId:
+                  Category: "Build"
+                  Owner: "AWS"
+                  Provider: "CodeBuild"
+                  Version: "1"
+                Configuration:
+                  ProjectName: !Ref Build
+                InputArtifacts:
+                  - Name: "SourceAsZip"
+                OutputArtifacts:
+                  - Name: "WebPackBundle"
+                RunOrder: 1
+          - Name: "Staging"
+            Actions:
+              - Name: "DeployToS3"
+                ActionTypeId:
+                  Category: "Deploy"
+                  Owner: "AWS"
+                  Provider: "S3"
+                  Version: "1"
+                Configuration:
+                  BucketName:
+                    Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketName"
+                  Extract: True
+                InputArtifacts:
+                  - Name: "WebPackBundle"
+                RunOrder: 1
 
     ### -------- IAM ---------
     ArtifactBucketAccess:
-      Type: AWS::IAM::Role
+      Type: AWS::IAM::ManagedPolicy
       Properties:
-        # Allow codebuild to assume this role
-        Description: "Give access to artifacts bucket"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - 's3:GetObject'
-                - 's3:GetObjectVersion'
-                - 's3:PutObject'
-              Resource:
-                - !Sub '${Artifacts.Arn}/*'
+          Description: "Allow access to the Artifact Bucket"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetObject'
+                  - 's3:GetObjectVersion'
+                  - 's3:PutObject'
+                Resource:
+                  - !Sub '${BuildArtifactsBucket.Arn}/*'
 
     # Role used for CodeBuild section of the Pipeline, allows Cloudwatch logs about build results to be created
     BuildServiceRole:
-      Type: AWS::IAM:Role
+      Type: AWS::IAM::Role
       Properties:
         # Allow codebuild to assume this role
         AssumeRolePolicyDocument:
@@ -155,17 +165,18 @@ Resources:
           - PolicyName: "CodeBuildLogs"
             PolicyDocument:
               Version: '2012-10-17'
-              Action:
-                - 'logs:CreateLogGroup'
-                - 'logs:CreateLogStream'
-                - 'logs:PutLogEvents'
-              Resource:
-                Resource:
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}'
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}:*'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'logs:CreateLogGroup'
+                    - 'logs:CreateLogStream'
+                    - 'logs:PutLogEvents'
+                  Resource:
+                    - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}'
+                    - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${GithubRepo}:*'
 
     PipelineRole:
-      Type: AWS::IAM:Role
+      Type: AWS::IAM::Role
       Properties:
         # Allow codepipeline to assume this role
         AssumeRolePolicyDocument:
@@ -181,13 +192,16 @@ Resources:
         Policies:
           # Allow codepipeline to start builds
           - PolicyName: "CodeBuild"
-            PolicyDocument: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "codebuild:BatchGetBuilds"
-                  - "codebuild:StartBuild"
-            # Allow codepipeline to push to s3 bucket
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "codebuild:BatchGetBuilds"
+                    - "codebuild:StartBuild"
+                  Resource:
+                    - "*"
+            # Allow codepipeline to push to s3 build artifact and final result buckets
           - PolicyName: "PushBundletoS3Bucket"
             PolicyDocument:
               Version: "2012-10-17"
@@ -199,4 +213,7 @@ Resources:
                     - "s3:GetObjectVersion"
                   Resource:
                     - !Sub '${BuildArtifactsBucket.Arn}/*'
-
+                    - Fn::Join:
+                      - ""
+                      - - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
+                        - "/*"

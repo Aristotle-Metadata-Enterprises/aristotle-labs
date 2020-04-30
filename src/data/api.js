@@ -84,6 +84,11 @@ export function queryDss(uuid) {
                 uuid
                 aristotleId
                 name
+                dataElementConcept {
+                  property {
+                    name
+                  }
+                }
                 dedinputsthroughSet {
                   dataElementDerivation {
                     uuid
@@ -94,6 +99,11 @@ export function queryDss(uuid) {
                         uuid
                         aristotleId
                         name
+                        dataElementConcept {
+                          property {
+                            name
+                          }
+                        }
                       }
                     }
                   }

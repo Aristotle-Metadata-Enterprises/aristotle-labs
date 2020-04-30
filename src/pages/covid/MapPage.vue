@@ -1,9 +1,13 @@
 <template>
-    <div class="covid-map">
-        <h1>Aristotle COVID-19 Map</h1>
+    <div class="covid-map mt-3 mb-3">
+        <h1 class="text-center">
+            Aristotle Covid-19 Map
+        </h1>
+        <hr>
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else>
+            <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-md-8 col-12">
                     <map-display
@@ -22,8 +26,8 @@
                         {{ formattedDate }}<br>
                         <div class="d-flex">
                             <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
-                                <i v-if="!datesPlaying" class="fas fa-play" />
-                                <i v-else class="fas fa-pause" />
+                                <i v-if="!datesPlaying" class="fas fa-play"></i>
+                                <i v-else class="fas fa-pause"></i>
                             </button>
                             <vue-slider class="flex-grow-1 align-self-center pl-1"
                                     v-model="sliderDateValue"
@@ -39,13 +43,17 @@
                                 @updateCheckedOpt="updateCheckedOptions"
                         />
                     </div>
-    <!--                <span>Checked transmission options: {{ checkedTransmissionOptions }}</span>-->
+    <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
     <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                 </div>
             </div>
+
+            <h2 class="text-center">
+                How the data was created
+            </h2>
             <div class="row">
                 <div class="col-12">
-                    <metadata-display :selected="allSelected" :dss="dss" tooltips class="mb-4" />
+                    <metadata-display :selected="allSelected" :dss="dss" tooltips />
                 </div>
             </div>
         </template>
@@ -72,6 +80,7 @@ import {
     filterNumberDataElements,
     filterValueDataElements,
 } from '@/data/api.js'
+import { getTextForValue } from '@/utils/options.js'
 
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
@@ -125,7 +134,6 @@ export default {
         let distPromise = getDistribution().then((data) => {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
-            this.selectedCategory = this.options[0].value
             this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
             this.dataMapping = mapDistributionData(data)
         }).catch((error) => {
@@ -140,11 +148,19 @@ export default {
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
-            this.loading = false
+            this.loading = false;
         })
 
     },
     computed: {
+        graphTitle: function() {
+            let selectedText = getTextForValue(this.options, this.selectedCategory)
+            if (selectedText) {
+                return `Map showing ${selectedText} over time`
+            }
+            // Fallback title
+            return 'Covid Map'
+        },
         mapData: function () {
 
             if (!this.dataMapping.has(this.selectedCategory)) {
@@ -238,10 +254,6 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-    border-bottom: 1px solid black;
-}
-
 .root {
     display: flex;
     flex-direction: column;
@@ -250,10 +262,6 @@ h1 {
 .vertical-container {
     display: flex;
     flex-direction: column;
-}
-
-.placeholder-metadata {
-    margin-top: 50px;
 }
 
 .form-block {

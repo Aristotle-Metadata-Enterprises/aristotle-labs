@@ -42,6 +42,7 @@ import {
     getDistribution,
     getDatasetSpecification,
 } from '@/data/covid.js'
+
 import {
     getDistributionOptions,
     mapDistributionData,
@@ -49,6 +50,7 @@ import {
     filterValueDataElements,
 } from '@/data/api.js'
 import { getTextForValue } from '@/utils/options.js'
+
 export default {
     data: () => ({
         distribution: {},
@@ -72,6 +74,7 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         });
+
         let distPromise = getDistribution().then((data) => {
             this.distribution = data;
             this.options = getDistributionOptions(data, filterNumberDataElements);
@@ -80,11 +83,13 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
+
         let dssPromise = getDatasetSpecification().then((data) => {
             this.dss = data
         }).catch((error) => {
             this.errors.push(error)
         })
+
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
             this.loading = false;

@@ -11,10 +11,13 @@
 
 <script>
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+
 import * as d3 from 'd3'
 import dagreD3 from 'dagre-d3'
+
 import { mapPush } from '@/utils/mapping.js'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
+
 export default {
     data: () => ({
         // Padding between svg groups (headings and graph)
@@ -56,6 +59,7 @@ export default {
             let parents = new Map()
             // Map of node id's to node names and type
             let nodeInfo = new Map()
+
             if (this.dss) {
                 // Create root dss node
                 nodeInfo.set(
@@ -151,6 +155,7 @@ export default {
             // Create 2 lines of text
             let name = this.createSvgElement('tspan', {class: 'title', dy: '1em', x: '1'}, nameText)
             let type = this.createSvgElement('tspan', {dy: '1em', x: '1'}, `(${info.type})`)
+
             // Add to text element
             let text = this.createSvgElement('text')
             text.appendChild(name)
@@ -179,6 +184,7 @@ export default {
             let dgraph = new dagreD3.graphlib.Graph()
             dgraph.setGraph({directed: true})
             let nodeStack = []
+
             // Start with selected values
             for (let val of selected) {
                 // Ignore empty values
@@ -192,6 +198,7 @@ export default {
                     }
                 }
             }
+
             // While there are nodes to process add parents to graph
             while (nodeStack.length > 0) {
                 let uuid = nodeStack.pop()
@@ -202,6 +209,7 @@ export default {
                     nodeStack.push(parent.parent)
                 }
             }
+
             return dgraph
         },
         // Initialise aristotle tooltips
@@ -220,6 +228,7 @@ export default {
             let svgBox = this.$refs.svg.getBBox()
             let g = this.$refs.svg.firstChild
             let graphWidth = g.getBBox().width
+
             let headings = this.$refs.headings
             let x = 0
             let increment = graphWidth / (this.headings.length - 1)
@@ -241,6 +250,7 @@ export default {
                 // Update x
                 x += increment
             }
+
             headings.setAttribute('transform', `translate(${xOffset}, ${this.groupPadding})`)
         },
         // draw given display graph in svg element
@@ -248,13 +258,16 @@ export default {
             // Layout
             let options = graph.graph()
             options.rankdir = 'LR'
+
             let svg = d3.select(this.$refs.svg)
             let inner = svg.select('g')
             // We need to clear graph due to link wrapping changes
             inner.select('g').remove()
             let render = new dagreD3.render()
+
             // Render the graph using d3
             render(inner, graph)
+
             // Wrap node groups in links
             for (let node of this.$refs.svg.querySelectorAll('g.node')) {
                 // Get d3 data associated with node
@@ -271,7 +284,9 @@ export default {
                 // Move node inside link
                 link.appendChild(node)
             }
+
             this.setupTooltips()
+
             // Zoom support
             let zoom
             if (this.zoomable) {
@@ -280,17 +295,20 @@ export default {
                 })
                 svg.call(zoom)
             }
+
             // Center graph
             let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
             // Set y padding to text height plus some
             let headingsHeight = this.$refs.headings.getBBox().height
             let yOffset = headingsHeight + this.groupPadding * 2;
+
             if (this.zoomable) {
                 svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
             } else {
                 inner.attr('transform', `translate(${xOffset}, ${yOffset})`)
             }
             svg.attr('height', graph.graph().height + yOffset + this.groupPadding)
+
             // Move headings
             this.positionHeadings(xOffset)
         },
@@ -303,39 +321,48 @@ export default {
  * Can't use scoped css here since dynamically added elements wont have the attribute
  * So we are using the metadata-display class for scoping the rules
  */
+
 svg.metadata-display {
     border: 1px solid black;
 }
+
 /* Set text size */
 svg.metadata-display text {
   font-size: 11px;
   font-weight: 300;
 }
+
 /* Make title larger and bolder */
 svg.metadata-display tspan.title {
     font-size: 12px;
     font-weight: 500;
 }
+
 svg.metadata-display g.headings text {
     font-size: 16px;
     font-weight: 500;
 }
+
 svg.metadata-display a:link, svg.metadata-display a:visited {
     cursor: pointer;
 }
+
 svg.metadata-display a:hover, svg.metadata-display a:active {
     text-decoration: underline;
 }
+
 /* Syle node boxes */
 svg.metadata-display .node rect {
   stroke: #999;
   fill: #fff;
   stroke-width: 1.5px;
 }
+
 /* Override for selected nodes */
 svg.metadata-display .selected rect {
     fill: lightgreen;
 }
+
 /* Style edges */
 svg.metadata-display .edgePath path {
   stroke: #333;
