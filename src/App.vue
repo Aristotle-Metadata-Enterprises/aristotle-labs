@@ -144,3 +144,9 @@ footer .promo p {
 }
 </style>
 
+<style>
+h1, h2 {
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+}
+</style>
