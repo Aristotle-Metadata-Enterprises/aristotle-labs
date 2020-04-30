@@ -42,6 +42,9 @@ export default {
             maintainAspectRatio: false
         }
     }),
+    mounted: function() {
+        this.show()
+    },
     computed: {
         // Transformed data for display in the bar graph
         chartData: function () {
@@ -71,15 +74,22 @@ export default {
                     labels: []
                 }
             }
+            return {}
         }
     },
     watch: {
         selected: function () {
-            let chartData = this.chartData;
-            this.renderChart(chartData, this.options)
+            this.show()
         }
     },
     methods: {
+        // Render the chart based on current data
+        show: function() {
+            // If chart data isnt empty
+            if (Object.keys(this.chartData).length > 0) {
+                this.renderChart(this.chartData, this.options)
+            }
+        },
         generateRandomColour: function () {
             // Generate colour from colour scheme, so colours are nicely selected
             let scheme = new ColorScheme;
