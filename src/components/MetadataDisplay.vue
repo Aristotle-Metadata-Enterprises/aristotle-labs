@@ -1,6 +1,5 @@
 <template>
     <div>
-        <p>Metadata Display</p>
         <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
             <g ref="headings" class="headings">

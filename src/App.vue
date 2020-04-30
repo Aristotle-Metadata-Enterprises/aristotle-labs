@@ -21,7 +21,8 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        >
                             COVID-19 Tools
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -63,18 +64,6 @@
 html, body {
     min-height: 100vh;
     height: 100%;
-}
-
-footer .promo {
-    display: table;
-    margin: auto;
-}
-footer .promo > div {
-    display:table-cell;
-    vertical-align: middle;
-}
-footer .promo p {
-    margin: 0.1em;
 }
 
 body {
@@ -140,6 +129,18 @@ body {
 .navbar-custom .dropdown-item:focus {
     color: black;
     background-color: white;
+}
+
+footer .promo {
+    display: table;
+    margin: auto;
+}
+footer .promo > div {
+    display:table-cell;
+    vertical-align: middle;
+}
+footer .promo p {
+    margin: 0.1em;
 }
 </style>
 

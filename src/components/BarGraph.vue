@@ -1,7 +1,6 @@
 <script>
 import {Bar} from 'vue-chartjs'
 import ColorScheme from 'color-scheme';
-
 export default {
     extends: Bar,
     props: {
@@ -49,15 +48,12 @@ export default {
             // Chart data is a list of datasets
             if (this.selected[0] && this.selected[1]) {
                 let dataElement = this.selected[0];
-
                 let categoryDataElement = this.selected[1];
                 categoryDataElement = this.distribution_map.get(categoryDataElement);
                 let categories = this.getCategoriesFromDataElement(categoryDataElement);
                 let dataSets = this.generateChartDataFramework(categories);
-
                 // Access key is the lookup key for the JSON field that was selected
                 let accessKey = this.distribution_map.get(dataElement);
-
                 for (let day of this.raw_data) {
                     // Iterate across the JSON data and add data to each one
                     let aggregate = day[categoryDataElement];
@@ -95,10 +91,8 @@ export default {
             // Return a list of categories from the dataset
             // Used as aggregate for the stacked bar chart
             let categories = this.raw_data.map(day => day[categoryAccessKey]);
-
             let categorySet = new Set(categories);
             categorySet.delete(undefined);
-
             return [...categorySet];
         },
         generateChartDataFramework: function (categories) {
@@ -109,7 +103,6 @@ export default {
                 dataset.label = category;
                 dataset.backgroundColor = this.generateRandomColour();
                 dataset.data = [];
-
                 datasets[category] = dataset
             }
             return datasets;
