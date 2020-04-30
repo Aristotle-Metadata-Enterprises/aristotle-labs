@@ -21,7 +21,8 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        >
                             COVID-19 Tools
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -45,7 +46,8 @@
                     Aristotle Labs - powered by the Aristotle Metadata Registry
                     <img alt="Aristotle logo" class="navbar-brand img-fluid aristotle-logo" src="./aris_logo_small.png">
                 </p>
-                <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
+                <div class="footer-copyright text-center text-white py-3">
+                    © 2020 Copyright:
                     <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Cloud Services Australia</a>
                 </div>
             </div>
