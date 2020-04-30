@@ -7,6 +7,7 @@ import VueSanitize from "vue-sanitize"
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import '@/styles/global.css'
 
 new Vue({
     el: '#app',
