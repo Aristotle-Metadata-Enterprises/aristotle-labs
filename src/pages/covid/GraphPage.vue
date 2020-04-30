@@ -1,10 +1,14 @@
 <template>
-    <div class="covid-graph">
-        <h1 class="text-center">COVID-19 Bar Chart</h1>
-        <div class="container padding-above-2x">
+    <div class="covid-graph mt-3 mb-3">
+        <h1 class="text-center">
+            COVID-19 Bar Chart
+        </h1>
+        <hr>
+        <div class="container">
+            <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-sm-9">
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"/>
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
                 </div>
                 <div class="col-sm-3">
                     <div class="card bg-light">
@@ -21,7 +25,10 @@
                     </div>
                 </div>
             </div>
-            <metadata-display :selected="allSelected" :dss="dss" tooltips class="padding-below"/>
+            <h2 class="text-center">
+                How the data was created
+            </h2>
+            <metadata-display :selected="allSelected" :dss="dss" tooltips />
         </div>
     </div>
 </template>
@@ -42,6 +49,7 @@ import {
     filterNumberDataElements,
     filterValueDataElements,
 } from '@/data/api.js'
+import { getTextForValue } from '@/utils/options.js'
 
 export default {
     data: () => ({
@@ -88,23 +96,18 @@ export default {
         })
     },
     computed: {
+        graphTitle: function() {
+            let selectionText = getTextForValue(this.options, this.selected)
+            let categoryText = getTextForValue(this.categoryOptions, this.selectedCategory)
+            if (selectionText && categoryText) {
+                return `Chart showing ${selectionText} by ${categoryText} over time`
+            }
+            // Fallback title
+            return 'Covid Graph'
+        },
         allSelected: function () {
             return [this.selected, this.selectedCategory]
         }
     }
 }
 </script>
-
-<style>
-    .padding-above {
-        margin-top: 20px;
-    }
-
-    .padding-above-2x {
-        margin-top: 40px;
-    }
-
-    .padding-below {
-        margin-bottom: 20px;
-    }
-</style>
