@@ -1,9 +1,9 @@
 <template>
     <div class="root">
         <custom-header />
-        <div class="content-container container-main">
+        <main>
             <router-view />
-        </div>
+        </main>
         <custom-footer />
     </div>
 </template>
@@ -21,7 +21,8 @@ export default {
 </script>
 
 <style scoped>
-.content-container {
+main {
+    flex-grow: 2;
     width: 80%;
     margin-left: auto;
     margin-right: auto;
@@ -32,10 +33,6 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%
-}
-
-.container-main {
-    flex-grow: 2;
 }
 
 .aristotle-logo {
