@@ -84,7 +84,7 @@
                     aggregate.data = Object.keys(aggregate.data).map(date => (
                         {"t": date, "y": aggregate.data[date]}
                     ));
-                    // Sort, because other bars are randomly floating
+                    // Sort, because otherwise bars are randomly floating
                     aggregate.data  = aggregate.data.sort(function(a, b) {
                         let dateA = new Date(a["t"]); let dateB = new Date(b["t"]);
                         return dateA - dateB;
