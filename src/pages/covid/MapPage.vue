@@ -4,6 +4,16 @@
             Aristotle COVID-19 Dashboard - Map view
         </h1>
         <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>
+                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else class="container">
@@ -70,6 +80,7 @@ import MapDisplay from '@/components/MapDisplay.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
+import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
@@ -153,6 +164,14 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
+
+        aristotleTooltip({
+            'selector': this.$refs.block,
+            'url': 'https://registry.aristotlemetadata.com',
+            'definitionWords': 50,
+            'longDefinitionWords': 75,
+            'placement': 'bottom',
+        });
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {

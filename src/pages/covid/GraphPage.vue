@@ -3,6 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
+        <hr>
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
@@ -119,7 +120,6 @@ export default {
             'longDefinitionWords': 75,
             'placement': 'bottom',
         });
-
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
