@@ -1,7 +1,8 @@
 <script>
-import {Bar} from 'vue-chartjs'
-import ColorScheme from 'color-scheme';
-export default {
+    import {Bar} from 'vue-chartjs'
+    import gradstop from 'gradstop';
+
+    export default {
     extends: Bar,
     props: {
         // The raw JSON COVID-19 case data
@@ -26,13 +27,16 @@ export default {
             scales: {
                 xAxes: [{
                     type: 'time',
-                    stacked: true
-                }],
-                yAxes: [{
                     stacked: true,
                     ticks: {
-                        beginAtZero: true,
-                    },
+                        beginAtZero: true
+                    }
+                }],
+                yAxes: [{
+                    // ticks: {
+                    //     beginAtZero: true,
+                    // },
+                    stacked: true,
                     gridLines: {
                         display: true
                     }
@@ -65,11 +69,28 @@ export default {
                     let aggregate = day[categoryDataElement];
                     if (aggregate) {
                         let recordDate = new Date(day['year'], day['month'] - 1, day['day']);
-                        dataSets[aggregate].data.push(
-                            {'t': recordDate, 'y': Number(day[accessKey])}
-                        )
+                        if (dataSets[aggregate].data[recordDate]) {
+                            dataSets[aggregate].data[recordDate] += Number(day[accessKey])
+                        } else {
+                            // If it doesn't exist, add it in
+                            dataSets[aggregate].data[recordDate] = Number(day[accessKey])
+                        }
                     }
                 }
+                this.fillMissingDates(dataSets);
+
+                // Transform data in datasets to fit format to expected Chart JS format
+                Object.values(dataSets).forEach(aggregate => {
+                    aggregate.data = Object.keys(aggregate.data).map(date => (
+                        {"t": date, "y": aggregate.data[date]}
+                    ));
+                    // Sort, because otherwise bars are randomly floating
+                    aggregate.data  = aggregate.data.sort(function(a, b) {
+                        let dateA = new Date(a["t"]); let dateB = new Date(b["t"]);
+                        return dateA - dateB;
+                        }
+                    )
+                });
                 // Return the dataSet as a list of objects, as this is what chartData expects
                 let transformedDataSets = Object.keys(dataSets).map((key) => dataSets[key]);
                 return {
@@ -95,10 +116,12 @@ export default {
         },
         generateRandomColour: function () {
             // Generate colour from colour scheme, so colours are nicely selected
-            let scheme = new ColorScheme;
-            scheme.from_hue(21).scheme('triade').variation('pastel');
-            // Triade scheme generates 12 random colours, return one of them
-            return '#' + scheme.colors()[Math.floor(Math.random() * Math.floor(11))].toUpperCase();
+            const gradient = gradstop({
+                stops: 10,
+                inputFormat: 'hex',
+                colorArray: ['#115fd4', '#ff0000']
+            });
+            return gradient[Math.floor(Math.random() * 9)];
         },
         getCategoriesFromDataElement: function (categoryAccessKey) {
             // Return a list of categories from the dataset
@@ -115,10 +138,39 @@ export default {
                 let dataset = {};
                 dataset.label = category;
                 dataset.backgroundColor = this.generateRandomColour();
-                dataset.data = [];
+                dataset.barPercentage = 1.0;
+                dataset.categoryPercentage = 1.0;
+                dataset.data = {};
                 datasets[category] = dataset
             }
             return datasets;
+        },
+        fillMissingDates: function (dataSets) {
+            // Data begins on the 31st of December, and continues to the present day
+            // but we'll fill it in only to the previous day, so we don't get caught out
+            // if the lambda hasn't been run
+            let now = new Date()
+            now = now.setDate(now.getDate() - 1)
+
+            Object.values(dataSets).forEach(aggregate => {
+                let dateValueMap = new Map();
+
+                // Build a Map of timestamp -> value
+                for (let [date, value] of Object.entries(aggregate.data)) {
+                    dateValueMap.set(new Date(date).getTime(), value)
+                }
+                // Add missing days into dataset
+                for (let date = new Date(2019, 11, 311); date <= now; date.setDate(date.getDate() + 1)) {
+                    if (!(date.getTime() in dateValueMap)) {
+                        // If the date is not in the map, add it in as a zero valued day
+                        dateValueMap.set(date.getTime(), 0 )
+                    }
+                }
+                // Transform back into original dataset
+                aggregate.data = Array.from(dateValueMap).reduce((data, [date, value]) => (
+                    Object.assign(data, {[new Date(date)]: value})
+                ), {});
+            });
         }
     }
 }
