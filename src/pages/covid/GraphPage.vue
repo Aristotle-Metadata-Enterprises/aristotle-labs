@@ -19,7 +19,8 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
+                                :data_element_options="options"/>
                     {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-sm-4">
