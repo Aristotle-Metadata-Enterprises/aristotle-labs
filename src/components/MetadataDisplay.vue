@@ -3,7 +3,7 @@
          ref="svg"
          :xmlns="svg_ns"
          width="100%"
-         preserveAspectRatio="xMidyMid meet"
+         preserveAspectRatio="xMidYMid meet"
          >
         <g ref="inner" />
         <g ref="headings" class="headings">
