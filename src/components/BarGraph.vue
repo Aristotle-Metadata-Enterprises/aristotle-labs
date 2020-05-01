@@ -119,8 +119,7 @@ methods: {
     // Render the chart based on current data
     show: function() {
         // If chart data isn't empty
-        if (Object.keys(this.chartData).length > 0) {
-            // Add label to Y Axis
+        if (Object.keys(this.chartData).length > 0) {// Add label to Y Axis
             let yAxisLabel = getTextForValue(this.data_element_options, this.selected[0])
             this.options.scales.yAxes[0].scaleLabel.labelString = yAxisLabel;
             this.renderChart(this.chartData, this.options)
