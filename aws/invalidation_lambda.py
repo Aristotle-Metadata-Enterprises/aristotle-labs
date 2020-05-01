@@ -15,7 +15,7 @@ def success(job, message):
 def failure(job, message):
     print('Job failed')
     print(message)
-    pipeline_client.put_job_failure(
+    pipeline_client.put_job_failure_result(
         JobId=job,
         failureDetails={'message': message, 'type': 'JobFailed'}
     )
@@ -25,9 +25,9 @@ def handler(event, context):
     job = event["CodePipeline.job"]["id"]
     timestamp = datetime.datetime.now().timestamp()
 
-    if 'CLOUDFRONT_ID' in os.environ:
+    if 'DISTRIBUTION_ID' in os.environ:
         cloudfront_client.create_invalidation(
-            DistributionId=os.environ['CLOUDFRONT_ID'],
+            DistributionId=os.environ['DISTRIBUTION_ID'],
             InvalidationBatch={
                 'CallerReference': str(timestamp),
                 'Paths': {
@@ -37,6 +37,6 @@ def handler(event, context):
             }
         )
     else:
-        failure(job, 'CLOUDFRONT_ID env var not present')
+        failure(job, 'DISTRIBUTION_ID env var not present')
 
     success(job, 'Distribution invalidated')
