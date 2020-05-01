@@ -219,16 +219,15 @@ export default {
         },
         // Initialise aristotle tooltips
         setupTooltips: function() {
-            if (this.tooltips) {
-                aristotleTooltip({
-                    selector: this.$refs.svg,
-                    interactive: false,
-                    definitionWords: 40,
-                    placement: 'top',
-                })
-            }
+            aristotleTooltip({
+                selector: this.$refs.svg,
+                interactive: false,
+                definitionWords: 40,
+                placement: 'top',
+            })
         },
         // Move heading to correct positions above graph
+        // Returns heading space
         positionHeadings: function() {
             let g = this.$refs.inner
             let graphWidth = g.getBBox().width
@@ -253,22 +252,24 @@ export default {
                 // Update x
                 x += increment
             }
+            // Calculate and return heading space
+            let headingsHeight = this.$refs.headings.getBBox().height
+            return headingsHeight + this.groupPadding;
         },
-        // draw given display graph in svg element
-        drawGraph: function(graph) {
-            // Layout
-            let options = graph.graph()
-            options.rankdir = 'LR'
+        // Position graph within svg
+        positionGraph: function(headingSpace) {
+            // Get bounding box for graph
+            let graphBox = this.$refs.inner.getBBox()
+            // Set height of graph
+            let height = graphBox.height + headingSpace
+            this.$refs.svg.setAttribute('height', height)
 
-            let svg = d3.select(this.$refs.svg)
-            let inner = d3.select(this.$refs.inner)
-            // We need to clear graph due to link wrapping changes
-            inner.select('g').remove()
-            let render = new dagreD3.render()
-
-            // Render the graph using d3
-            render(inner, graph)
-
+            // Position graph
+            // Translate graph to give space for headings
+            this.$refs.inner.setAttribute('transform', `translate(0, ${headingSpace})`)
+        },
+        // Wrap nodes in svg links
+        wrapNodes: function(graph) {
             // Wrap node groups in links
             for (let node of this.$refs.svg.querySelectorAll('g.node')) {
                 // Get d3 data associated with node
@@ -285,27 +286,39 @@ export default {
                 // Move node inside link
                 link.appendChild(node)
             }
-
-            this.setupTooltips()
-
-            // Set y padding to text height plus some
-            let headingsHeight = this.$refs.headings.getBBox().height
-            let headingSpace = headingsHeight + this.groupPadding;
+        },
+        // Sets the viewbox for the whole svg
+        setViewBox: function() {
             // Get bounding box for graph
-            let graphBox = this.$refs.inner.getBBox()
-            // Set height of graph
-            let height = graphBox.height + headingSpace
-            svg.attr('height', height)
+            let box = this.$refs.svg.getBBox()
+            console.log('settings viewBox')
+            this.$refs.svg.setAttribute(
+                'viewBox',
+                `${box.x} ${box.y} ${box.width} ${box.height}`,
+            )
+        },
+        // draw given display graph in svg element
+        drawGraph: function(graph) {
+            // Layout
+            let options = graph.graph()
+            options.rankdir = 'LR'
 
-            // Position graph
-            // Translate graph to give space for headings
-            inner.attr('transform', `translate(0, ${headingSpace})`)
-            // Set view box to encompass all content plus some spacing
-            let viewHeight = graphBox.height + headingSpace
-            svg.attr('viewBox', `${graphBox.x} ${graphBox.y} ${graphBox.width} ${viewHeight}`)
+            let inner = d3.select(this.$refs.inner)
+            // We need to clear graph due to link wrapping changes
+            inner.select('g').remove()
+            let render = new dagreD3.render()
 
-            // Move headings
-            this.positionHeadings()
+            // Render the graph using d3
+            render(inner, graph)
+            
+            this.wrapNodes(graph)
+            if (this.tooltips) {
+                this.setupTooltips()
+            }
+
+            let headingSpace = this.positionHeadings()
+            this.positionGraph(headingSpace)
+            this.setViewBox()
         },
     }
 }
