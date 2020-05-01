@@ -34,12 +34,13 @@ export default {
         chartOptions: function () {
             return {
                 colorAxis: {
-                    colors: ['#ffffff', '#ff6e00'],
+                    colors: ['#ffffff', '#c3eaba', '#7fd26c', '#f4ef5b', '#f47c7c'],
                     maxValue: this.colorAxisMaxValue,
+                    minValue: 0,
                 },
                 backgroundColor: '#81d4fa',
-                datalessRegionColor: '#d7cece',
-                defaultColor: '#14716e',
+                datalessRegionColor: '#ffffff',
+                defaultColor: '#ff74ea',
             }
         }
     },

@@ -62,7 +62,7 @@ export default {
 <style scoped>
 .form-block {
     display: block;
-    margin: 5px 15px;
+    margin: 10px 20px;
 }
 input[type=radio] {
     transform: scale(1.25);

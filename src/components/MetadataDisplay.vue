@@ -1,15 +1,17 @@
 <template>
-    <svg class="metadata-display"
-         ref="svg"
-         :xmlns="svg_ns"
-         width="100%"
-         preserveAspectRatio="xMidYMid meet"
-         >
-        <g ref="inner" />
-        <g ref="headings" class="headings">
-            <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
-        </g>
-    </svg>
+    <div>
+        <svg class="metadata-display"
+             ref="svg"
+             :xmlns="svg_ns"
+             width="100%"
+             preserveAspectRatio="xMidYMid meet"
+             >
+            <g ref="inner" />
+            <g ref="headings" class="headings">
+                <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
+            </g>
+        </svg>
+    </div>
 </template>
 
 <script>

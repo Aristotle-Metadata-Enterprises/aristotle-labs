@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const info = require("./package.json")
 
@@ -15,6 +16,7 @@ module.exports = {
         "main": './src/main.js'
     },
     plugins: [
+        new FaviconsWebpackPlugin(),
         new CleanWebpackPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({

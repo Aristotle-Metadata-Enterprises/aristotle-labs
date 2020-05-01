@@ -54,8 +54,4 @@ export default {
 </script>
 
 <style scoped>
-    .form-block {
-        display: block;
-        margin: 20px;
-    }
 </style>

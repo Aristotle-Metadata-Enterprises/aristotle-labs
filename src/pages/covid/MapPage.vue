@@ -3,29 +3,25 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
-        <hr>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div>
-                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
+        <covid-header-text />
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else class="container">
             <div class="row">
-                <div class="col-md-8 col-12">
+                <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
+                    <div class="graph-description">{{ currentDataElementDefinition }}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-12">
                     <map-display
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
                     />
-                    <strong>Date</strong><br>
-                    {{ formattedDate }}<br>
+                    <div>
+                        <strong>Date</strong>: {{ formattedDate }}
+                    </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
                             <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
@@ -47,7 +43,7 @@
                     <div class="card bg-light option-selector">
                         <radio-selector
                                 v-model="selectedCategory"
-                                description="Choose a data element"
+                                description="Select data to display"
                                 :options="options"
                         />
                         <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
@@ -58,17 +54,12 @@
                                     @updateCheckedOpt="updateCheckedOptions"
                             />
                         </div>
-        <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
-        <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                     </div>
                 </div>
             </div>
 
-            <h2 class="text-center">
-                How the data was created
-            </h2>
         </template>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -77,7 +68,8 @@
 import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
+import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -122,7 +114,8 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'map-display': MapDisplay,
-        'metadata-display': MetadataDisplay,
+        'covid-header-text': CovidHeaderText,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,
@@ -193,7 +186,7 @@ export default {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `${selectedText} on ${this.formattedDate}`
+                return `${selectedText}` // on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
@@ -300,8 +293,4 @@ export default {
 </script>
 
 <style scoped>
-.form-block {
-    display: block;
-    margin: 20px;
-}
 </style>
