@@ -36,7 +36,7 @@
             </ul>
         </div>
         <a href="https://aristotlemetadata.com" class="btn btn-outline-success">
-            About Aristotle
+            Back to main site
         </a>
     </nav>
 </template>
