@@ -180,6 +180,16 @@ Resources:
         ManagedPolicyArns:
           - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
         Policies:
+          - PolicyName: "PipelineJobs"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "codepipeline:PutJobSuccessResult"
+                    - "codepipeline:PutJobFailureResult"
+                  Resource:
+                    - '*'
           - PolicyName: "CloudfrontInvalidation"
             PolicyDocument:
               Version: "2012-10-17"
@@ -201,7 +211,7 @@ Resources:
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action:
                   - 's3:GetObject'
                   - 's3:GetObjectVersion'
