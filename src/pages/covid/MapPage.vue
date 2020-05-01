@@ -33,7 +33,7 @@
                     </div>
                     {{ currentDataElementDefinition }}
                 </div>
-                <div class="col-md-4 col-12 vertical-container">
+                <div class="col-md-4 col-12">
                     <radio-selector
                             v-model="selectedCategory"
                             description="Choose a data element"
@@ -280,9 +280,8 @@ export default {
 </script>
 
 <style scoped>
-
-.vertical-container {
-    display: flex;
-    flex-direction: column;
+.form-block {
+    display: block;
+    margin: 20px;
 }
 </style>
