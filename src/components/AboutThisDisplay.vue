@@ -81,8 +81,8 @@ export default {
     border-radius: 30px;
     text-align: center;
     padding-top: 4px;
-    font-size: 20pt;
-    font-weight: bold;
+    font-size: 21pt;
+    font-weight: 900;  /* Max boldness for the arrow */
 }
 .scroller a, .scroller a:hover {
     color: white;
