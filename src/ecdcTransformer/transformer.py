@@ -116,12 +116,9 @@ class DataTransformer:
 
         return data
 
-    def remove_territories_records(self, data) -> Dict:
+    def remove_territories_records(self, data) -> List[Dict]:
         """Remove the territories records from the dataset - because they don't appear in the WHO definition"""
-        for record in data:
-            if 'region' in record and record['region'] == 'Territories':
-                data.remove(record)
-        return data
+        return [record for record in data if not ('region' in record and record['region'] == 'Territories')]
 
     def transform(self):
         # Calculate the cumulative total

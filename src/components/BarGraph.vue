@@ -1,7 +1,8 @@
 <script>
-import {Bar} from 'vue-chartjs'
-import gradstop from 'gradstop';
-export default {
+    import {Bar} from 'vue-chartjs'
+    import gradstop from 'gradstop';
+
+    export default {
     extends: Bar,
     props: {
         // The raw JSON COVID-19 case data
@@ -102,9 +103,6 @@ export default {
     },
     watch: {
         selected: function () {
-            this.fillMissingDates([])
-            let chartData = this.chartData;
-            this.renderChart(chartData, this.options)
             this.show()
         }
     },
@@ -169,10 +167,9 @@ export default {
                     }
                 }
                 // Transform back into original dataset
-                let data = Array.from(dateValueMap).reduce((data, [date, value]) => (
-                    Object.assign(data, {[new Date(date)]: value}) // Be careful! Maps can have non-String keys; object literals can't.
+                aggregate.data = Array.from(dateValueMap).reduce((data, [date, value]) => (
+                    Object.assign(data, {[new Date(date)]: value})
                 ), {});
-                aggregate.data = data;
             });
         }
     }
