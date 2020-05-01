@@ -1,12 +1,15 @@
 <template>
-    <div>
-        <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
-            <g />
-            <g ref="headings" class="headings">
-                <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
-            </g>
-        </svg>
-    </div>
+    <svg class="metadata-display"
+         ref="svg"
+         :xmlns="svg_ns"
+         width="100%"
+         preserveAspectRatio="xMidYMid meet"
+         >
+        <g ref="inner" />
+        <g ref="headings" class="headings">
+            <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
+        </g>
+    </svg>
 </template>
 
 <script>
@@ -22,7 +25,11 @@ export default {
     data: () => ({
         // Padding between svg groups (headings and graph)
         groupPadding: 20,
+        // Margin around graph headings
+        headingMargin: 20,
+        // svg namespace
         svg_ns: 'http://www.w3.org/2000/svg',
+        // Heading objects
         headings: [
             {id: 'inputsHeading', text: 'Inputs', x: 0, y: 0},
             {id: 'transHeading', text: 'Transformations', x: 0, y: 0},
@@ -40,11 +47,6 @@ export default {
         selected: {
             type: Array,
             default: () => [],
-        },
-        // Whether the graph can be panned and zoomed with mouse
-        zoomable: {
-            type: Boolean,
-            default: false,
         },
         // Whether to display tooltips on hover of graph elements
         tooltips: {
@@ -126,7 +128,7 @@ export default {
         },
     },
     watch: {
-        // Compute dag based on selected
+        // Redraw graph when new elements selected
         selected: function() {
             this.show()
         }
@@ -221,22 +223,18 @@ export default {
         },
         // Initialise aristotle tooltips
         setupTooltips: function() {
-            if (this.tooltips) {
-                aristotleTooltip({
-                    selector: this.$refs.svg,
-                    interactive: false,
-                    definitionWords: 40,
-                    placement: 'top',
-                })
-            }
+            aristotleTooltip({
+                selector: this.$refs.svg,
+                interactive: false,
+                definitionWords: 40,
+                placement: 'top',
+            })
         },
         // Move heading to correct positions above graph
-        positionHeadings: function(xOffset) {
-            let svgBox = this.$refs.svg.getBBox()
-            let g = this.$refs.svg.firstChild
-            let graphWidth = g.getBBox().width
+        // Returns heading space
+        positionHeadings: function() {
+            let graphWidth = this.$refs.inner.getBBox().width
 
-            let headings = this.$refs.headings
             let x = 0
             let increment = graphWidth / (this.headings.length - 1)
             for (let i = 0; i < this.headings.length; i++) {
@@ -246,35 +244,35 @@ export default {
                 h.y = this.groupPadding
                 if (i === 0) {
                     // Float left for first element
-                    h.x = x
+                    h.x = x + this.headingMargin
                 } else if (i === (this.headings.length - 1)) {
                     // float right for last element
-                    h.x = x - element.getComputedTextLength()
+                    h.x = x - element.getComputedTextLength() - this.headingMargin
                 } else {
                     // Center for middle elements
-                    h.x = x - (element.getComputedTextLength() / 2)
+                    h.x = x - ((element.getComputedTextLength() + (2 * this.headingMargin)) / 2)
                 }
                 // Update x
                 x += increment
             }
-
-            headings.setAttribute('transform', `translate(${xOffset}, ${this.groupPadding})`)
+            // Calculate and return heading space
+            let headingsHeight = this.$refs.headings.getBBox().height
+            return headingsHeight + this.groupPadding;
         },
-        // draw given display graph in svg element
-        drawGraph: function(graph) {
-            // Layout
-            let options = graph.graph()
-            options.rankdir = 'LR'
+        // Position graph within svg
+        positionGraph: function(headingSpace) {
+            // Get bounding box for graph
+            let graphBox = this.$refs.inner.getBBox()
+            // Set height of graph
+            let height = graphBox.height + headingSpace
+            this.$refs.svg.setAttribute('height', height)
 
-            let svg = d3.select(this.$refs.svg)
-            let inner = svg.select('g')
-            // We need to clear graph due to link wrapping changes
-            inner.select('g').remove()
-            let render = new dagreD3.render()
-
-            // Render the graph using d3
-            render(inner, graph)
-
+            // Position graph
+            // Translate graph to give space for headings
+            this.$refs.inner.setAttribute('transform', `translate(0, ${headingSpace})`)
+        },
+        // Wrap nodes in svg links
+        wrapNodes: function(graph) {
             // Wrap node groups in links
             for (let node of this.$refs.svg.querySelectorAll('g.node')) {
                 // Get d3 data associated with node
@@ -291,33 +289,38 @@ export default {
                 // Move node inside link
                 link.appendChild(node)
             }
+        },
+        // Sets the viewbox for the whole svg
+        setViewBox: function() {
+            // Get bounding box for graph
+            let box = this.$refs.svg.getBBox()
+            this.$refs.svg.setAttribute(
+                'viewBox',
+                `${box.x} ${box.y} ${box.width} ${box.height}`,
+            )
+        },
+        // draw given display graph in svg element
+        drawGraph: function(graph) {
+            // Layout
+            let options = graph.graph()
+            options.rankdir = 'LR'
 
-            this.setupTooltips()
+            let inner = d3.select(this.$refs.inner)
+            // We need to clear graph due to link wrapping changes
+            inner.select('g').remove()
+            let render = new dagreD3.render()
 
-            // Zoom support
-            let zoom
-            if (this.zoomable) {
-                zoom = d3.zoom().on('zoom', () => {
-                    inner.attr('transform', d3.event.transform)
-                })
-                svg.call(zoom)
+            // Render the graph using d3
+            render(inner, graph)
+            
+            this.wrapNodes(graph)
+            if (this.tooltips) {
+                this.setupTooltips()
             }
 
-            // Center graph
-            let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
-            // Set y padding to text height plus some
-            let headingsHeight = this.$refs.headings.getBBox().height
-            let yOffset = headingsHeight + this.groupPadding * 2;
-
-            if (this.zoomable) {
-                svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
-            } else {
-                inner.attr('transform', `translate(${xOffset}, ${yOffset})`)
-            }
-            svg.attr('height', graph.graph().height + yOffset + this.groupPadding)
-
-            // Move headings
-            this.positionHeadings(xOffset)
+            let headingSpace = this.positionHeadings()
+            this.positionGraph(headingSpace)
+            this.setViewBox()
         },
     }
 }
@@ -328,10 +331,6 @@ export default {
  * Can't use scoped css here since dynamically added elements wont have the attribute
  * So we are using the metadata-display class for scoping the rules
  */
-
-svg.metadata-display {
-    border: 1px solid black;
-}
 
 /* Set text size */
 svg.metadata-display text {
