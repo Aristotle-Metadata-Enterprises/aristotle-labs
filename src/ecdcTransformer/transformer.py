@@ -48,6 +48,7 @@ class DataTransformer:
 
         return extra_metadata
 
+
     def add_cumulative_totals(self, data) -> List[Dict]:
         """Calculate a running cumulative total and attach to records"""
         data = data['records']
@@ -115,11 +116,17 @@ class DataTransformer:
 
         return data
 
+    def remove_territories_records(self, data) -> List[Dict]:
+        """Remove the territories records from the dataset - because they don't appear in the WHO definition"""
+        return [record for record in data if not ('region' in record and record['region'] == 'Territories')]
+
     def transform(self):
         # Calculate the cumulative total
         data = self.add_cumulative_totals(self.raw_data)
         # Add the additional metadata
         data = self.add_extra_metadata(data)
+        data = self.remove_territories_records(data)
+
         # Dump the JSON data
         return json.dumps(data)
 
