@@ -25,7 +25,11 @@ export default {
     data: () => ({
         // Padding between svg groups (headings and graph)
         groupPadding: 20,
+        // Margin around graph headings
+        headingMargin: 20,
+        // svg namespace
         svg_ns: 'http://www.w3.org/2000/svg',
+        // Heading objects
         headings: [
             {id: 'inputsHeading', text: 'Inputs', x: 0, y: 0},
             {id: 'transHeading', text: 'Transformations', x: 0, y: 0},
@@ -124,7 +128,7 @@ export default {
         },
     },
     watch: {
-        // Compute dag based on selected
+        // Redraw graph when new elements selected
         selected: function() {
             this.show()
         }
@@ -229,8 +233,7 @@ export default {
         // Move heading to correct positions above graph
         // Returns heading space
         positionHeadings: function() {
-            let g = this.$refs.inner
-            let graphWidth = g.getBBox().width
+            let graphWidth = this.$refs.inner.getBBox().width
 
             let x = 0
             let increment = graphWidth / (this.headings.length - 1)
@@ -241,13 +244,13 @@ export default {
                 h.y = this.groupPadding
                 if (i === 0) {
                     // Float left for first element
-                    h.x = x
+                    h.x = x + this.headingMargin
                 } else if (i === (this.headings.length - 1)) {
                     // float right for last element
-                    h.x = x - element.getComputedTextLength()
+                    h.x = x - element.getComputedTextLength() - this.headingMargin
                 } else {
                     // Center for middle elements
-                    h.x = x - (element.getComputedTextLength() / 2)
+                    h.x = x - ((element.getComputedTextLength() + (2 * this.headingMargin)) / 2)
                 }
                 // Update x
                 x += increment
@@ -291,7 +294,6 @@ export default {
         setViewBox: function() {
             // Get bounding box for graph
             let box = this.$refs.svg.getBBox()
-            console.log('settings viewBox')
             this.$refs.svg.setAttribute(
                 'viewBox',
                 `${box.x} ${box.y} ${box.width} ${box.height}`,
