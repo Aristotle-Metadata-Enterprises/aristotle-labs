@@ -13,6 +13,16 @@
             </div>
         </div>
         <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>
+                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else class="container">

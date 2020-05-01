@@ -80,4 +80,4 @@ export default {
     font-weight: normal;
     display: inline-block;
 }
-</style>
+</script>
