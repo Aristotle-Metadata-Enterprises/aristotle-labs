@@ -14,7 +14,6 @@
             </div>
             <div class="row">
                 <div class="col-sm-8">
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
                     <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
                                 :data_element_options="options"/>
                 </div>
