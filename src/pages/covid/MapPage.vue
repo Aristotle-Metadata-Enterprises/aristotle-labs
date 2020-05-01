@@ -3,16 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div>
-                    This dashboard provides an interactive display of data about the 2020 <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> pandemic using data published by the European Centre for Disease Control. This data has been enhanced with metadata from an <a href="https://aristotlemetadata.com">Aristotle Metadata Registry</a>. Hover over the dashboard controls or any <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">underlined text</a> to see more information about the data, classifications or glossary definitions.
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
+        <covid-header-text />
         <error-group :errors="errors" />
         <loading v-if="loading" />
         <template v-else class="container">
@@ -68,7 +59,7 @@
             </div>
 
         </template>
-        <metadata-display id="#metadatadisplay" :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display id="#metadatadisplay" :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -77,7 +68,8 @@
 import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
+import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -122,7 +114,8 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'map-display': MapDisplay,
-        'metadata-display': MetadataDisplay,
+        'covid-header-text': CovidHeaderText,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,

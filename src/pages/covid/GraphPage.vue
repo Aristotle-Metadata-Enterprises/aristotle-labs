@@ -3,16 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div>
-                    This dashboard provides an interactive display of data about the 2020 <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> pandemic using data published by the European Centre for Disease Control. This data has been enhanced with metadata from an <a href="https://aristotlemetadata.com">Aristotle Metadata Registry</a>. Hover over the dashboard controls or any <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">underlined text</a> to see more information about data, classifications or glossary definitions.
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
+        <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
             <div class="row">
@@ -23,7 +14,8 @@
             </div>
             <div class="row">
                 <div class="col-sm-8">
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
+                                :data_element_options="options"/>
                 </div>
                 <div class="col-sm-4">
                     <div class="card bg-light option-selector">
@@ -41,7 +33,7 @@
                 </div>
             </div>
         </template>
-        <metadata-display id="metadatadisplay" :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display id="metadatadisplay" :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -50,7 +42,8 @@
 <script>
 import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidHeaderText from '@/components/CovidHeaderText.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -85,7 +78,8 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
-        'metadata-display': MetadataDisplay,
+        'covid-header-text': CovidHeaderText,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'loading': Loading,
     },
@@ -165,8 +159,8 @@ export default {
 }
 .graph-description {
     font-size: 90%;
-    margin-left: 60px;
-    margin-right: 10px;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .option-selector {
