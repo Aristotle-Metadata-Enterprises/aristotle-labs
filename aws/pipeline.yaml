@@ -29,6 +29,16 @@ Parameters:
     Type: String
     Description: "The name of the cloudfront template where the source code bucket
                  and the distribution is located"
+
+  LambdaSourceBucket:
+    Type: String
+    Description: "Bucket for invalidation lambdas source"
+
+  InvalidationLambdaKey:
+    Type: String
+    Description: "Key in bucket for invalidation lambdas source"
+    Default: "invalidation"
+
 Resources:
 
     ### --------- S3 ---------
@@ -67,6 +77,51 @@ Resources:
           Type: "LINUX_CONTAINER"
         ServiceRole: !GetAtt BuildServiceRole.Arn
 
+    ### --------- Lambda ---------
+    
+    LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+            - Version: "2012-10-17"
+              Effect: "Allow"
+              Principal:
+                Service: "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        Policies:
+          - PolicyName: "CloudfrontInvalidation"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "cloudfront:GetDistributio"
+                    - "cloudfront:CreateInvalidation"
+                  Resource: 
+                    - !Join
+                      - ''
+                      - - !Sub "arn:aws:cloudfront:${AWS::AccountId}:distribution/"
+                        - Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
+
+    InvalidationLambda:
+      Type: AWS::Lambda::Function
+      Properties:
+        Description: "Invalidate a distributions cache"
+        Runtime: "python3.7"
+        Role: !GetAtt LambdaExecutionRole.Arn
+        Code:
+          S3Bucket: !Ref LambdaSourceBucket
+          S3Key: InvalidationLambdaKey
+        Handler: "handler"
+        Timeout: 60
+        Environment:
+          Variables:
+            DISTRIBUTION_ID:
+              Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
 
     ### -------- Pipeline ---------
     AristotleLabsPipeline:

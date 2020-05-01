@@ -97,3 +97,9 @@ Outputs:
     Value: !Ref LabsCodeBucket
     Export:
       Name: !Sub "${AWS::StackName}-SourceBucketName"
+
+  DistributionId:
+    Description: "Id of cloudfront distribution"
+    Value: !Ref LabsDistribution
+    Export:
+      Name: !Sub "${AWS::StackName}-DistributionId"
