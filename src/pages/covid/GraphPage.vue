@@ -159,8 +159,8 @@ export default {
 }
 .graph-description {
     font-size: 90%;
-    margin-left: 60px;
-    margin-right: 10px;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .option-selector {

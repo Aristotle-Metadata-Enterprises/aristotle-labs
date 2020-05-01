@@ -11,3 +11,7 @@ h2 {
     padding-top: 0.5em;
     margin-bottom: 0.5em;
 }
+
+dfn {
+    font-weight: 500;
+}
