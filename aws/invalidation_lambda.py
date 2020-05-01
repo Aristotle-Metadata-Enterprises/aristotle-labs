@@ -9,14 +9,14 @@ cloudfront_client = boto3.client('cloudfront')
 def success(job, message):
     print('Job completed successfully')
     print(message)
-    pipeline_client.put_job_success_result(JobId=job)
+    pipeline_client.put_job_success_result(jobId=job)
 
 
 def failure(job, message):
     print('Job failed')
     print(message)
     pipeline_client.put_job_failure_result(
-        JobId=job,
+        jobId=job,
         failureDetails={'message': message, 'type': 'JobFailed'}
     )
 
