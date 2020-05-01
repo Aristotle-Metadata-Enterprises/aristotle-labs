@@ -160,8 +160,8 @@
                     dateValueMap.set(new Date(date).getTime(), value)
                 }
                 // Add missing days into dataset
-                for (let date = new Date(2019, 11, 311); date <= now; date.setDate(date.getDate() + 1)) {
-                    if (!(date.getTime() in dateValueMap)) {
+                for (let date = new Date(2019, 11, 32); date <= now; date.setDate(date.getDate() + 1)) {
+                    if (!(dateValueMap.has(date.getTime()))) {
                         // If the date is not in the map, add it in as a zero valued day
                         dateValueMap.set(date.getTime(), 0 )
                     }
