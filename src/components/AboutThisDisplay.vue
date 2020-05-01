@@ -44,9 +44,7 @@ export default {
     },
     methods: {
         scrollClicked () {
-            var elmnt = document.getElementById("metadatadisplay");
-            elmnt.scrollIntoView();
-
+            document.getElementById("metadatadisplay").scrollIntoView();
         }
     }
 }
