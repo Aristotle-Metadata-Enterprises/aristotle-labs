@@ -83,9 +83,9 @@ Resources:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
+          Version: "2012-10-17"
           Statement:
-            - Version: "2012-10-17"
-              Effect: "Allow"
+            - Effect: "Allow"
               Principal:
                 Service: "lambda.amazonaws.com"
               Action:
@@ -97,14 +97,14 @@ Resources:
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
-                - Effect: Allow
+                - Effect: "Allow"
                   Action:
-                    - "cloudfront:GetDistributio"
+                    - "cloudfront:GetDistribution"
                     - "cloudfront:CreateInvalidation"
                   Resource: 
                     - !Join
                       - ''
-                      - - !Sub "arn:aws:cloudfront:${AWS::AccountId}:distribution/"
+                      - - !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/"
                         - Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
 
     InvalidationLambda:
@@ -115,7 +115,7 @@ Resources:
         Role: !GetAtt LambdaExecutionRole.Arn
         Code:
           S3Bucket: !Ref LambdaSourceBucket
-          S3Key: InvalidationLambdaKey
+          S3Key: !Ref InvalidationLambdaKey
         Handler: "handler"
         Timeout: 60
         Environment:
@@ -165,7 +165,7 @@ Resources:
                 OutputArtifacts:
                   - Name: "WebPackBundle"
                 RunOrder: 1
-          - Name: "Staging"
+          - Name: "Deploy"
             Actions:
               - Name: "DeployToS3"
                 ActionTypeId:
@@ -179,6 +179,17 @@ Resources:
                   Extract: True
                 InputArtifacts:
                   - Name: "WebPackBundle"
+                RunOrder: 1
+          - Name: "Invalidate"
+            Actions:
+              - Name: "InvalidateCloudfront"
+                ActionTypeId:
+                  Category: "Invoke"
+                  Owner: "AWS"
+                  Provider: "Lambda"
+                  Version: "1"
+                Configuration:
+                  FunctionName: !Ref InvalidationLambda
                 RunOrder: 1
 
     ### -------- IAM ---------

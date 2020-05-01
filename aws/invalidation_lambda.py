@@ -26,7 +26,7 @@ def handler(event, context):
     timestamp = datetime.datetime.now().timestamp()
 
     if 'CLOUDFRONT_ID' in os.environ:
-        response = cloudfront_client.create_invalidation(
+        cloudfront_client.create_invalidation(
             DistributionId=os.environ['CLOUDFRONT_ID'],
             InvalidationBatch={
                 'CallerReference': str(timestamp),
