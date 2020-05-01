@@ -22,7 +22,7 @@ def failure(job, message):
 
 
 def handler(event, context):
-    job = event["CodePipeline.job"].id
+    job = event["CodePipeline.job"]["id"]
     timestamp = datetime.datetime.now().timestamp()
 
     if 'CLOUDFRONT_ID' in os.environ:
