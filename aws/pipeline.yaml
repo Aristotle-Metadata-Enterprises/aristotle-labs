@@ -79,34 +79,6 @@ Resources:
 
     ### --------- Lambda ---------
     
-    LambdaExecutionRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action:
-                - "sts:AssumeRole"
-        ManagedPolicyArns:
-          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        Policies:
-          - PolicyName: "CloudfrontInvalidation"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "cloudfront:GetDistribution"
-                    - "cloudfront:CreateInvalidation"
-                  Resource: 
-                    - !Join
-                      - ''
-                      - - !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/"
-                        - Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
-
     InvalidationLambda:
       Type: AWS::Lambda::Function
       Properties:
@@ -116,7 +88,7 @@ Resources:
         Code:
           S3Bucket: !Ref LambdaSourceBucket
           S3Key: !Ref InvalidationLambdaKey
-        Handler: "handler"
+        Handler: "invalidation_lambda.handler"
         Timeout: 60
         Environment:
           Variables:
@@ -193,6 +165,35 @@ Resources:
                 RunOrder: 1
 
     ### -------- IAM ---------
+
+    LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        Policies:
+          - PolicyName: "CloudfrontInvalidation"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "cloudfront:GetDistribution"
+                    - "cloudfront:CreateInvalidation"
+                  Resource: 
+                    - !Join
+                      - ''
+                      - - !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/"
+                        - Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
+
     ArtifactBucketAccess:
       Type: AWS::IAM::ManagedPolicy
       Properties:
@@ -280,3 +281,12 @@ Resources:
                       - ""
                       - - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
                         - "/*"
+          - PolicyName: "InvokeLambdas"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "lambda:InvokeFunction"
+                  Resource:
+                    - !GetAtt InvalidationLambda.Arn
