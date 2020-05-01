@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div>
-                    This dashboard provides an interactive display of data about the 2020 <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> pandemic using data published by the European Centre for Disease Control. This data has been enhanced with metadata from an <a href="https://aristotlemetadata.com">Aristotle Metadata Registry</a>. Hover over the dashboard controls or any <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">underlined text</a> to see more information about the data, classifications or glossary definitions.
+                    This dashboard provides an interactive display of data about the 2020 <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> pandemic using data published by the European Centre for Disease Control. This data has been enhanced with metadata from an <a href="https://aristotlemetadata.com">Aristotle Metadata Registry</a>. Hover over the dashboard controls or any <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">underlined text</a> to see more information about data, classifications or glossary definitions.
                     </div>
                 </div>
             </div>
@@ -18,14 +18,12 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
-                    <div class="graph-description">A count of the total number of confirmed COVID-19 daily cases that are required to be reported in accordance with public health legislation.
-                    </div>
+                    <div class="graph-description">{{ currentDataElementDefinition }}</div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-8">
                     <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
-                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-sm-4">
                     <div class="card bg-light option-selector">
