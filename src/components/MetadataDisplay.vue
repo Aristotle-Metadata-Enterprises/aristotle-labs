@@ -1,6 +1,11 @@
 <template>
     <div>
-        <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
+        <svg class="metadata-display"
+             ref="svg"
+             :xmlns="svg_ns"
+             width="100%"
+             preserveAspectRatio="xMidyMid meet"
+             >
             <g />
             <g ref="headings" class="headings">
                 <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
@@ -40,11 +45,6 @@ export default {
         selected: {
             type: Array,
             default: () => [],
-        },
-        // Whether the graph can be panned and zoomed with mouse
-        zoomable: {
-            type: Boolean,
-            default: false,
         },
         // Whether to display tooltips on hover of graph elements
         tooltips: {
@@ -231,8 +231,7 @@ export default {
             }
         },
         // Move heading to correct positions above graph
-        positionHeadings: function(xOffset) {
-            let svgBox = this.$refs.svg.getBBox()
+        positionHeadings: function() {
             let g = this.$refs.svg.firstChild
             let graphWidth = g.getBBox().width
 
@@ -258,7 +257,7 @@ export default {
                 x += increment
             }
 
-            headings.setAttribute('transform', `translate(${xOffset}, ${this.groupPadding})`)
+            headings.setAttribute('transform', `translate(0, ${this.groupPadding})`)
         },
         // draw given display graph in svg element
         drawGraph: function(graph) {
@@ -294,30 +293,23 @@ export default {
 
             this.setupTooltips()
 
-            // Zoom support
-            let zoom
-            if (this.zoomable) {
-                zoom = d3.zoom().on('zoom', () => {
-                    inner.attr('transform', d3.event.transform)
-                })
-                svg.call(zoom)
-            }
-
-            // Center graph
-            let xOffset = (this.$refs.svg.clientWidth - graph.graph().width) / 2
             // Set y padding to text height plus some
             let headingsHeight = this.$refs.headings.getBBox().height
-            let yOffset = headingsHeight + this.groupPadding * 2;
+            let headingSpace = headingsHeight + this.groupPadding * 2;
+            // Set height of graph
+            let height = graph.graph().height + headingSpace
+            svg.attr('height', height)
 
-            if (this.zoomable) {
-                svg.call(zoom.transform, d3.zoomIdentity.translate(xOffset, yPadding))
-            } else {
-                inner.attr('transform', `translate(${xOffset}, ${yOffset})`)
-            }
-            svg.attr('height', graph.graph().height + yOffset + this.groupPadding)
+            // Position graph
+            let box = this.$refs.svg.firstChild.getBBox()
+            // Translate graph to give space for headings
+            inner.attr('transform', `translate(0, ${headingSpace})`)
+            // Set view box to encompass all content plus some spacing
+            let viewHeight = box.height + headingSpace + this.groupPadding
+            svg.attr('viewBox', `${box.x} ${box.y} ${box.width} ${viewHeight}`)
 
             // Move headings
-            this.positionHeadings(xOffset)
+            this.positionHeadings()
         },
     }
 }
