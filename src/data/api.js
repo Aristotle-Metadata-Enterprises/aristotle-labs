@@ -29,6 +29,7 @@ export function queryDistribution(uuid) {
               logicalPath
               dataElement {
                 name
+                definition
                 aristotleId
                 uuid
                 valueDomain {
@@ -49,6 +50,7 @@ export function queryDistribution(uuid) {
                 dataElementConcept{
                   property {
                     aristotleId
+                    uuid
                     name
                   }
                 }
@@ -131,7 +133,12 @@ export function getDistributionOptions(distribution, filter) {
         if (filter && !filter(dep.dataElement)) {
             continue
         }
-        options.push({value: dep.dataElement.uuid, id: dep.dataElement.aristotleId, text: dep.dataElement.dataElementConcept.property.name})
+        options.push({
+            value: dep.dataElement.uuid,
+            id: dep.dataElement.aristotleId,
+            definition: dep.dataElement.definition,
+            text: dep.dataElement.dataElementConcept.property.name,
+        })
     }
     return options
 }

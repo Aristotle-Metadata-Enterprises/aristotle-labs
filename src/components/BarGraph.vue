@@ -1,7 +1,6 @@
 <script>
 import {Bar} from 'vue-chartjs'
 import gradstop from 'gradstop';
-
 export default {
     extends: Bar,
     props: {
@@ -42,25 +41,28 @@ export default {
                     }
                 }]
             },
+            legend: {
+                position: 'bottom',
+            },
             responsive: true,
             maintainAspectRatio: false
         }
     }),
+    mounted: function() {
+        this.show()
+    },
     computed: {
         // Transformed data for display in the bar graph
         chartData: function () {
             // Chart data is a list of datasets
             if (this.selected[0] && this.selected[1]) {
                 let dataElement = this.selected[0];
-
                 let categoryDataElement = this.selected[1];
                 categoryDataElement = this.distribution_map.get(categoryDataElement);
                 let categories = this.getCategoriesFromDataElement(categoryDataElement);
                 let dataSets = this.generateChartDataFramework(categories);
-
                 // Access key is the lookup key for the JSON field that was selected
                 let accessKey = this.distribution_map.get(dataElement);
-
                 for (let day of this.raw_data) {
                     // Iterate across the JSON data and add data to each one
                     let aggregate = day[categoryDataElement];
@@ -95,6 +97,7 @@ export default {
                     labels: []
                 }
             }
+            return {}
         }
     },
     watch: {
@@ -102,9 +105,17 @@ export default {
             this.fillMissingDates([])
             let chartData = this.chartData;
             this.renderChart(chartData, this.options)
+            this.show()
         }
     },
     methods: {
+        // Render the chart based on current data
+        show: function() {
+            // If chart data isnt empty
+            if (Object.keys(this.chartData).length > 0) {
+                this.renderChart(this.chartData, this.options)
+            }
+        },
         generateRandomColour: function () {
             // Generate colour from colour scheme, so colours are nicely selected
             const gradient = gradstop({
@@ -118,10 +129,8 @@ export default {
             // Return a list of categories from the dataset
             // Used as aggregate for the stacked bar chart
             let categories = this.raw_data.map(day => day[categoryAccessKey]);
-
             let categorySet = new Set(categories);
             categorySet.delete(undefined);
-
             return [...categorySet];
         },
         generateChartDataFramework: function (categories) {
@@ -134,7 +143,6 @@ export default {
                 dataset.barPercentage = 1.0;
                 dataset.categoryPercentage = 1.0;
                 dataset.data = {};
-
                 datasets[category] = dataset
             }
             return datasets;
