@@ -14,7 +14,7 @@
         </div>
         <hr>
         <loading v-if="loading" />
-        <div v-else class="container">
+        <template v-else class="container">
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
@@ -39,13 +39,12 @@
                     </div>
                 </div>
             </div>
-            <h2 class="text-center">
-                How the data was created
-            </h2>
-        </div>
+        </template>
+        <h2 class="text-center">
+            How the data was created
+        </h2>
         <metadata-display :selected="allSelected" :dss="dss" tooltips />
         <about-this-display />
-
     </div>
 </template>
 
@@ -172,25 +171,25 @@ export default {
 
 
 *[data-aristotle-concept-id] {
-    color: #356a69;
+    border-bottom: 0px dashed #356a69;
 }
 a[data-aristotle-concept-id] {
     color: #356a69;
     font-weight: 600;
+    border-bottom: 1px dashed #356a69;
 }
-*[data-aristotle-concept-id]:after {
-    /* to be logo */
-    content: "A";
+a[data-aristotle-concept-id]:hover {
+    color: #356a69;
+    border-bottom: 1px solid #356a69;
+    text-decoration: none;
+}
+:not(a)[data-aristotle-concept-id]:after {
+    content: "\2021";
+    color: #356a69;
     font-weight: 600;
-    margin-left: 5px;
-    border: 1px solid gray;
-    width: 30px;
-    border-radius: 15px;
-}
-.no-logo[data-aristotle-concept-id]:after {
-    content: "";
-    border: 0px solid gray;
-    margin: 0px;
+    margin-left: 3px;
+    font-size: 80%;
+    vertical-align: top;
 }
 
 </style>
