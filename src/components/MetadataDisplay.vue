@@ -1,17 +1,15 @@
 <template>
-    <div>
-        <svg class="metadata-display"
-             ref="svg"
-             :xmlns="svg_ns"
-             width="100%"
-             preserveAspectRatio="xMidyMid meet"
-             >
-            <g />
-            <g ref="headings" class="headings">
-                <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
-            </g>
-        </svg>
-    </div>
+    <svg class="metadata-display"
+         ref="svg"
+         :xmlns="svg_ns"
+         width="100%"
+         preserveAspectRatio="xMidyMid meet"
+         >
+        <g />
+        <g ref="headings" class="headings">
+            <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
+        </g>
+    </svg>
 </template>
 
 <script>
@@ -318,10 +316,6 @@ export default {
  * Can't use scoped css here since dynamically added elements wont have the attribute
  * So we are using the metadata-display class for scoping the rules
  */
-
-svg.metadata-display {
-    border: 1px solid black;
-}
 
 /* Set text size */
 svg.metadata-display text {
