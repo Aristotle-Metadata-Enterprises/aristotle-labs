@@ -41,7 +41,7 @@
                 </div>
             </div>
         </template>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -50,7 +50,7 @@
 <script>
 import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -85,7 +85,7 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
-        'metadata-display': MetadataDisplay,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'loading': Loading,
     },

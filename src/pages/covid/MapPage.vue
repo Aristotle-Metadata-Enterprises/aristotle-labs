@@ -68,7 +68,7 @@
             </div>
 
         </template>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -77,7 +77,7 @@
 import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -122,7 +122,7 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'map-display': MapDisplay,
-        'metadata-display': MetadataDisplay,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,
