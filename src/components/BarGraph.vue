@@ -33,9 +33,9 @@
                     }
                 }],
                 yAxes: [{
-                    // ticks: {
-                    //     beginAtZero: true,
-                    // },
+                    ticks: {
+                        beginAtZero: true,
+                    },
                     stacked: true,
                     gridLines: {
                         display: true
@@ -116,12 +116,8 @@
         },
         generateRandomColour: function () {
             // Generate colour from colour scheme, so colours are nicely selected
-            const gradient = gradstop({
-                stops: 10,
-                inputFormat: 'hex',
-                colorArray: ['#115fd4', '#ff0000']
-            });
-            return gradient[Math.floor(Math.random() * 9)];
+            const gradient = ['#7293CB', '#E1974C', '#84BA5B', '#D35E60', '#ffff00']
+            return gradient[Math.floor(Math.random() * 4)];
         },
         getCategoriesFromDataElement: function (categoryAccessKey) {
             // Return a list of categories from the dataset
