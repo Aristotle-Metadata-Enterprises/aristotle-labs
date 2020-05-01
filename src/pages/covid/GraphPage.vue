@@ -32,8 +32,8 @@
                     </div>
                 </div>
             </div>
+            <covid-metadata-display :selected="allSelected" :dss="dss" />
         </template>
-        <covid-metadata-display :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
