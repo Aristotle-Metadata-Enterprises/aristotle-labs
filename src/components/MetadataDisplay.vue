@@ -1,5 +1,15 @@
 <template>
     <div>
+        <h2 class="text-center">
+            How the data was created
+        </h2>
+        <div class="container" style="margin-bottom:40px;">
+            <p>
+                The diagram below shows information about how that data above was collected and transformed before it was published.
+                Bringing together all of the information shows users of data where it came from and builds trust in data.
+            </p>
+            <p>This diagram is updated dynamically to show the transformations for the selected data.</p>
+        </div>
         <svg class="metadata-display" ref="svg" :xmlns="svg_ns" width="100%" height="500">
             <g />
             <g ref="headings" class="headings">
@@ -330,7 +340,6 @@ export default {
  */
 
 svg.metadata-display {
-    border: 1px solid black;
 }
 
 /* Set text size */

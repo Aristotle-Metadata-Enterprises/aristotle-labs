@@ -3,12 +3,11 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
-        <hr>
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
                     <div>
-                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
+                    This dashboard provides an interactive display of data about the 2020 <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> pandemic using data published by the European Centre for Disease Control. This data has been enhanced with metadata from an <a href="https://aristotlemetadata.com">Aristotle Metadata Registry</a>. Hover over the dashboard controls or any <a href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">underlined text</a> to see more information about the data, classifications or glossary definitions.
                     </div>
                 </div>
             </div>
@@ -19,6 +18,12 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
+                    <div class="graph-description">A count of the total number of confirmed COVID-19 daily cases that are required to be reported in accordance with public health legislation.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
                     <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
                 </div>
                 <div class="col-sm-4">
@@ -33,17 +38,10 @@
                                 description="Choose a category data element"
                                 :options="categoryOptions"
                         />
-
-                        <div class="well-help">
-                            Hover over an option to see more information about the data.
-                        </div>
                     </div>
                 </div>
             </div>
         </template>
-        <h2 class="text-center">
-            How the data was created
-        </h2>
         <metadata-display :selected="allSelected" :dss="dss" tooltips />
         <about-this-display />
     </div>
@@ -156,10 +154,16 @@ export default {
     font-size: 110%;
     font-weight: 600;
     text-align: center;
+    margin-left: 60px;
+}
+.graph-description {
+    font-size: 90%;
+    margin-left: 60px;
+    margin-right: 10px;
 }
 
 .option-selector {
-    margin-top:30px;
+    margin-top:5px;
 }
 .option-selector label {
     font-size: 90%;
@@ -170,9 +174,6 @@ export default {
 }
 
 
-*[data-aristotle-concept-id] {
-    border-bottom: 0px dashed #356a69;
-}
 a[data-aristotle-concept-id] {
     color: #356a69;
     font-weight: 600;
@@ -182,14 +183,6 @@ a[data-aristotle-concept-id]:hover {
     color: #356a69;
     border-bottom: 1px solid #356a69;
     text-decoration: none;
-}
-:not(a)[data-aristotle-concept-id]:after {
-    content: "\2021";
-    color: #356a69;
-    font-weight: 600;
-    margin-left: 3px;
-    font-size: 80%;
-    vertical-align: top;
 }
 
 </style>

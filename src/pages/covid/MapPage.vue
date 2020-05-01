@@ -3,7 +3,6 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
-        <hr>
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
