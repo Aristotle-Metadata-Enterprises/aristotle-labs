@@ -235,7 +235,6 @@ export default {
             let g = this.$refs.svg.firstChild
             let graphWidth = g.getBBox().width
 
-            let headings = this.$refs.headings
             let x = 0
             let increment = graphWidth / (this.headings.length - 1)
             for (let i = 0; i < this.headings.length; i++) {
@@ -256,8 +255,6 @@ export default {
                 // Update x
                 x += increment
             }
-
-            headings.setAttribute('transform', `translate(0, ${this.groupPadding})`)
         },
         // draw given display graph in svg element
         drawGraph: function(graph) {
@@ -295,18 +292,19 @@ export default {
 
             // Set y padding to text height plus some
             let headingsHeight = this.$refs.headings.getBBox().height
-            let headingSpace = headingsHeight + this.groupPadding * 2;
+            let headingSpace = headingsHeight + this.groupPadding;
+            // Get bounding box for graph
+            let graphBox = this.$refs.svg.firstChild.getBBox()
             // Set height of graph
-            let height = graph.graph().height + headingSpace
+            let height = graphBox.height + headingSpace
             svg.attr('height', height)
 
             // Position graph
-            let box = this.$refs.svg.firstChild.getBBox()
             // Translate graph to give space for headings
             inner.attr('transform', `translate(0, ${headingSpace})`)
             // Set view box to encompass all content plus some spacing
-            let viewHeight = box.height + headingSpace + this.groupPadding
-            svg.attr('viewBox', `${box.x} ${box.y} ${box.width} ${viewHeight}`)
+            let viewHeight = graphBox.height + headingSpace
+            svg.attr('viewBox', `${graphBox.x} ${graphBox.y} ${graphBox.width} ${viewHeight}`)
 
             // Move headings
             this.positionHeadings()
