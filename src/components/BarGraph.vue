@@ -1,6 +1,6 @@
 <script>
     import {Bar} from 'vue-chartjs'
-    import gradstop from 'gradstop';
+    import { getTextForValue } from '@/utils/options.js'
 
     export default {
     extends: Bar,
@@ -19,6 +19,11 @@
         selected: {
             type: Array,
             required: true,
+            default: () => [],
+        },
+        // Options as an array of objects with value and text properties
+        data_element_options: {
+            type: Array,
             default: () => [],
         }
     },
@@ -39,6 +44,10 @@
                     stacked: true,
                     gridLines: {
                         display: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: ''
                     }
                 }]
             },
@@ -110,8 +119,10 @@
         // Render the chart based on current data
         show: function() {
             // If chart data isn't empty
-            console.log(this.selected)
             if (Object.keys(this.chartData).length > 0) {
+                // Add label to Y Axis
+                let yAxisLabel = getTextForValue(this.data_element_options, this.selected[0])
+                this.options.scales.yAxes[0].scaleLabel.labelString = yAxisLabel;
                 this.renderChart(this.chartData, this.options)
             }
         },

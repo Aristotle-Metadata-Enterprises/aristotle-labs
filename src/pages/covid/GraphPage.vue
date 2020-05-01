@@ -9,7 +9,8 @@
             <h2>{{ graphTitle }}</h2>
             <div class="row">
                 <div class="col-sm-9">
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
+                                :data_element_options="options"/>
                 </div>
                 <div class="col-sm-3">
                     <div class="card bg-light">
