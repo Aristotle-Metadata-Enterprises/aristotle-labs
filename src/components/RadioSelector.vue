@@ -1,8 +1,11 @@
 <template>
     <div ref="block" class="form-block">
-        <span class="font-weight-bold">
+        <div class="font-weight-bold">
             {{ description }}
-        </span>
+        </div>
+        <div v-if="help" class="help">
+            {{ help }}
+        </div>
         <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
             <input class="form-check-input" type="radio" :id="o.value" :value="o.value" :checked="o.value === value" @change="emitInput">
             <label class="form-check-label" :for="o.value">{{ o.text }}</label>
@@ -26,6 +29,11 @@ export default {
         description: {
             type: String,
             required: true,
+        },
+        // Help text of selection
+        help: {
+            type: String,
+            required: false,
         },
         // Options as an array of objects with value and text properties
         options: {
@@ -54,9 +62,12 @@ export default {
 <style scoped>
 .form-block {
     display: block;
-    margin: 20px;
+    margin: 5px 15px;
 }
 input[type=radio] {
     transform: scale(1.25);
+}
+.help {
+    font-size: 90%;
 }
 </style>

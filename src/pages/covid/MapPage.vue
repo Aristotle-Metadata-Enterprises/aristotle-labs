@@ -1,15 +1,25 @@
 <template>
     <div class="covid-map mt-3 mb-3">
         <h1 class="text-center">
-            Aristotle Covid-19 Map
+            Aristotle COVID-19 Dashboard - Map view
         </h1>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>
+                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
+                    </div>
+                </div>
+            </div>
+        </div>
         <hr>
         <error-group :errors="errors" />
         <loading v-if="loading" />
-        <template v-else>
-            <h2>{{ graphTitle }}</h2>
+        <template v-else class="container">
             <div class="row">
                 <div class="col-md-8 col-12">
+                    <div class="graph-title">{{ graphTitle }}</div>
                     <map-display
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
@@ -34,33 +44,32 @@
                     {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-md-4 col-12">
-                    <radio-selector
-                            v-model="selectedCategory"
-                            description="Choose a data element"
-                            :options="options"
-                    />
-                    <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
-                        <checkbox-section
-                                :name="checkboxSection.propertyName"
-                                :id="checkboxSection.propertyId"
-                                :options="checkboxSection.options"
-                                @updateCheckedOpt="updateCheckedOptions"
+                    <div class="card bg-light option-selector">
+                        <radio-selector
+                                v-model="selectedCategory"
+                                description="Choose a data element"
+                                :options="options"
                         />
+                        <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
+                            <checkbox-section
+                                    :name="checkboxSection.propertyName"
+                                    :id="checkboxSection.propertyId"
+                                    :options="checkboxSection.options"
+                                    @updateCheckedOpt="updateCheckedOptions"
+                            />
+                        </div>
+        <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
+        <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                     </div>
-    <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
-    <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
                 </div>
             </div>
 
             <h2 class="text-center">
                 How the data was created
             </h2>
-            <div class="row">
-                <div class="col-12">
-                    <metadata-display :selected="allSelected" :dss="dss" tooltips />
-                </div>
-            </div>
         </template>
+        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        <about-this-display />
     </div>
 </template>
 
@@ -69,7 +78,9 @@ import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
 import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
+import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
@@ -112,6 +123,7 @@ export default {
         'radio-selector': RadioSelector,
         'map-display': MapDisplay,
         'metadata-display': MetadataDisplay,
+        'about-this-display': AboutThisDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,
         'error-group': ErrorGroup,
@@ -153,6 +165,14 @@ export default {
             this.errors.push(error)
         })
 
+        aristotleTooltip({
+            'selector': this.$refs.block,
+            'url': 'https://registry.aristotlemetadata.com',
+            'definitionWords': 50,
+            'longDefinitionWords': 75,
+            'placement': 'bottom',
+        });
+
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
             if (this.options.length > 0) {
@@ -173,7 +193,7 @@ export default {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `Map showing ${selectedText} on ${this.formattedDate}`
+                return `${selectedText} on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
