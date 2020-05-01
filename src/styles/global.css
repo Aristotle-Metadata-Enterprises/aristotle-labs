@@ -12,6 +12,10 @@ h2 {
     margin-bottom: 0.5em;
 }
 
+.aristotle-logo {
+    height: auto;
+    width: 35px;
+}
 dfn {
     font-weight: 500;
 }
