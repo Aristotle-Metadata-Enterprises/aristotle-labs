@@ -59,9 +59,7 @@ export default {
 <style scoped>
 .form-block {
     display: block;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin: 10px 20px;
 }
 .pl-20 {
     padding-left: 20px;

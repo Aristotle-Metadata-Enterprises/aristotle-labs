@@ -3,25 +3,19 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
-        <hr>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div>
-                    This dashboard provides an interactive display of <a class="no-logo" href="https://registry.aristotlemetadata.com/item/604099/" data-aristotle-concept-id="604099">COVID-19</a> based off data published by the European Centre for Disease Control. This data has been enhanced with metadata from an Aristotle Metadata Registry. Hover over any <span class="aristotle-green">green text</span> or text with the Aristotle Cloud logo to show more information about data, classifications or glossary definitions.
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
+        <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
+                    <div class="graph-description">{{ currentDataElementDefinition }}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
                     <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
                                 :data_element_options="options"/>
-                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-sm-4">
                     <div class="card bg-light option-selector">
@@ -35,18 +29,11 @@
                                 description="Choose a category data element"
                                 :options="categoryOptions"
                         />
-
-                        <div class="well-help">
-                            Hover over an option to see more information about the data.
-                        </div>
                     </div>
                 </div>
             </div>
         </template>
-        <h2 class="text-center">
-            How the data was created
-        </h2>
-        <metadata-display :selected="allSelected" :dss="dss" tooltips />
+        <covid-metadata-display :selected="allSelected" :dss="dss" />
         <about-this-display />
     </div>
 </template>
@@ -55,7 +42,8 @@
 <script>
 import RadioSelector from '@/components/RadioSelector.vue'
 import BarGraph from '@/components/BarGraph.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidHeaderText from '@/components/CovidHeaderText.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
@@ -90,7 +78,8 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'bar-graph': BarGraph,
-        'metadata-display': MetadataDisplay,
+        'covid-header-text': CovidHeaderText,
+        'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'loading': Loading,
     },
@@ -166,10 +155,16 @@ export default {
     font-size: 110%;
     font-weight: 600;
     text-align: center;
+    margin-left: 60px;
+}
+.graph-description {
+    font-size: 90%;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .option-selector {
-    margin-top:30px;
+    margin-top:5px;
 }
 .option-selector label {
     font-size: 90%;
@@ -180,9 +175,6 @@ export default {
 }
 
 
-*[data-aristotle-concept-id] {
-    border-bottom: 0px dashed #356a69;
-}
 a[data-aristotle-concept-id] {
     color: #356a69;
     font-weight: 600;
@@ -192,14 +184,6 @@ a[data-aristotle-concept-id]:hover {
     color: #356a69;
     border-bottom: 1px solid #356a69;
     text-decoration: none;
-}
-:not(a)[data-aristotle-concept-id]:after {
-    content: "\2021";
-    color: #356a69;
-    font-weight: 600;
-    margin-left: 3px;
-    font-size: 80%;
-    vertical-align: top;
 }
 
 </style>

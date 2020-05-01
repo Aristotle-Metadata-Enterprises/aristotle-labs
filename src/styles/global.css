@@ -6,6 +6,12 @@ html, body {
 }
 
 h2 {
-    margin-top: 2em;
+    border-top: 1px solid rgba(0,0,0,.1);
+    margin-top: 1em;
+    padding-top: 0.5em;
     margin-bottom: 0.5em;
+}
+
+dfn {
+    font-weight: 500;
 }
