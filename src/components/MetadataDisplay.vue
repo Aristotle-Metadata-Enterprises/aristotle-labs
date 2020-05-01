@@ -5,7 +5,7 @@
          width="100%"
          preserveAspectRatio="xMidyMid meet"
          >
-        <g />
+        <g ref="inner" />
         <g ref="headings" class="headings">
             <text v-for="h in headings" :key="h.id" :id="h.id" :x="h.x" :y="h.y">{{ h.text }}</text>
         </g>
@@ -230,7 +230,7 @@ export default {
         },
         // Move heading to correct positions above graph
         positionHeadings: function() {
-            let g = this.$refs.svg.firstChild
+            let g = this.$refs.inner
             let graphWidth = g.getBBox().width
 
             let x = 0
@@ -261,7 +261,7 @@ export default {
             options.rankdir = 'LR'
 
             let svg = d3.select(this.$refs.svg)
-            let inner = svg.select('g')
+            let inner = d3.select(this.$refs.inner)
             // We need to clear graph due to link wrapping changes
             inner.select('g').remove()
             let render = new dagreD3.render()
@@ -292,7 +292,7 @@ export default {
             let headingsHeight = this.$refs.headings.getBBox().height
             let headingSpace = headingsHeight + this.groupPadding;
             // Get bounding box for graph
-            let graphBox = this.$refs.svg.firstChild.getBBox()
+            let graphBox = this.$refs.inner.getBBox()
             // Set height of graph
             let height = graphBox.height + headingSpace
             svg.attr('height', height)
