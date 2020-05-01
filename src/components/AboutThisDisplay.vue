@@ -3,20 +3,26 @@
         <h2 class="text-center">
             About this dashboard
         </h2>
-        <div class="container">
+        <div class="container" style="padding-bottom:80px;">
             <p>
             This dashboard shows COVID-19 case data from the <a href="https://registry.aristotlemetadata.com/item/604036/" data-aristotle-concept-id="604036">European Center for Disease Control</a> based on data collected by the 
             <a href="https://registry.aristotlemetadata.com/item/603889/" data-aristotle-concept-id="603889">World Health Organisation</a>.
             </p><p>
             What we've shown in these graphs isn't just a representation of the data. We've also recorded important definitions about the data such as codes and classifications, data types and business definitions. This information is commonly known as <em>metadata</em> and gives people the necessary details to accurately interpret data.
             </p>
+            <div class="h4 text-center">Where did this metadata come from?</div>
             <p>
             Aristotle's metadata analysts examined <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports">World Health Organisation Situation Reports</a> and case collection forms to gather these data definitions to show how the data was collected and transformed before being shared with the world.
             </p>
             <p>
-            The metadata gathered includes data files and standards, but also definitions for important statistical classifications such as [[modes of transmission]] and [[region classifications]].
+            The metadata gathered includes data files and standards, but also definitions for important statistical classifications such as <a href="https://registry.aristotlemetadata.com/item/604038/" data-aristotle-concept-id="604038">modes of transmission</a> and <a href="https://registry.aristotlemetadata.com/item/604042/" data-aristotle-concept-id="604042">region classifications</a>.
             </p><p>
             By recording all of these important definitions in a metadata registry we're able to use our APIs to bring this information into the graph to put these business definitions along side the data so people know what the data means and where it came from.
+            </p>
+
+            <div class="h4 text-center">How metadata powers data visualisations</div>
+            <p>
+
             </p>
         </div>
         <div class="scroller">

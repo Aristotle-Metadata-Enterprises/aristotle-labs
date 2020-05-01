@@ -9,14 +9,14 @@
             </p>
         </div>
         <metadata-display :selected="selected" :dss="dss" tooltips />
-        <div class="container" style="margin-bottom:40px;">
+        <div class="container" style="margin-top:40px;">
             <p>This diagram is updated dynamically from the metadata to show how the selected data was collected and transformed before being displayed on the above graph. Hover over any of the boxes for more information about where this data came from and how it changed over time.</p>
             <div class="h4 text-center">How metadata keeps data accessible and protected</div>
             <p>
-            On this dashboard, the <a href="https://registry.aristotlemetadata.com/item/603889/" data-aristotle-concept-id="603889">source data collected</a> (left) by the
+            On this dashboard, the <a href="https://registry.aristotlemetadata.com/item/603889/" data-aristotle-concept-id="603889">source data collected</a> (shown in the above diagram under inputs) by the
             <a href="https://who.int">World Health Organisation</a> is sensitive information about individuals, however the <a>data collection forms</a> are made available.
             Because the metadata about how the data is collected is published, we can trace all of the transformations to the data before being grouped and
-            <a href="https://registry.aristotlemetadata.com/item/604036/" data-aristotle-concept-id="604036">published at a country level</a> (right).
+            <a href="https://registry.aristotlemetadata.com/item/604036/" data-aristotle-concept-id="604036">published at a country and region level</a>.
             </p>
         </div>
     </div>
