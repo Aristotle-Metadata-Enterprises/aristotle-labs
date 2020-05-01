@@ -110,7 +110,6 @@
         // Render the chart based on current data
         show: function() {
             // If chart data isn't empty
-            console.log(this.selected)
             if (Object.keys(this.chartData).length > 0) {
                 this.renderChart(this.chartData, this.options)
             }

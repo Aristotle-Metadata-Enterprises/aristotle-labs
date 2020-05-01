@@ -20,7 +20,7 @@
             </p>
         </div>
         <div class="scroller">
-            <a href=""> <!-- Harry - can you make this target the subway map -->
+            <a  @click="scrollClicked">
                 <span class="info">Scroll for more info
                 </span>
                 &darr;
@@ -41,6 +41,13 @@ export default {
             'longDefinitionWords': 75,
             'placement': 'bottom',
         });
+    },
+    methods: {
+        scrollClicked () {
+            var elmnt = document.getElementById("metadatadisplay");
+            elmnt.scrollIntoView();
+
+        }
     }
 }
 
