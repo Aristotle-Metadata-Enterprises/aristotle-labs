@@ -24,6 +24,12 @@
             <a href="https://registry.aristotlemetadata.com/api/">access it using our API</a> to produce the interactive graphs above and put business
             definitions along side the data so people can see what the data means and where it came from.
             </p>
+            <p>
+                Because all of these definitions are available via the API, they can be queried and displayed on the dashboard so someone reading the data can see the definitions alongside the data before they make a selection.
+                <div class="text-center">
+                    <img class="img-fluid" src="@/assets/covid-animated-tooltip.gif" alt="Tooltip example">
+                </div>
+            </p>
             <div class="h4 text-center">How metadata keeps data accessible and protected</div>
             <p>
             On this dashboard, the <a href="https://registry.aristotlemetadata.com/item/603889/" data-aristotle-concept-id="603889">source data collected</a> (shown in the above diagram under inputs) by the

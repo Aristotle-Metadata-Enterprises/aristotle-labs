@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
-                    <div class="graph-description">{{ currentDataElementDefinition }}</div>
+                    <div class="map-graph-description">{{ currentDataElementDefinition }}</div>
                 </div>
             </div>
             <div class="row">
@@ -37,7 +37,6 @@
                                 :data="datesData"
                         />
                     </div>
-                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-md-4 col-12">
                     <div class="card bg-light option-selector">
@@ -293,4 +292,9 @@ export default {
 </script>
 
 <style scoped>
+.map-graph-description {
+    font-size: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
 </style>
