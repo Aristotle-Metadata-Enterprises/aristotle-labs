@@ -10,6 +10,7 @@
             <div class="row">
                 <div class="col-sm-9">
                     <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap" />
+                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-sm-3">
                     <div class="card bg-light">
@@ -61,6 +62,7 @@ export default {
         raw_data: {},
         selected: '',
         selectedCategory: '',
+        currentDataElementDefinition: '',
         options: [],
         categoryOptions: [],
         dataMap: new Map(),
@@ -105,6 +107,13 @@ export default {
             }
             this.loading = false;
         })
+    },
+    watch: {
+        selected: function () {
+            this.currentDataElementDefinition = this.$sanitize(this.options.find(obj => {
+                return obj.value === this.selected
+            }).definition)
+        }
     },
     computed: {
         graphTitle: function() {
