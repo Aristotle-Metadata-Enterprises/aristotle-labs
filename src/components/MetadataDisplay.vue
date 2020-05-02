@@ -67,7 +67,7 @@ export default {
             // Map of node id's to node names and type
             let nodeInfo = new Map()
 
-            if (this.dss) {
+            if (Object.keys(this.dss).length > 0) {
                 // Create root dss node
                 nodeInfo.set(
                     this.dss.uuid,

@@ -51,7 +51,7 @@
 
         </div>
         <div class="scroller">
-            <a href=""> <!-- Harry - can you make this target the subway map -->
+            <a  @click="scrollClicked">
                 <span class="info">Scroll for more info
                 </span>
                 &darr;
@@ -72,6 +72,11 @@ export default {
             'longDefinitionWords': 75,
             'placement': 'bottom',
         });
+    },
+    methods: {
+        scrollClicked () {
+            document.getElementById("metadatadisplay").scrollIntoView();
+        }
     }
 }
 
@@ -89,8 +94,8 @@ export default {
     border-radius: 30px;
     text-align: center;
     padding-top: 4px;
-    font-size: 20pt;
-    font-weight: bold;
+    font-size: 21pt;
+    font-weight: 900;  /* Max boldness for the arrow */
 }
 .scroller a, .scroller a:hover {
     color: white;
