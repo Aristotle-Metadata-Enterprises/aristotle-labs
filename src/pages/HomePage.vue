@@ -69,11 +69,6 @@ export default {}
 </script>
 
 <style scoped>
-.card-img-top {
-    width: 100%;
-    height: 28vw;
-    object-fit: cover;
-}
 .card-body {
     border-top: 1px solid lightgray;
 }
