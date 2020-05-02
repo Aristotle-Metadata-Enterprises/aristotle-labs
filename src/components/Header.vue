@@ -35,7 +35,7 @@
                 </li>
             </ul>
         </div>
-        <a href="https://aristotlemetadata.com" class="btn btn-outline-success">
+        <a href="https://aristotlemetadata.com" class="btn btn-outline-light">
             Back to main site
         </a>
     </nav>
