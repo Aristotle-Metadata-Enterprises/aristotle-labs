@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div ref="container" class="container">
         <div class="row">
             <div class="col-sm-12">
                 <div>
@@ -18,7 +18,7 @@ import MetadataDisplay from '@/components/MetadataDisplay.vue'
 export default {
     mounted: function() {
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.container,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,

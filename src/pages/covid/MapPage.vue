@@ -1,5 +1,5 @@
 <template>
-    <div class="covid-map mt-3 mb-3">
+    <div ref="container" class="covid-map mt-3 mb-3">
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
@@ -158,7 +158,7 @@ export default {
         })
 
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.container,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,

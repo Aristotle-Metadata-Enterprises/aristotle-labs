@@ -6,7 +6,7 @@
         <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
-            <div class="row">
+            <div ref="row" class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
                     <div class="graph-description">{{ currentDataElementDefinition }}</div>
@@ -106,7 +106,7 @@ export default {
         })
 
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.row,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
