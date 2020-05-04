@@ -6,7 +6,6 @@ const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const info = require("./package.json")
 
@@ -16,13 +15,13 @@ module.exports = {
         "main": './src/main.js'
     },
     plugins: [
-        new FaviconsWebpackPlugin(),
         new CleanWebpackPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             title: 'covidTimeSeries',
             template: './src/index.html',
             filename: 'index.html',
+            favicon: './src/assets/aris_logo_small.png',
         }),
         new webpack.BannerPlugin(() => {
             return `${info.name}, ${info.version}\n\n${fs.readFileSync('./LICENSE', 'utf-8')}`
