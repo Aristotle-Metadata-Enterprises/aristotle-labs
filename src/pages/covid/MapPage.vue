@@ -29,11 +29,20 @@
                     </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
-                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                            <button type="button"
+                                    class="btn btn-sm"
+                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }"
+                                    @click="playMapDates"
+                            >
                                 <i v-if="!datesPlaying" class="fas fa-play" />
                                 <i v-else class="fas fa-pause" />
                             </button>
-                            <button type="button" :disabled="restartedAndPlaying || datesPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying || datesPlaying }" @click="restartAndPlayMapDates">
+                            <button type="button"
+                                    :disabled="playing"
+                                    class="btn btn-sm"
+                                    :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': playing }"
+                                    @click="restartAndPlayMapDates"
+                            >
                                 <i class="fas fa-redo-alt" />
                             </button>
                         </div>
@@ -189,9 +198,8 @@ export default {
             if (this.options.length > 0) {
                 this.selectedCategory = this.options[0].value
             }
-            this.loading = false;
+            this.loading = false
         })
-
     },
     watch: {
         selectedCategory: function () {
@@ -204,14 +212,14 @@ export default {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `${selectedText}` // on ${this.formattedDate}`
+                return `${selectedText}`  // on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
         },
         mapData: function () {
 
-            if (!this.dataMapping.has(this.selectedCategory)) {
+            if (this.loading) {
                 return [["Country", "Country name"]]
             }
 
@@ -245,6 +253,10 @@ export default {
             let sel = this.dataMapping.get(this.selectedCategory)
             let maxValue = 0
 
+            if (this.loading) {
+                return maxValue
+            }
+
             if (!this.dataMapping.has(this.selectedCategory)) {
                 return maxValue
             }
@@ -265,6 +277,9 @@ export default {
             }
             return ""
         },
+        playing: function () {
+            return this.restartedAndPlaying || this.datesPlaying
+        }
     },
     methods: {
         camelCaseToSentenceCase: (text) => {

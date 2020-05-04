@@ -124,7 +124,7 @@ export function queryDss(uuid) {
     })
 }
 
-// Query a dataset specification and its components
+// Query a conceptual domain and its components
 export function queryConceptualDomain(id) {
     const query = `
     query ($id:String) {
@@ -149,7 +149,7 @@ export function queryConceptualDomain(id) {
         conceptualDomain.id = id
         return conceptualDomain
     }).catch((error) => {
-        throw new NiceError('Could not fetch dataset metadata', error)
+        throw new NiceError('Could not fetch conceptual domain metadata', error)
     })
 }
 
