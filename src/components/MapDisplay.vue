@@ -25,14 +25,18 @@ export default {
         colorAxisMaxValue: {
             type: Number,
             default: 0,
-        }
+        },
+        region: {
+            type: String,
+            default: ''
+        },
     },
     data () {
         return {}
     },
     computed: {
         chartOptions: function () {
-            return {
+            let options = {
                 colorAxis: {
                     colors: ['#ffffff', '#a1de93', '#f7f48b', '#f47c7c'],
                     maxValue: this.colorAxisMaxValue,
@@ -42,6 +46,10 @@ export default {
                 datalessRegionColor: '#d7cece',
                 defaultColor: '#ff74ea',
             }
+            if (this.region && this.region !== "All Regions") {
+                options.region = this.region
+            }
+            return options
         }
     },
 }

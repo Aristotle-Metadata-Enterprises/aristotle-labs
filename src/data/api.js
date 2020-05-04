@@ -124,6 +124,35 @@ export function queryDss(uuid) {
     })
 }
 
+// Query a dataset specification and its components
+export function queryConceptualDomain(id) {
+    const query = `
+    query ($id:String) {
+      conceptualDomains (aristotleId: $id) {
+        edges {
+          node {
+            name
+            uuid
+            valuemeaningSet{
+              name
+              id
+              definition
+            }
+          }
+        }
+      }
+    }`
+
+    return graphqlQuery(query, {id: id}).then((response) => {
+        validateGraphqlResponse(response.data, 'conceptualDomains')
+        let conceptualDomain = response.data.data.conceptualDomains.edges[0].node
+        conceptualDomain.id = id
+        return conceptualDomain
+    }).catch((error) => {
+        throw new NiceError('Could not fetch dataset metadata', error)
+    })
+}
+
 // Get a distributions data elements as options array
 // Filter is an optional function that receives a data element and returns a boolean
 // indicating its inclusion in the options

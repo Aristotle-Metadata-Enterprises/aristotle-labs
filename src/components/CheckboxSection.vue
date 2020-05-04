@@ -4,7 +4,7 @@
         <div class="form-block form-check">
             <div v-for="o in options" :key="o.id">
                 <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
-                <label :for="o.id" class="form-check-label">{{ o.name }}</label>
+                <label :for="o.id" :title="o.definition" class="form-check-label">{{ o.name }}</label>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         updateCheckedOptions: function () {
-            this.$emit('updateCheckedOpt', this.checkedOptions, this.name)
+            this.$emit('updateCheckedOpt', this.checkedOptions)
         },
         initialiseOptions: function () {
             for(let option of this.options) {

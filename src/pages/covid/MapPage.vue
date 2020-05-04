@@ -13,6 +13,7 @@
                     <map-display
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
+                        :region="selectedRegion"
                     />
                     <strong>Date</strong><br>
                     {{ formattedDate }}<br>
@@ -22,7 +23,7 @@
                                 <i v-if="!datesPlaying" class="fas fa-play" />
                                 <i v-else class="fas fa-pause" />
                             </button>
-                            <button type="button" :disabled="restartedAndPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying }" @click="restartAndPlayMapDates">
+                            <button type="button" :disabled="restartedAndPlaying || datesPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying || datesPlaying }" @click="restartAndPlayMapDates">
                                 <i class="fas fa-redo-alt" />
                             </button>
                         </div>
@@ -39,16 +40,22 @@
                             description="Choose a data element"
                             :options="options"
                     />
-                    <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
+                    <radio-selector
+                            v-model="selectedRegion"
+                            description="Region Identifier"
+                            :description-id="regionIdentifierId"
+                            :options="regionOptions"
+                            :tooltip-for-options="false"
+                    />
+                    <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.id">
                         <checkbox-section
-                                :name="checkboxSection.propertyName"
-                                :id="checkboxSection.propertyId"
-                                :options="checkboxSection.options"
+                                :name="checkboxSection.name"
+                                :id="checkboxSection.id"
+                                :options="checkboxSection.valuemeaningSet"
                                 @updateCheckedOpt="updateCheckedOptions"
                         />
                     </div>
-    <!--                <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
-    <!--                <span>Checked region options: {{ checkedRegionOptions }}</span>-->
+<!--                    <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
                 </div>
             </div>
 
@@ -76,6 +83,7 @@ import {
     getDistribution,
     getDistributionCheckboxSections,
     getDatasetSpecification,
+    getConceptualDomain,
     getMapFilterOptions,
 } from '@/data/covid.js'
 import {
@@ -99,7 +107,9 @@ export default {
         currentDataElementDefinition: '',
         checkboxSections: [],
         checkedTransmissionOptions: [],
-        checkedRegionOptions: [],
+        regionOptions: [],
+        regionIdentifierId: '',
+        selectedRegion: '',
         options: [],
         dataMapping: new Map(),
         sliderDateValue: 0,
@@ -141,8 +151,20 @@ export default {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.selectedCategory = this.options[0].value
-            this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
+            let regionIdentifier = getDistributionCheckboxSections(data, filterValueDataElements)[0]
+            let regionOptions = regionIdentifier.options
+            // let regionIdentifierId = re
+            regionOptions.splice(0, 0, {id: "All Regions", text: "All Regions", value: "All Regions"})
+            this.regionIdentifierId = regionIdentifier.propertyId
+            this.regionOptions = regionOptions
+            this.selectedRegion = "All Regions"
             this.dataMapping = mapDistributionData(data)
+        }).catch((error) => {
+            this.errors.push(error)
+        })
+
+        let conceptualDomainPromise = getConceptualDomain().then((data) => {
+            this.checkboxSections = [data]
         }).catch((error) => {
             this.errors.push(error)
         })
@@ -154,7 +176,7 @@ export default {
         })
 
         // Stop loading once all promises resolved
-        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+        Promise.all([dataPromise, distPromise, dssPromise, conceptualDomainPromise]).finally(() => {
             if (this.options.length > 0) {
                 this.selectedCategory = this.options[0].value
             }
@@ -191,8 +213,8 @@ export default {
             for (const jsonElement of this.covidData) {
 
                 if (this.sliderDateValue === jsonElement['dateRep'] &&
-                    this.checkedTransmissionOptions.includes(jsonElement['transmissionClassification']) &&
-                    this.checkedRegionOptions.includes(jsonElement['region'])
+                    this.checkedTransmissionOptions.includes(jsonElement['transmissionClassification'])
+                    // && this.checkedRegionOptions.includes(jsonElement['region'])
                 ) {
                     mapAttributes.push(
                         [
@@ -240,13 +262,8 @@ export default {
             let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
             return result.charAt(0).toUpperCase() + result.slice(1)
         },
-        updateCheckedOptions: function (opts, name) {
-            if (name === "Transmission classification") {
-                this.checkedTransmissionOptions = opts
-            }
-            else if (name === "Region Identifier") {
-                this.checkedRegionOptions = opts
-            }
+        updateCheckedOptions: function (opts) {
+            this.checkedTransmissionOptions = opts
         },
         playMapDates: function () {
 

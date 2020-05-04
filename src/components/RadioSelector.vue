@@ -1,6 +1,6 @@
 <template>
     <div ref="block" class="form-block">
-        <span class="font-weight-bold">
+        <span class="font-weight-bold" :data-aristotle-concept-id="descriptionId">
             {{ description }}
         </span>
         <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
@@ -31,17 +31,28 @@ export default {
         options: {
             type: Array,
             default: () => [],
-        }
+        },
+        descriptionId: {
+            type: String,
+            default: undefined,
+        },
+        // Add a tooltip for the radio options.
+        tooltipForOptions: {
+            type: Boolean,
+            default: true,
+        },
     },
     mounted() {
         // Initialize the aristotle tooltip
-        aristotleTooltip({
+        // if (this.tooltipForOptions) {
+            aristotleTooltip({
             'selector': this.$refs.block,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
             'placement': 'left',
-        });
+        })
+        // }
     },
     methods: {
         emitInput: function (event) {
