@@ -1,13 +1,18 @@
 <template>
     <div class="covid-map mt-3 mb-3">
         <h1 class="text-center">
-            Aristotle Covid-19 Map
+            Aristotle COVID-19 Dashboard - Map view
         </h1>
-        <hr>
+        <covid-header-text />
         <error-group :errors="errors" />
         <loading v-if="loading" />
-        <template v-else>
-            <h2>{{ graphTitle }}</h2>
+        <template v-else class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="graph-title">{{ graphTitle }}</div>
+                    <div class="map-graph-description">{{ currentDataElementDefinition }}</div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-8 col-12">
                     <map-display
@@ -15,8 +20,9 @@
                         :color-axis-max-value="colorAxisMaxValue"
                         :region="selectedRegion"
                     />
-                    <strong>Date</strong><br>
-                    {{ formattedDate }}<br>
+                    <div>
+                        <strong>Date</strong>: {{ formattedDate }}
+                    </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
                             <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
@@ -32,42 +38,36 @@
                                 :data="datesData"
                         />
                     </div>
-                    {{ currentDataElementDefinition }}
                 </div>
                 <div class="col-md-4 col-12">
-                    <radio-selector
-                            v-model="selectedCategory"
-                            description="Choose a data element"
-                            :options="options"
-                    />
-                    <radio-selector
-                            v-model="selectedRegion"
-                            description="Region Identifier"
-                            :description-id="regionIdentifierId"
-                            :options="regionOptions"
-                            :tooltip-for-options="false"
-                    />
-                    <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.id">
-                        <checkbox-section
-                                :name="checkboxSection.name"
-                                :id="checkboxSection.id"
-                                :options="checkboxSection.valuemeaningSet"
-                                @updateCheckedOpt="updateCheckedOptions"
+                    <div class="card bg-light option-selector">
+                        <radio-selector
+                                v-model="selectedCategory"
+                                description="Choose a data element"
+                                :options="options"
                         />
+                        <radio-selector
+                                v-model="selectedRegion"
+                                description="Region Identifier"
+                                :description-id="regionIdentifierId"
+                                :options="regionOptions"
+                                :tooltip-for-options="false"
+                        />
+                        <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.id">
+                            <checkbox-section
+                                    :name="checkboxSection.name"
+                                    :id="checkboxSection.id"
+                                    :options="checkboxSection.valuemeaningSet"
+                                    @updateCheckedOpt="updateCheckedOptions"
+                            />
+                        </div>
                     </div>
-<!--                    <span>Checked transmition options: {{ checkedTransmissionOptions }}</span>-->
                 </div>
             </div>
 
-            <h2 class="text-center">
-                How the data was created
-            </h2>
-            <div class="row">
-                <div class="col-12">
-                    <metadata-display :selected="allSelected" :dss="dss" tooltips />
-                </div>
-            </div>
+            <covid-metadata-display id="metadatadisplay" :selected="allSelected" :dss="dss" />
         </template>
+        <about-this-display />
     </div>
 </template>
 
@@ -75,7 +75,9 @@
 import RadioSelector from "@/components/RadioSelector.vue"
 import CheckboxSection from '@/components/CheckboxSection.vue'
 import MapDisplay from '@/components/MapDisplay.vue'
-import MetadataDisplay from '@/components/MetadataDisplay.vue'
+import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
+import CovidHeaderText from '@/components/CovidHeaderText.vue'
+import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import Loading from '@/components/Loading.vue'
 import {
@@ -121,7 +123,9 @@ export default {
     components: {
         'radio-selector': RadioSelector,
         'map-display': MapDisplay,
-        'metadata-display': MetadataDisplay,
+        'covid-header-text': CovidHeaderText,
+        'covid-metadata-display': CovidMetadataDisplay,
+        'about-this-display': AboutThisDisplay,
         'checkbox-section': CheckboxSection,
         'vue-slider': VueSlider,
         'error-group': ErrorGroup,
@@ -195,7 +199,7 @@ export default {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `Map showing ${selectedText} on ${this.formattedDate}`
+                return `${selectedText}` // on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
@@ -297,8 +301,9 @@ export default {
 </script>
 
 <style scoped>
-.form-block {
-    display: block;
-    margin: 20px;
+.map-graph-description {
+    font-size: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 </style>

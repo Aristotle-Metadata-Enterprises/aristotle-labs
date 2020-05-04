@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-custom navbar-expand-lg">
-        <img class="navbar-brand img-fluid aristotle-logo" src="@/assets/aris_logo_small.png" alt="Aristotle Logo">
         <router-link class="navbar-brand" :to="{name: 'homePage'}">
+            <img class="img-fluid aristotle-logo" src="@/assets/aris_logo_small.png" alt="Aristotle Logo">
             Aristotle Labs
         </router-link>
 
@@ -13,16 +13,16 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <router-link class="nav-link" :to="{name: 'homePage'}">
-                        Home <span class="sr-only">(current)</span>
+                        Home
                     </router-link>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     >
-                        COVID-19 Tools
+                        Labs
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <router-link class="dropdown-item" :to="{name: 'covidGraph'}">
@@ -35,6 +35,9 @@
                 </li>
             </ul>
         </div>
+        <a href="https://aristotlemetadata.com" class="btn btn-outline-light">
+            Back to main site
+        </a>
     </nav>
 </template>
 
