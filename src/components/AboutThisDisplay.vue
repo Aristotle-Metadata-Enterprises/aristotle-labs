@@ -21,7 +21,7 @@
             <div class="h4 text-center">How metadata enhances data visualisations</div>
             <p>
             By entering this information into a metadata registry, not only was it more accessible to people browsing for information, but we are also able to
-            <a href="https://registry.aristotlemetadata.com/api/">access it using our API</a> to produce the interactive graphs above.
+            <a href="https://registry.aristotlemetadata.com/api/">access it using our Application Programming Interface (API)</a> to produce the interactive graphs above.
             </p>
             <p>
                 Because these definitions are available via the API, they can be queried and shown on the dashboard so someone reading the data can see the definitions alongside the data before they make a selection.  Putting these business
