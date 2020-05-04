@@ -124,6 +124,35 @@ export function queryDss(uuid) {
     })
 }
 
+// Query a conceptual domain and its components
+export function queryConceptualDomain(id) {
+    const query = `
+    query ($id:String) {
+      conceptualDomains (aristotleId: $id) {
+        edges {
+          node {
+            name
+            uuid
+            valuemeaningSet{
+              name
+              id
+              definition
+            }
+          }
+        }
+      }
+    }`
+
+    return graphqlQuery(query, {id: id}).then((response) => {
+        validateGraphqlResponse(response.data, 'conceptualDomains')
+        let conceptualDomain = response.data.data.conceptualDomains.edges[0].node
+        conceptualDomain.id = id
+        return conceptualDomain
+    }).catch((error) => {
+        throw new NiceError('Could not fetch conceptual domain metadata', error)
+    })
+}
+
 // Get a distributions data elements as options array
 // Filter is an optional function that receives a data element and returns a boolean
 // indicating its inclusion in the options
@@ -138,6 +167,7 @@ export function getDistributionOptions(distribution, filter) {
             id: dep.dataElement.aristotleId,
             definition: dep.dataElement.definition,
             text: dep.dataElement.dataElementConcept.property.name,
+            aristotleTooltipId: dep.dataElement.aristotleId,
         })
     }
     return options

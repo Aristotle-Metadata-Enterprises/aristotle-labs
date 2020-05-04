@@ -9,8 +9,12 @@
         <template v-else class="container">
             <div class="row">
                 <div class="col-sm-8">
-                    <div class="graph-title">{{ graphTitle }}</div>
-                    <div class="map-graph-description">{{ currentDataElementDefinition }}</div>
+                    <div class="graph-title">
+                        {{ graphTitle }}
+                    </div>
+                    <div class="map-graph-description">
+                        {{ currentDataElementDefinition }}
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -18,17 +22,27 @@
                     <map-display
                         :map-data="mapData"
                         :color-axis-max-value="colorAxisMaxValue"
+                        :region="selectedRegion"
                     />
                     <div>
                         <strong>Date</strong>: {{ formattedDate }}
                     </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
-                            <button type="button" class="btn btn-sm" :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }" @click="playMapDates">
+                            <button type="button"
+                                    class="btn btn-sm"
+                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }"
+                                    @click="playMapDates"
+                            >
                                 <i v-if="!datesPlaying" class="fas fa-play" />
                                 <i v-else class="fas fa-pause" />
                             </button>
-                            <button type="button" :disabled="restartedAndPlaying" class="btn btn-sm" :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': restartedAndPlaying }" @click="restartAndPlayMapDates">
+                            <button type="button"
+                                    :disabled="playing"
+                                    class="btn btn-sm"
+                                    :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': playing }"
+                                    @click="restartAndPlayMapDates"
+                            >
                                 <i class="fas fa-redo-alt" />
                             </button>
                         </div>
@@ -42,14 +56,21 @@
                     <div class="card bg-light option-selector">
                         <radio-selector
                                 v-model="selectedCategory"
-                                description="Select data to display"
+                                description="Choose a data element"
                                 :options="options"
                         />
-                        <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.propertyId">
+                        <radio-selector
+                                v-model="selectedRegion"
+                                description="Region Identifier"
+                                :description-id="regionIdentifierId"
+                                :options="regionOptions"
+                                :tooltip-for-options="false"
+                        />
+                        <div v-for="checkboxSection in checkboxSections" :key="checkboxSection.id">
                             <checkbox-section
-                                    :name="checkboxSection.propertyName"
-                                    :id="checkboxSection.propertyId"
-                                    :options="checkboxSection.options"
+                                    :name="checkboxSection.name"
+                                    :id="checkboxSection.id"
+                                    :options="checkboxSection.valuemeaningSet"
                                     @updateCheckedOpt="updateCheckedOptions"
                             />
                         </div>
@@ -77,6 +98,7 @@ import {
     getDistribution,
     getDistributionCheckboxSections,
     getDatasetSpecification,
+    getConceptualDomain,
     getMapFilterOptions,
 } from '@/data/covid.js'
 import {
@@ -90,6 +112,7 @@ import { getTextForValue } from '@/utils/options.js'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
 const moment = require('moment')
+const getCountryISO2 = require("country-iso-3-to-2")
 
 export default {
     data: () => ({
@@ -100,7 +123,9 @@ export default {
         currentDataElementDefinition: '',
         checkboxSections: [],
         checkedTransmissionOptions: [],
-        checkedRegionOptions: [],
+        regionOptions: [],
+        regionIdentifierId: '',
+        selectedRegion: '',
         options: [],
         dataMapping: new Map(),
         sliderDateValue: 0,
@@ -144,8 +169,20 @@ export default {
             this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements)
             this.selectedCategory = this.options[0].value
-            this.checkboxSections = getDistributionCheckboxSections(data, filterValueDataElements)
+            let regionIdentifier = getDistributionCheckboxSections(data, filterValueDataElements)[0]
+            let regionOptions = regionIdentifier.options
+            // let regionIdentifierId = re
+            regionOptions.splice(0, 0, {id: "All Regions", text: "All Regions", value: "All Regions"})
+            this.regionIdentifierId = '604043'
+            this.regionOptions = regionOptions
+            this.selectedRegion = "All Regions"
             this.dataMapping = mapDistributionData(data)
+        }).catch((error) => {
+            this.errors.push(error)
+        })
+
+        let conceptualDomainPromise = getConceptualDomain().then((data) => {
+            this.checkboxSections = [data]
         }).catch((error) => {
             this.errors.push(error)
         })
@@ -157,13 +194,12 @@ export default {
         })
 
         // Stop loading once all promises resolved
-        Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
+        Promise.all([dataPromise, distPromise, dssPromise, conceptualDomainPromise]).finally(() => {
             if (this.options.length > 0) {
                 this.selectedCategory = this.options[0].value
             }
-            this.loading = false;
+            this.loading = false
         })
-
     },
     watch: {
         selectedCategory: function () {
@@ -176,14 +212,14 @@ export default {
         graphTitle: function() {
             let selectedText = getTextForValue(this.options, this.selectedCategory)
             if (selectedText) {
-                return `${selectedText}` // on ${this.formattedDate}`
+                return `${selectedText}`  // on ${this.formattedDate}`
             }
             // Fallback title
             return 'Covid Map'
         },
         mapData: function () {
 
-            if (!this.dataMapping.has(this.selectedCategory)) {
+            if (this.loading) {
                 return [["Country", "Country name"]]
             }
 
@@ -194,13 +230,13 @@ export default {
             for (const jsonElement of this.covidData) {
 
                 if (this.sliderDateValue === jsonElement['dateRep'] &&
-                    this.checkedTransmissionOptions.includes(jsonElement['transmissionClassification']) &&
-                    this.checkedRegionOptions.includes(jsonElement['region'])
+                    this.checkedTransmissionOptions.includes(jsonElement['transmissionClassification'])
+                    // && this.checkedRegionOptions.includes(jsonElement['region'])
                 ) {
                     mapAttributes.push(
                         [
-                            jsonElement['geoId'],
-                            jsonElement['reportingArea'],
+                            getCountryISO2(jsonElement['countryterritoryCode']),
+                            jsonElement['countriesAndTerritories'].split('_').join(' '),
                             parseInt(jsonElement[sel]),
                         ]
                     )
@@ -216,6 +252,10 @@ export default {
         colorAxisMaxValue: function () {
             let sel = this.dataMapping.get(this.selectedCategory)
             let maxValue = 0
+
+            if (this.loading) {
+                return maxValue
+            }
 
             if (!this.dataMapping.has(this.selectedCategory)) {
                 return maxValue
@@ -237,19 +277,17 @@ export default {
             }
             return ""
         },
+        playing: function () {
+            return this.restartedAndPlaying || this.datesPlaying
+        }
     },
     methods: {
         camelCaseToSentenceCase: (text) => {
             let result = text.replace(/[^0-9](?=[0-9])/g, '$& ').replace( /([A-Z])/g, " $1" )
             return result.charAt(0).toUpperCase() + result.slice(1)
         },
-        updateCheckedOptions: function (opts, name) {
-            if (name === "Transmission classification") {
-                this.checkedTransmissionOptions = opts
-            }
-            else if (name === "Region Identifier") {
-                this.checkedRegionOptions = opts
-            }
+        updateCheckedOptions: function (opts) {
+            this.checkedTransmissionOptions = opts
         },
         playMapDates: function () {
 

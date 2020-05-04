@@ -1,12 +1,12 @@
 <template>
     <div ref="container" class="form-block">
-        <div class="font-weight-bold">
+        <div class="font-weight-bold" :data-aristotle-concept-id="descriptionId">
             {{ description }}
         </div>
         <div v-if="help" class="help">
             {{ help }}
         </div>
-        <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
+        <div ref="option" class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.aristotleTooltipId">
             <input class="form-check-input" type="radio" :id="o.value" :value="o.value" :checked="o.value === value" @change="emitInput">
             <label class="form-check-label" :for="o.value">{{ o.text }}</label>
         </div>
@@ -34,12 +34,22 @@ export default {
         help: {
             type: String,
             required: false,
+            default: '',
         },
         // Options as an array of objects with value and text properties
         options: {
             type: Array,
             default: () => [],
-        }
+        },
+        descriptionId: {
+            type: String,
+            default: undefined,
+        },
+        // Add a tooltip for the radio options.
+        tooltipForOptions: {
+            type: Boolean,
+            default: true,
+        },
     },
     mounted() {
         // Initialize the aristotle tooltip
@@ -49,7 +59,7 @@ export default {
             'definitionWords': 50,
             'longDefinitionWords': 75,
             'placement': 'left',
-        });
+        })
     },
     methods: {
         emitInput: function (event) {

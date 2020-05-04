@@ -1,7 +1,7 @@
 // Covid data access functions to be used across vue components
 import axios from 'axios'
 
-import { queryDistribution, queryDss } from '@/data/api.js'
+import { queryDistribution, queryDss, queryConceptualDomain } from '@/data/api.js'
 import { NiceError } from '@/error/class.js'
 
 // Get the COVID-19 data and transform into JavaScript object
@@ -21,6 +21,11 @@ export function getDistribution() {
     return queryDistribution(uuid)
 }
 
+export function getConceptualDomain() {
+    const aristotleId = "604037"
+    return queryConceptualDomain(aristotleId)
+}
+
 /**
  * The purpose of this function is to get the distribution options for the checkboxes in the map page.
  * @param distribution
@@ -36,9 +41,36 @@ export function getDistributionCheckboxSections(distribution, filter) {
         let sectionOptions = []
         for (let permissibleValue of dep.dataElement.valueDomain.permissiblevalueSet) {
             if (permissibleValue.valueMeaning) {
-                sectionOptions.push({id: permissibleValue.valueMeaning.id, name: permissibleValue.valueMeaning.name})
+                sectionOptions.push({
+                    id: permissibleValue.valueMeaning.id,
+                    value: permissibleValue.valueMeaning.name,
+                    text: permissibleValue.valueMeaning.name,
+                })
             } else {
-                sectionOptions.push({id: permissibleValue.id, name: permissibleValue.meaning})
+                if (permissibleValue.meaning === 'African Region') {
+                    permissibleValue.value = '002'
+                }
+                if (permissibleValue.meaning === 'Region of the Americas') {
+                    permissibleValue.value = '019'
+                }
+                if (permissibleValue.meaning === 'South-East Asia Region') {
+                    permissibleValue.value = '035'
+                }
+                if (permissibleValue.meaning === 'European Region') {
+                    permissibleValue.value = '150'
+                }
+                if (permissibleValue.meaning === 'Eastern Mediterranean Region') {
+                    permissibleValue.value = '145'
+                }
+                if (permissibleValue.meaning === 'Western Pacific Region') {
+                    permissibleValue.value = '009'
+                }
+                sectionOptions.push({
+                    id: permissibleValue.id,
+                    value: permissibleValue.value,
+                    text: permissibleValue.meaning,
+                    aristotleTooltipId: null,
+                })
             }
         }
         checkboxSections.push({
