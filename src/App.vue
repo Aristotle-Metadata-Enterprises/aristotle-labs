@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 main {
-    flex-grow: 2;
+    flex: 1 0 auto;
     width: 80%;
     margin-left: auto;
     margin-right: auto;
@@ -43,7 +43,7 @@ main {
     display: -ms-flexbox;
     display: flex;
     flex-direction: column;
-    height: 100%
+    height: 100%;
 }
 
 .aristotle-logo {

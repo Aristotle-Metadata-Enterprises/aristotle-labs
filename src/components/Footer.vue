@@ -20,9 +20,8 @@
 
 <style scoped>
 .footer-custom {
-    right: 0;
-    bottom: 0;
-    left: 0;
+    /* Dont grow or shrink footer */
+    flex: 0 0 auto;
     width: 100%;
     background-color: #356a69;
 }
