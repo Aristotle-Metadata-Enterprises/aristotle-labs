@@ -19,7 +19,7 @@ import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
-import 'tippy.js/themes/light.css';
+import 'tippy.js/themes/light-border.css';
 
 export default {
     name: "CheckboxSection",
@@ -49,7 +49,9 @@ export default {
         })
         tippy(this.$refs.content, {
             placement: 'left',
-            theme: 'light',
+            theme: 'light-border',
+            duration: [275, 1250],
+            flipOnUpdate: true,
         })
         this.initialiseOptions()
     },
