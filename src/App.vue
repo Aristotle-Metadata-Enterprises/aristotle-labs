@@ -2,6 +2,9 @@
     <div class="root">
         <custom-header />
         <main>
+            <div class="browser-message alert alert-warning" v-if="browser == 'ie'">
+                This site does not support Internet Explorer, some functionality may not work as expected
+            </div>
             <router-view />
         </main>
         <custom-footer />
@@ -9,6 +12,8 @@
 </template>
 
 <script>
+import { detect } from 'detect-browser'
+
 import Footer from '@/components/Footer.vue'
 import Header from '@/components/Header.vue'
 
@@ -16,6 +21,12 @@ export default {
     components: {
         'custom-header': Header,
         'custom-footer': Footer,
+    },
+    data: () => ({
+        browser: '',
+    }),
+    created: function() {
+        this.browser = detect().name
     }
 }
 </script>
@@ -37,5 +48,11 @@ main {
 
 .aristotle-logo {
     margin-top: 5px;
+}
+
+.browser-message {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 </style>
