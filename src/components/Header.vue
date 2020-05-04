@@ -42,6 +42,11 @@
 </template>
 
 <style scoped>
+/* Dont grow or shrink header */
+.navbar-custom {
+    flex: 0 0 auto;
+}
+
 /* Custom styling for navbar to make it aristotle green */
 .navbar-custom {
     background-color: #356a69;

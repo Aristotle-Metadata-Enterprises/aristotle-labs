@@ -29,6 +29,16 @@ Parameters:
     Type: String
     Description: "The name of the cloudfront template where the source code bucket
                  and the distribution is located"
+
+  LambdaSourceBucket:
+    Type: String
+    Description: "Bucket for invalidation lambdas source"
+
+  InvalidationLambdaKey:
+    Type: String
+    Description: "Key in bucket for invalidation lambdas source"
+    Default: "invalidation"
+
 Resources:
 
     ### --------- S3 ---------
@@ -42,7 +52,7 @@ Resources:
                 SSEAlgorithm: 'aws:kms'
         LoggingConfiguration:
             DestinationBucketName: !Ref AccessLogBucket
-            LogFilePrefix: !Sub "${AWS::StackName}-artifacts"
+            LogFilePrefix: !Sub "${AWS::StackName}-artifacts/"
         PublicAccessBlockConfiguration:
             BlockPublicAcls: True
             BlockPublicPolicy: True
@@ -50,8 +60,8 @@ Resources:
             RestrictPublicBuckets: True
 
 
-  # ---------- CodeBuild ----------
-  # Code build project for building webpack bundle
+    ### ---------- CodeBuild ----------
+    # Code build project for building webpack bundle
     Build:
       Type: AWS::CodeBuild::Project
       Properties:
@@ -65,10 +75,25 @@ Resources:
           ComputeType: "BUILD_GENERAL1_SMALL"
           Image: "aws/codebuild/standard:2.0"
           Type: "LINUX_CONTAINER"
-          # Must be privileged to access docker daemon
-          PrivilegedMode: True
         ServiceRole: !GetAtt BuildServiceRole.Arn
 
+    ### --------- Lambda ---------
+    
+    InvalidationLambda:
+      Type: AWS::Lambda::Function
+      Properties:
+        Description: "Invalidate a distributions cache"
+        Runtime: "python3.7"
+        Role: !GetAtt LambdaExecutionRole.Arn
+        Code:
+          S3Bucket: !Ref LambdaSourceBucket
+          S3Key: !Ref InvalidationLambdaKey
+        Handler: "invalidation_lambda.handler"
+        Timeout: 60
+        Environment:
+          Variables:
+            DISTRIBUTION_ID:
+              Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
 
     ### -------- Pipeline ---------
     AristotleLabsPipeline:
@@ -76,8 +101,7 @@ Resources:
       Properties:
         ArtifactStore:
           Type: S3
-          Location:
-            Ref: BuildArtifactsBucket
+          Location: !Ref BuildArtifactsBucket
         Name: !Sub '${AWS::StackName}-CodePipeline'
         RestartExecutionOnUpdate: True
         RoleArn: !GetAtt PipelineRole.Arn
@@ -113,7 +137,7 @@ Resources:
                 OutputArtifacts:
                   - Name: "WebPackBundle"
                 RunOrder: 1
-          - Name: "Staging"
+          - Name: "Deploy"
             Actions:
               - Name: "DeployToS3"
                 ActionTypeId:
@@ -128,8 +152,58 @@ Resources:
                 InputArtifacts:
                   - Name: "WebPackBundle"
                 RunOrder: 1
+          - Name: "Invalidate"
+            Actions:
+              - Name: "InvalidateCloudfront"
+                ActionTypeId:
+                  Category: "Invoke"
+                  Owner: "AWS"
+                  Provider: "Lambda"
+                  Version: "1"
+                Configuration:
+                  FunctionName: !Ref InvalidationLambda
+                RunOrder: 1
 
     ### -------- IAM ---------
+
+    LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        Policies:
+          - PolicyName: "PipelineJobs"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "codepipeline:PutJobSuccessResult"
+                    - "codepipeline:PutJobFailureResult"
+                  Resource:
+                    - '*'
+          - PolicyName: "CloudfrontInvalidation"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "cloudfront:GetDistribution"
+                    - "cloudfront:CreateInvalidation"
+                  Resource: 
+                    - !Join
+                      - ''
+                      - - !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/"
+                        - Fn::ImportValue: !Sub "${CloudFrontStack}-DistributionId"
+
     ArtifactBucketAccess:
       Type: AWS::IAM::ManagedPolicy
       Properties:
@@ -137,7 +211,7 @@ Resources:
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action:
                   - 's3:GetObject'
                   - 's3:GetObjectVersion'
@@ -217,3 +291,12 @@ Resources:
                       - ""
                       - - Fn::ImportValue: !Sub "${CloudFrontStack}-SourceBucketArn"
                         - "/*"
+          - PolicyName: "InvokeLambdas"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "lambda:InvokeFunction"
+                  Resource:
+                    - !GetAtt InvalidationLambda.Arn

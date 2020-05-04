@@ -1,7 +1,6 @@
 /* util styles used across site */
 
 html, body {
-    min-height: 100vh;
     height: 100%;
 }
 
@@ -16,6 +15,7 @@ h2 {
     height: auto;
     width: 35px;
 }
+
 dfn {
     font-weight: 500;
 }
