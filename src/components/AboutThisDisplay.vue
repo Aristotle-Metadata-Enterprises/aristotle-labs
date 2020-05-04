@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="container">
         <h2 class="text-center">
             About this dashboard
         </h2>
@@ -66,7 +66,7 @@ import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 export default {
     mounted: function() {
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.container,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,

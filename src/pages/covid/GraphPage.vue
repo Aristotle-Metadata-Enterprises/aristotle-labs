@@ -46,7 +46,6 @@ import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
-import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import {
     getCovidData,
     getDistribution,
@@ -104,14 +103,6 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
-
-        aristotleTooltip({
-            'selector': this.$refs.block,
-            'url': 'https://registry.aristotlemetadata.com',
-            'definitionWords': 50,
-            'longDefinitionWords': 75,
-            'placement': 'bottom',
-        });
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {

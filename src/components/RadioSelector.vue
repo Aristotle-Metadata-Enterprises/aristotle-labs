@@ -1,5 +1,5 @@
 <template>
-    <div ref="block" class="form-block">
+    <div ref="container" class="form-block">
         <div class="font-weight-bold">
             {{ description }}
         </div>
@@ -44,7 +44,7 @@ export default {
     mounted() {
         // Initialize the aristotle tooltip
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.container,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
