@@ -6,7 +6,7 @@
         <div v-if="help" class="help">
             {{ help }}
         </div>
-        <div class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.id">
+        <div ref="option" class="form-check" v-for="o in options" :key="o.value" :data-aristotle-concept-id="o.aristotleTooltipId">
             <input class="form-check-input" type="radio" :id="o.value" :value="o.value" :checked="o.value === value" @change="emitInput">
             <label class="form-check-label" :for="o.value">{{ o.text }}</label>
         </div>
@@ -34,6 +34,7 @@ export default {
         help: {
             type: String,
             required: false,
+            default: '',
         },
         // Options as an array of objects with value and text properties
         options: {
@@ -52,15 +53,13 @@ export default {
     },
     mounted() {
         // Initialize the aristotle tooltip
-        // if (this.tooltipForOptions) {
-            aristotleTooltip({
+        aristotleTooltip({
             'selector': this.$refs.container,
             'url': 'https://registry.aristotlemetadata.com',
             'definitionWords': 50,
             'longDefinitionWords': 75,
             'placement': 'left',
         })
-        // }
     },
     methods: {
         emitInput: function (event) {

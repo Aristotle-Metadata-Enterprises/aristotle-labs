@@ -38,7 +38,7 @@ export default {
         chartOptions: function () {
             let options = {
                 colorAxis: {
-                    colors: ['#ffffff', '#c3eaba', '#7fd26c', '#f4ef5b', '#f47c7c'],
+                    colors: ['#d9ffd0', '#7fd26c', '#f4ef5b', '#f47c7c'],
                     maxValue: this.colorAxisMaxValue,
                     minValue: 0,
                 },

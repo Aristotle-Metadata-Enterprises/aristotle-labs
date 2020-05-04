@@ -9,8 +9,12 @@
         <template v-else class="container">
             <div class="row">
                 <div class="col-sm-8">
-                    <div class="graph-title">{{ graphTitle }}</div>
-                    <div class="map-graph-description">{{ currentDataElementDefinition }}</div>
+                    <div class="graph-title">
+                        {{ graphTitle }}
+                    </div>
+                    <div class="map-graph-description">
+                        {{ currentDataElementDefinition }}
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -99,6 +103,7 @@ import { getTextForValue } from '@/utils/options.js'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
 const moment = require('moment')
+const getCountryISO2 = require("country-iso-3-to-2")
 
 export default {
     data: () => ({
@@ -159,7 +164,7 @@ export default {
             let regionOptions = regionIdentifier.options
             // let regionIdentifierId = re
             regionOptions.splice(0, 0, {id: "All Regions", text: "All Regions", value: "All Regions"})
-            this.regionIdentifierId = regionIdentifier.propertyId
+            this.regionIdentifierId = '604043'
             this.regionOptions = regionOptions
             this.selectedRegion = "All Regions"
             this.dataMapping = mapDistributionData(data)
@@ -222,8 +227,8 @@ export default {
                 ) {
                     mapAttributes.push(
                         [
-                            jsonElement['geoId'],
-                            jsonElement['reportingArea'],
+                            getCountryISO2(jsonElement['countryterritoryCode']),
+                            jsonElement['countriesAndTerritories'].split('_').join(' '),
                             parseInt(jsonElement[sel]),
                         ]
                     )

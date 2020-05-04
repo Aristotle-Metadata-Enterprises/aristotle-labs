@@ -167,6 +167,7 @@ export function getDistributionOptions(distribution, filter) {
             id: dep.dataElement.aristotleId,
             definition: dep.dataElement.definition,
             text: dep.dataElement.dataElementConcept.property.name,
+            aristotleTooltipId: dep.dataElement.aristotleId,
         })
     }
     return options

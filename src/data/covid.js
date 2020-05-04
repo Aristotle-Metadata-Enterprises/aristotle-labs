@@ -69,6 +69,7 @@ export function getDistributionCheckboxSections(distribution, filter) {
                     id: permissibleValue.id,
                     value: permissibleValue.value,
                     text: permissibleValue.meaning,
+                    aristotleTooltipId: null,
                 })
             }
         }

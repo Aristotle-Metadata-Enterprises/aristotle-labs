@@ -1,10 +1,14 @@
 <template>
-    <div ref="block">
-        <strong class="pl-20" :data-aristotle-concept-id="id">{{ name }}</strong>
+    <div>
+        <div ref="title">
+            <strong class="ml-20" :data-aristotle-concept-id="id">{{ name }}</strong>
+        </div>
         <div class="form-block form-check">
-            <div v-for="o in options" :key="o.id">
-                <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
-                <label :for="o.id" :title="o.definition" class="form-check-label">{{ o.name }}</label>
+            <div v-for="o in options" :key="o.id" >
+                <div ref="content" :data-tippy-content="o.definition">
+                    <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
+                    <label :for="o.id" class="form-check-label">{{ o.name }}</label>
+                </div>
             </div>
         </div>
     </div>
@@ -13,6 +17,8 @@
 <script>
 import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
+import tippy from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
 
 export default {
     name: "CheckboxSection",
@@ -35,11 +41,14 @@ export default {
     }),
     mounted: function() {
         aristotleTooltip({
-            'selector': this.$refs.block,
+            'selector': this.$refs.title,
             'definitionWords': 50,
             'longDefinitionWords': 75,
             'placement': 'left',
-        });
+        })
+        tippy(this.$refs.content, {
+            placement: 'left'
+        })
         this.initialiseOptions()
     },
     methods: {
@@ -61,7 +70,7 @@ export default {
     display: block;
     margin: 10px 20px;
 }
-.pl-20 {
-    padding-left: 20px;
+.ml-20 {
+    margin-left: 20px;
 }
 </style>
