@@ -8,7 +8,7 @@ import HomePage from './pages/HomePage.vue'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    'routes': [
+    routes: [
         {
             'path': '/',
             'name': 'homePage',
@@ -24,7 +24,11 @@ const router = new VueRouter({
             'name': 'covidMap',
             'component': CovidMapPage
         },
-    ]
+    ],
+    scrollBehavior: function() {
+        // Scroll to top when changing routes
+        return {x: 0, y: 0}
+    }
 })
 
 export default router
