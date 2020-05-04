@@ -3,13 +3,13 @@
         <div ref="title">
             <strong class="ml-20" :data-aristotle-concept-id="id">{{ name }}</strong>
         </div>
-        <div class="form-block form-check">
+        <div class="form-block">
             <div v-for="o in options" :key="o.id" >
-                <div ref="content" :data-tippy-content="o.definition">
-                    <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
-                    <label :for="o.id" class="form-check-label">{{ o.name }}</label>
-                </div>
+            <div class="form-check" ref="content" :data-tippy-content="o.definition">
+                <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
+                <label :for="o.id" class="form-check-label">{{ o.name }}</label>
             </div>
+        </div>
         </div>
     </div>
 </template>
@@ -19,6 +19,7 @@ import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import '@aristotle-metadata-enterprises/aristotle_tooltip/dist/tooltip.css'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
+import 'tippy.js/themes/light.css';
 
 export default {
     name: "CheckboxSection",
@@ -47,7 +48,8 @@ export default {
             'placement': 'left',
         })
         tippy(this.$refs.content, {
-            placement: 'left'
+            placement: 'left',
+            theme: 'light',
         })
         this.initialiseOptions()
     },
