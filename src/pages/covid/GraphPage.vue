@@ -6,7 +6,7 @@
         <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
-            <div ref="row" class="row">
+            <div class="row">
                 <div class="col-sm-8">
                     <div class="graph-title">{{ graphTitle }}</div>
                     <div class="graph-description">{{ currentDataElementDefinition }}</div>
@@ -46,7 +46,6 @@ import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
-import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import {
     getCovidData,
     getDistribution,
@@ -104,14 +103,6 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
-
-        aristotleTooltip({
-            'selector': this.$refs.row,
-            'url': 'https://registry.aristotlemetadata.com',
-            'definitionWords': 50,
-            'longDefinitionWords': 75,
-            'placement': 'bottom',
-        });
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {

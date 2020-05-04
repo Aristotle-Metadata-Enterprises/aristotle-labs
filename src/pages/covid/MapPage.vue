@@ -1,5 +1,5 @@
 <template>
-    <div ref="container" class="covid-map mt-3 mb-3">
+    <div class="covid-map mt-3 mb-3">
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
@@ -71,7 +71,6 @@ import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
-import aristotleTooltip from '@aristotle-metadata-enterprises/aristotle_tooltip'
 import Loading from '@/components/Loading.vue'
 import {
     getCovidData,
@@ -156,14 +155,6 @@ export default {
         }).catch((error) => {
             this.errors.push(error)
         })
-
-        aristotleTooltip({
-            'selector': this.$refs.container,
-            'url': 'https://registry.aristotlemetadata.com',
-            'definitionWords': 50,
-            'longDefinitionWords': 75,
-            'placement': 'bottom',
-        });
 
         // Stop loading once all promises resolved
         Promise.all([dataPromise, distPromise, dssPromise]).finally(() => {
