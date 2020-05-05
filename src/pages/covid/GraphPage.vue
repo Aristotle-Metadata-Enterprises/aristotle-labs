@@ -91,14 +91,14 @@ export default {
             this.raw_data = raw_data
             this.tabs = [
                 {
-                    name: "Map",
-                    active: false,
-                    link: '#/covid/map'
-                },
-                {
                     name: "Graph",
                     active: true,
                     link: '#/covid/graph'
+                },
+                {
+                    name: "Map",
+                    active: false,
+                    link: '#/covid/map'
                 },
             ]
         }).catch((error) => {

@@ -162,14 +162,14 @@ export default {
 
             this.tabs = [
                 {
-                    name: "Map",
-                    active: true,
-                    link: '#/covid/map'
-                },
-                {
                     name: "Graph",
                     active: false,
                     link: '#/covid/graph'
+                },
+                {
+                    name: "Map",
+                    active: true,
+                    link: '#/covid/map'
                 },
             ]
 
