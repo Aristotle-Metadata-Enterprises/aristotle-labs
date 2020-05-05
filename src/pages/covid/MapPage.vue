@@ -164,12 +164,12 @@ export default {
                 {
                     name: "Graph",
                     active: false,
-                    link: '#/covid/graph'
+                    link: '#/covid/graph',
                 },
                 {
                     name: "Map",
                     active: true,
-                    link: '#/covid/map'
+                    link: '#/covid/map',
                 },
             ]
 

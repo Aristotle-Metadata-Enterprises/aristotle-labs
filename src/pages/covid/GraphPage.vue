@@ -93,12 +93,12 @@ export default {
                 {
                     name: "Graph",
                     active: true,
-                    link: '#/covid/graph'
+                    link: '#/covid/graph',
                 },
                 {
                     name: "Map",
                     active: false,
-                    link: '#/covid/map'
+                    link: '#/covid/map',
                 },
             ]
         }).catch((error) => {
