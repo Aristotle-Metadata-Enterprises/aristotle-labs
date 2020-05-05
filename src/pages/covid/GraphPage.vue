@@ -1,7 +1,7 @@
 <template>
     <div class="covid-graph mt-3 mb-3">
         <h1 class="text-center">
-            Aristotle COVID-19 Dashboard - Bar chart view
+            Aristotle COVID-19 Dashboard
         </h1>
         <tabs :tabs="tabs" />
         <covid-header-text />
@@ -9,14 +9,22 @@
         <template v-else class="container">
             <div class="row">
                 <div class="col-sm-8">
-                    <div class="graph-title">{{ graphTitle }}</div>
-                    <div class="graph-description">{{ currentDataElementDefinition }}</div>
+                    <div class="graph-title">
+                        {{ graphTitle }}
+                    </div>
+                    <div class="graph-description">
+                        {{ currentDataElementDefinition }}
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-8">
-                    <bar-graph :selected="allSelected" :raw_data="raw_data" :distribution_map="distributionDataMap"
-                                :data_element_options="options"/>
+                    <bar-graph
+                            :selected="allSelected"
+                            :raw_data="raw_data"
+                            :distribution_map="distributionDataMap"
+                            :data_element_options="options"
+                    />
                 </div>
                 <div class="col-sm-4">
                     <div class="card bg-light option-selector">
@@ -75,7 +83,18 @@ export default {
         categoryOptions: [],
         dataMap: new Map(),
         distributionDataMap: {},
-        tabs: [],
+        tabs: [
+            {
+                name: "Map",
+                active: false,
+                link: 'covidMap',
+            },
+            {
+                name: "Graph",
+                active: true,
+                link: 'covidGraph',
+            },
+        ],
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -89,18 +108,6 @@ export default {
     mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {
             this.raw_data = raw_data
-            this.tabs = [
-                {
-                    name: "Map",
-                    active: false,
-                    link: '#/covid/map'
-                },
-                {
-                    name: "Graph",
-                    active: true,
-                    link: '#/covid/graph'
-                },
-            ]
         }).catch((error) => {
             this.errors.push(error)
         });
