@@ -1,10 +1,9 @@
 <template>
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': !graphTabActive}" href="#/covid/map">Map view</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': graphTabActive}" href="#/covid/graph">Graph view</a>
+    <ul class="nav nav-tabs mt-4 mb-4">
+        <li class="nav-item" v-for="ta in tabs" :key="ta.name">
+            <a class="nav-link" :class="{ 'active': ta.active}" :href="ta.link">
+                {{ ta.name }}
+            </a>
         </li>
     </ul>
 </template>
@@ -13,9 +12,9 @@
 export default {
     name: "Tabs",
     props: {
-        graphTabActive: {
-            type: Boolean,
-            default: false,
+        tabs: {
+            type: Array,
+            default: () => [],
         }
     }
 }

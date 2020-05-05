@@ -3,7 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
-        <tabs />
+        <tabs :tabs="tabs" />
         <covid-header-text />
         <error-group :errors="errors" />
         <loading v-if="loading" />
@@ -30,9 +30,19 @@
                     </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
-                            <button type="button"
+                            <button v-if="isLastDay"
+                                    type="button"
+                                    :disabled="playing"
                                     class="btn btn-sm"
-                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }"
+                                    :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': playing }"
+                                    @click="restartAndPlayMapDates"
+                            >
+                                <i v-if="!datesPlaying" class="fas fa-play" />
+                            </button>
+                            <button v-else
+                                    type="button"
+                                    class="btn btn-sm"
+                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying, 'disabled': isLastDay }"
                                     @click="playMapDates"
                             >
                                 <i v-if="!datesPlaying" class="fas fa-play" />
@@ -135,6 +145,7 @@ export default {
         datesPlaying: false,
         timer: '',
         restartedAndPlaying: false,
+        tabs: [],
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -154,9 +165,23 @@ export default {
 
             this.datesData = getMapFilterOptions(data, "dateRep").sort(function (a, b) {
                 return dateToNum(a) - dateToNum(b)
-            });
+            })
 
-            this.sliderDateValue = this.datesData[this.datesData.length - 1]
+            this.lastDate = this.datesData[this.datesData.length - 1]
+            this.sliderDateValue = this.lastDate
+
+            this.tabs = [
+                {
+                    name: "Maps",
+                    active: true,
+                    link: '#/covid/map'
+                },
+                {
+                    name: "Graph",
+                    active: false,
+                    link: '#/covid/graph'
+                },
+            ]
 
             function dateToNum(date) {
                 // Convert date "26/06/2016" to 20160626
@@ -282,7 +307,10 @@ export default {
         },
         playing: function () {
             return this.restartedAndPlaying || this.datesPlaying
-        }
+        },
+        isLastDay: function () {
+            return this.sliderDateValue === this.lastDate
+        },
     },
     methods: {
         camelCaseToSentenceCase: (text) => {
