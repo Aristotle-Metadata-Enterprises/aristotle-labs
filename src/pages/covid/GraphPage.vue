@@ -91,7 +91,7 @@ export default {
             this.raw_data = raw_data
             this.tabs = [
                 {
-                    name: "Maps",
+                    name: "Map",
                     active: false,
                     link: '#/covid/map'
                 },

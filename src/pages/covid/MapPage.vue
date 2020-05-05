@@ -30,20 +30,10 @@
                     </div>
                     <div class="d-flex">
                         <div class="btn-group-justified">
-                            <button v-if="isLastDay"
-                                    type="button"
-                                    :disabled="playing"
+                            <button type="button"
                                     class="btn btn-sm"
-                                    :class="{ 'btn-outline-success': !restartedAndPlaying, 'disabled btn-outline-secondary': playing }"
-                                    @click="restartAndPlayMapDates"
-                            >
-                                <i v-if="!datesPlaying" class="fas fa-play" />
-                            </button>
-                            <button v-else
-                                    type="button"
-                                    class="btn btn-sm"
-                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying, 'disabled': isLastDay }"
-                                    @click="playMapDates"
+                                    :class="{ 'btn-outline-info': !datesPlaying, 'btn-outline-success': datesPlaying }"
+                                    @click="isLastDay ? restartAndPlayMapDates() : playMapDates()"
                             >
                                 <i v-if="!datesPlaying" class="fas fa-play" />
                                 <i v-else class="fas fa-pause" />
@@ -172,7 +162,7 @@ export default {
 
             this.tabs = [
                 {
-                    name: "Maps",
+                    name: "Map",
                     active: true,
                     link: '#/covid/map'
                 },
