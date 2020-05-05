@@ -184,7 +184,7 @@ export default {
     font-size: 90%;
 }
 .well-help {
-    margin:0px 15px;
+    margin:0 15px;
     font-size: 90%;
 }
 
