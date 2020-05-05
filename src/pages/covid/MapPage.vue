@@ -1,7 +1,7 @@
 <template>
     <div class="covid-map mt-3 mb-3">
         <h1 class="text-center">
-            Aristotle COVID-19 Dashboard - Map view
+            Aristotle COVID-19 Dashboard
         </h1>
         <tabs :tabs="tabs" />
         <covid-header-text />
@@ -135,7 +135,18 @@ export default {
         datesPlaying: false,
         timer: '',
         restartedAndPlaying: false,
-        tabs: [],
+        tabs: [
+            {
+                name: "Map",
+                active: true,
+                link: 'covidMap',
+            },
+            {
+                name: "Graph",
+                active: false,
+                link: 'covidGraph',
+            },
+        ],
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -159,19 +170,6 @@ export default {
 
             this.lastDate = this.datesData[this.datesData.length - 1]
             this.sliderDateValue = this.lastDate
-
-            this.tabs = [
-                {
-                    name: "Map",
-                    active: true,
-                    link: '#/covid/map'
-                },
-                {
-                    name: "Graph",
-                    active: false,
-                    link: '#/covid/graph'
-                },
-            ]
 
             function dateToNum(date) {
                 // Convert date "26/06/2016" to 20160626

@@ -4,7 +4,7 @@
             <strong class="ml-20" :data-aristotle-concept-id="id">{{ name }}</strong>
         </div>
         <div class="form-block">
-            <div v-for="o in options" :key="o.id" >
+            <div v-for="o in options" :key="o.id">
             <div class="form-check" ref="content" :data-tippy-content="o.definition">
                 <input type="checkbox" class="form-check-input" :id="o.id" :value="o.name" @change="updateCheckedOptions" v-model="checkedOptions">
                 <label :for="o.id" class="form-check-label">{{ o.name }}</label>
