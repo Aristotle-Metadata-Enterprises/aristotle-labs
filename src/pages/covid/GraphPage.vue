@@ -3,6 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
+        <tabs graph-tab-active />
         <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
@@ -46,6 +47,7 @@ import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
+import Tabs from "@/components/Tabs.vue"
 import {
     getCovidData,
     getDistribution,
@@ -81,6 +83,7 @@ export default {
         'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'loading': Loading,
+        'tabs': Tabs,
     },
     mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {

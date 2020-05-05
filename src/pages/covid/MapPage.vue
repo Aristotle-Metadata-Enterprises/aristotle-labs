@@ -3,6 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Map view
         </h1>
+        <tabs />
         <covid-header-text />
         <error-group :errors="errors" />
         <loading v-if="loading" />
@@ -93,6 +94,7 @@ import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import ErrorGroup from '@/components/error/ErrorGroup.vue'
 import Loading from '@/components/Loading.vue'
+import Tabs from "@/components/Tabs.vue"
 import {
     getCovidData,
     getDistribution,
@@ -144,6 +146,7 @@ export default {
         'vue-slider': VueSlider,
         'error-group': ErrorGroup,
         'loading': Loading,
+        'tabs': Tabs,
     },
     mounted: function() {
         let dataPromise = getCovidData().then((data) => {
