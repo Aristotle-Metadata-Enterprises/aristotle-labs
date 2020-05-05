@@ -3,6 +3,7 @@
         <h1 class="text-center">
             Aristotle COVID-19 Dashboard - Bar chart view
         </h1>
+        <tabs :tabs="tabs" />
         <covid-header-text />
         <loading v-if="loading" />
         <template v-else class="container">
@@ -46,6 +47,7 @@ import CovidHeaderText from '@/components/CovidHeaderText.vue'
 import CovidMetadataDisplay from '@/components/CovidMetadataDisplay.vue'
 import AboutThisDisplay from '@/components/AboutThisDisplay.vue'
 import Loading from '@/components/Loading.vue'
+import Tabs from "@/components/Tabs.vue"
 import {
     getCovidData,
     getDistribution,
@@ -73,6 +75,7 @@ export default {
         categoryOptions: [],
         dataMap: new Map(),
         distributionDataMap: {},
+        tabs: [],
     }),
     components: {
         'radio-selector': RadioSelector,
@@ -81,16 +84,29 @@ export default {
         'covid-metadata-display': CovidMetadataDisplay,
         'about-this-display': AboutThisDisplay,
         'loading': Loading,
+        'tabs': Tabs,
     },
     mounted: function() {
         let dataPromise = getCovidData().then((raw_data) => {
-            this.raw_data = raw_data;
+            this.raw_data = raw_data
+            this.tabs = [
+                {
+                    name: "Maps",
+                    active: false,
+                    link: '#/covid/map'
+                },
+                {
+                    name: "Graph",
+                    active: true,
+                    link: '#/covid/graph'
+                },
+            ]
         }).catch((error) => {
             this.errors.push(error)
         });
 
         let distPromise = getDistribution().then((data) => {
-            this.distribution = data;
+            this.distribution = data
             this.options = getDistributionOptions(data, filterNumberDataElements);
             this.categoryOptions = getDistributionOptions(data, filterValueDataElements);
             this.distributionDataMap = mapDistributionData(data)
