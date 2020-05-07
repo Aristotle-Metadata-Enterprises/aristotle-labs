@@ -35,7 +35,7 @@
             On this dashboard, the <a href="https://registry.aristotlemetadata.com/item/603889/" data-aristotle-concept-id="603889">source data collected</a> by the
             <a href="https://who.int">World Health Organisation</a> contains sensitive information about individuals, however the 
             <a href="https://apps.who.int/iris/bitstream/handle/10665/331234/WHO-2019-nCoV-SurveillanceCRF-2020.2-eng.pdf">data collection forms</a> are made available to assist with data collection and validation.
-            Because the metadata about how the data is collected is published, we can trace all of the changes made to the data before being aggegrated and
+            Because the metadata about how the data is collected is published, we can trace all of the changes made to the data before being aggregated and
             <a href="https://registry.aristotlemetadata.com/item/604036/" data-aristotle-concept-id="604036">published at a country and region level</a>.
             </p>
             <p>
