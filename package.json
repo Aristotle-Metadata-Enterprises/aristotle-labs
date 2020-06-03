@@ -1,6 +1,6 @@
 {
     "name": "aristotle-labs",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "The home of Aristotle Cloud Services Australia's laboratory code",
     "main": "index.js",
     "scripts": {
