@@ -1,6 +1,6 @@
 # Aristotle Labs
 
-The home of Aristotle Cloud Service Australia's laboratory code
+The home of Aristotle Metadata Enterprises's laboratory code
 
 ## Development
 
