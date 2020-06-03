@@ -91,7 +91,7 @@ Resources:
     Properties:
       Name: !Sub "${AWS::StackName}-TransformDataSchedule"
       Description: "Trigger a download and transform of COVID-19 data from the ECDC"
-      ScheduleExpression: rate(1 day)
+      ScheduleExpression: rate(6 hours)
       State: "ENABLED"
       Targets:
           - Id: !Sub "${AWS::StackName}-TransformDataSchedule"
