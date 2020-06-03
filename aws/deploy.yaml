@@ -19,7 +19,6 @@ Parameters:
     Description: "ARN of acm certificate for domain (cloudfront requires a us-east-1 cert)"
 
 Resources:
-
   LabsCodeBucket:
     Type: AWS::S3::Bucket
     Properties:

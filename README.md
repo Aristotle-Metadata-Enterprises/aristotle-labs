@@ -11,3 +11,6 @@ To run the development server:
 1. Navigate to `localhost:8080`
 
 The development server has hot reloading, any changes should be reflected automatically
+
+## Live site
+To check out the live `aristotle-labs` site, click [here](https://labs.aristotlemetadata.com)
