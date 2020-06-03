@@ -5,17 +5,14 @@ Parameters:
   RepoBranch:
     Type: String
     Description: "Branch to check for changes on"
-    Default: "master"
 
   GithubRepo:
     Type: String
     Description: "Name of github repo for source action"
-    Default: "aristotle-labs"
 
   GithubUser:
     Type: String
     Description: "Name of github user or orgainisation where the repo is located"
-    Default: "Aristotle-Metadata-Enterprises"
 
   GithubTokenArn:
     Type: String
@@ -37,7 +34,6 @@ Parameters:
   InvalidationLambdaKey:
     Type: String
     Description: "Key in bucket for invalidation lambdas source"
-    Default: "invalidation"
 
 Resources:
 
