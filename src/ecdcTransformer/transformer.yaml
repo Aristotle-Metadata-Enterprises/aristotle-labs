@@ -5,13 +5,21 @@ Parameters:
   LambdaSourceZip:
     Type: String
     Description: "The filename for the source ZIP of the lambda code"
-    Default: "transformer.zip"
+
+  TransformedDataBucketName:
+    Type: String
+    Description: "The name of the bucket where the transformed data should go"
+
+  LambdaBucketName:
+    Type: String
+    Description: "The name of the bucket where the lambda source code should be stored"
+
 
 Resources:
   TransformedDataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "aristotle-ecdc-covid19-data"
+      BucketName: !Ref TransformedDataBucketName
       AccessControl: "PublicRead"
       CorsConfiguration:
         CorsRules:
@@ -27,7 +35,7 @@ Resources:
   LambdaSourceBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "aristotle-lambdas"
+      BucketName: !Ref LambdaSourceBucketName
 
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
@@ -91,7 +99,7 @@ Resources:
     Properties:
       Name: !Sub "${AWS::StackName}-TransformDataSchedule"
       Description: "Trigger a download and transform of COVID-19 data from the ECDC"
-      ScheduleExpression: rate(1 day)
+      ScheduleExpression: rate(6 hours)
       State: "ENABLED"
       Targets:
           - Id: !Sub "${AWS::StackName}-TransformDataSchedule"
