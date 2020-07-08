@@ -83,7 +83,7 @@
                 </div>
             </div>
         </div>
-        <hr class="m-5" />
+        <hr class="m-5">
     </div>
 </template>
 
