@@ -31,6 +31,9 @@
                         <router-link class="dropdown-item" :to="{name: 'covidMap'}">
                             Covid Map
                         </router-link>
+                        <router-link class="dropdown-item" :to="{name: 'sddf'}">
+                            Simple Data Dictionary Format
+                        </router-link>
                     </div>
                 </li>
             </ul>

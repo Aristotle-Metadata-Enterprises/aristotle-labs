@@ -4,25 +4,31 @@ import VueRouter from 'vue-router'
 import CovidGraphPage from './pages/covid/GraphPage.vue'
 import CovidMapPage from './pages/covid/MapPage.vue'
 import HomePage from './pages/HomePage.vue'
+import SddfPage from "./pages/sddf/SddfPage.vue"
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
     routes: [
         {
-            'path': '/',
-            'name': 'homePage',
-            'component': HomePage
+            path: '/',
+            name: 'homePage',
+            component: HomePage
         },
         {
-            'path': '/covid/graph/',
-            'name': 'covidGraph',
-            'component': CovidGraphPage
+            path: '/covid/graph/',
+            name: 'covidGraph',
+            component: CovidGraphPage
         },
         {
-            'path': '/covid/map/',
-            'name': 'covidMap',
-            'component': CovidMapPage
+            path: '/covid/map/',
+            name: 'covidMap',
+            component: CovidMapPage
+        },
+        {
+            path: '/sddf/',
+            name: 'sddf',
+            component: SddfPage,
         },
     ],
     scrollBehavior: function() {
