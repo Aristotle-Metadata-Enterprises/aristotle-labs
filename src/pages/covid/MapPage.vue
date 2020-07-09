@@ -174,7 +174,7 @@ export default {
             function dateToNum(date) {
                 // Convert date "26/06/2016" to 20160626
                 date = date.split("/");
-                return Number(date[2] + date[1] + date[0]);
+                return Number(date[2] + date[1] + date[0])
             }
         }).catch((error) => {
             this.errors.push(error)

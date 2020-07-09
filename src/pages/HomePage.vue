@@ -61,6 +61,27 @@
                     </div>
                 </div>
             </div>
+            <div class="card-deck mb-3">
+                <div class="card">
+                    <img class="card-img-top" src="@/assets/sddf_excel.png" alt="">
+<!--                    <img class="card-img-top" src="@/assets/sddf_page.png" alt="">-->
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Simple Data Dictionary Format Importer
+                        </h5>
+                        <p class="card-text">
+                            View the Documentation for the Aristotle Simple Data Dictionary Importer.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <router-link class="btn btn-primary" :to="{name: 'sddf'}">
+                            See the SDDF Documentation &raquo;
+                        </router-link>
+                    </div>
+                </div>
+                <div class="card border-0">
+                </div>
+            </div>
         </div>
         <hr class="m-5">
     </div>
