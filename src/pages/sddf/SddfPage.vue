@@ -13,7 +13,7 @@
                     <h2>Demo</h2>
                 </div>
                 <div class="col-12">
-                    Try a <a href="https://registry.aristotlemetadata.com/toolbox/sddf">demo</a> of the Aristotle Simple Data Dictionary Importer.
+                    Jump straight in an try a <a href="https://aristotle.cloud/toolbox/sddf">demo of the Simple Data Dictionary Importer at Aristotle.Cloud</a>.
                 </div>
             </div>
             <div class="row">
@@ -24,29 +24,35 @@
                 </div>
                 <div class="col-12">
                     <p>
-                        This format describes a simple format for recording a data dictionary for a data table or data asset.<br>
-                        A data dictionary is a document that records field names from data, along with definition of key
-                        concepts such as who data was collected from, how the data was stored and what type of data is
-                        stored for a given field. By recording a data dictionary in a consistent, simple and structured
-                        format it is easier to interpret data accurately.
-                        To provide consistency between data dictionaries, this document proposes using terminology from
-                        ISO 11179, a widely recognised standard for metadata registries, for describing fields within a
-                        data dictionary. By using existing metadata objects this format makes it easy to build and share
-                        data dictionaries and import them into ISO 11179 compliant metadata registries.
+                        The Simple Data Dictionary Format is a simple way of recording a <em>data dictionary</em> for a spreadsheet, data table or data asset.
                     </p>
+                    <div class="row">
+                        <p class="col-md-6">
+                            A <em>data dictionary</em> is a document that records field names from data, along with definition of key
+                            concepts such as who data was collected from, how the data was stored and what type of data is
+                            stored for a given field. By recording a data dictionary in a consistent, simple and structured
+                            format it is easier to interpret data accurately.
+                            To provide consistency between data dictionaries, this document use terminology from
+                            ISO 11179, a widely recognised standard for metadata registries, for describing fields within a
+                            data dictionary. By using existing metadata standards this format makes it easy to build and share
+                            data dictionaries and import them into ISO 11179 compliant metadata registries, like the <a href="https://www.aristotlemetadata.com">Aristotle Metadata Registry</a>.
+                        </p>
+                        <div class="col-md-6">
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/aOVN0v-HWcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
             <h2>
                 File Structure
             </h2>
             <p>
-                Each data asset should be described by a table contained in a single CSV file or by a single sheet within an
-                Excel document.
+                Each SDDF file describes a single <em>data asset</em>, such as a single CSV file or by a sheet within an Excel document, or single table in a database.
                 This table will begin with a header that defines the fields used in the dictionary.
-                Fields are given consistent names selected from those described within this document.
-                Each row within the table maps to one single column or field within the data asset, as well as a single data
-                element within the Data Dictionary. Where each row maps to a specific field from a data asset a “Column name”
-                field should be included to record the name.
+                These fields are given consistent names selected from those described within this document.
+                Each row within the table maps to one single column or field within the data asset, as well as a single data element within the Data Dictionary.
+            </p><p>
+                Where each row maps to a specific field from a data asset a “Column name” field should be included to record the name of that field.
             </p>
             <div class="row pt-4">
                 <div class="col-12">
@@ -154,7 +160,7 @@
                             Definition
                         </dt>
                         <dd class="col-sm-9">
-                            The definition of a metadata item within a context.
+                            The definition of the metadata item within this data dictionary.
                         </dd>
 
                         <dt class="offset-1 col-sm-2">
@@ -168,7 +174,7 @@
                             Comments
                         </dt>
                         <dd class="col-sm-9">
-                            Descriptive comments about the metadata item
+                            Additional comments about the metadata item, such as a guide for use or notes about its origin.
                         </dd>
                     </dl>
                 </div>
@@ -371,6 +377,7 @@
                                 Data Element
                             </th>
                             <td>
+                                A Data Element should always be present.
                             </td>
                         </tr>
                         <tr>
@@ -448,6 +455,21 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="row pt-4 pb-4">
+                <div class="col-12">
+                    <h3>
+                        Additional help
+                    </h3>
+                </div>
+                <div class="col-10 offset-1">
+                    <p>
+                        If you have questions about the Simple Data Dictionary Format,
+                        need help producing a valid data dictionary or have recommendations or suggestions for how we can improve the SDDF tools
+                        <a href="https://community.aristotlemetadata.com/">sign up our 
+                        metadata community and let us know your thoughts</a>.
+                    </p>
                 </div>
             </div>
         </div>
