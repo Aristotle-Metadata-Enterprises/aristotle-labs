@@ -3,14 +3,15 @@
         <div class="container text-center text-white">
             <div class="promo">
                 <div>
-                    <img alt="Aristotle logo" class="navbar-brand img-fluid aristotle-logo" src="@/assets/aris_logo_small.png">
-                </div>
-                <div>
                     <p>
-                        Aristotle Labs - powered by the Aristotle Metadata Registry
+                        <a href="https://github.com/Aristotle-Metadata-Enterprises/aristotle-labs" class="text-white">
+                            <i class="fab fa-github" />
+                            Aristotle Labs
+                        </a>
+                            - powered by the Aristotle Metadata Registry
                     </p>
                     <p>© 2020 Copyright:
-                        <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Cloud Services Australia</a>
+                        <a class="text-white" href="https://aristotlemetadata.com/">Aristotle Metadata Enterprises</a>
                     </p>
                 </div>
             </div>
@@ -24,6 +25,8 @@
     flex: 0 0 auto;
     width: 100%;
     background-color: #356a69;
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
 
 footer .promo {
