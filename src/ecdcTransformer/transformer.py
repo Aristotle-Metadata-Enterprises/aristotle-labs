@@ -48,7 +48,6 @@ class DataTransformer:
 
         return extra_metadata
 
-
     def add_cumulative_totals(self, data) -> List[Dict]:
         """Calculate a running cumulative total and attach to records"""
         data = data['records']
