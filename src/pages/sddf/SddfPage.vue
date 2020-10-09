@@ -128,7 +128,7 @@
 
             <div class="row">
                 <div class="col-12 text-center">
-                    <img src="@/assets/metadata_relationships.png">
+                    <img src="@/assets/metadata_relationships.png" alt="metadata_relationships">
                 </div>
                 <div class="col-12 text-center">
                     Figure 1: Relationship between ISO 11179 metadata type
@@ -457,6 +457,96 @@
                     </table>
                 </div>
             </div>
+            <h3>
+                Compatibility with Distributions and Data Set Specifications
+            </h3>
+            <p>
+                In order to add definitions to a Distribution or a Data Set Specification from the SDDF importer follow
+                these steps:
+            </p>
+            <ol>
+                <li>
+                    Click on the "Import definitions from SDDF" button located in the Actions tab of the item page.
+                    <div class="text-center pt-4 pb-5">
+                        <img src="@/assets/import_definitions_from.png" alt="aristotle-actions">
+                    </div>
+                </li>
+                <li>
+                    Add an extra column to your excel file named "Logical Path" if you are importing from a Distribution
+                    or "Reference" if you are importing from a Data Set Specification.
+                    <div class="row pt-4 pb-5">
+                        <div class="col-12 d-flex justify-content-center">
+                            <table class="excel-table-2007">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <img src="@/assets/excel-2007-header-left.gif" alt="excel-type-header">
+                                    </th>
+                                    <th scope="col">
+                                        Reference
+                                    </th>
+                                    <th scope="col">
+                                        Object Class
+                                    </th>
+                                    <th scope="col">
+                                        Object Class Definition
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="heading" scope="row">
+                                        1
+                                    </td>
+                                    <td>
+                                        Ref
+                                    </td>
+                                    <td>
+                                        Business
+                                    </td>
+                                    <td>
+                                        An organization or entity engaged in commercial activities
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="heading" scope="row">
+                                        2
+                                    </td>
+                                    <td>
+                                        Ref
+                                    </td>
+                                    <td>
+                                        Person
+                                    </td>
+                                    <td>
+                                        a human being, whether an adult or child
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="heading" scope="row">
+                                        3
+                                    </td>
+                                    <td>
+                                        Ref
+                                    </td>
+                                    <td>
+                                        Age
+                                    </td>
+                                    <td>
+                                        The length of time that a person has lived or a thing has existed
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="row">
+                <div class="col-10 offset-1">
+                </div>
+            </div>
             <div class="row pt-4 pb-4">
                 <div class="col-12">
                     <h3>
@@ -467,7 +557,7 @@
                     <p>
                         If you have questions about the Simple Data Dictionary Format,
                         need help producing a valid data dictionary or have recommendations or suggestions for how we can improve the SDDF tools
-                        <a href="https://community.aristotlemetadata.com/">sign up our 
+                        <a href="https://community.aristotlemetadata.com/">sign up to our
                         metadata community and let us know your thoughts</a>.
                     </p>
                 </div>
