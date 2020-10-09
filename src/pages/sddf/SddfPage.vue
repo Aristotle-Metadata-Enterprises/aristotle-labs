@@ -557,7 +557,7 @@
                     <p>
                         If you have questions about the Simple Data Dictionary Format,
                         need help producing a valid data dictionary or have recommendations or suggestions for how we can improve the SDDF tools
-                        <a href="https://community.aristotlemetadata.com/">sign up our
+                        <a href="https://community.aristotlemetadata.com/">sign up to our
                         metadata community and let us know your thoughts</a>.
                     </p>
                 </div>
