@@ -60,7 +60,7 @@ export default {
         this.show()
     },
     computed: {
-        // Construct maps representing graph, used to contruct final filtered graph
+        // Construct maps representing graph, used to construct final filtered graph
         graph: function() {
             // Map of id to id of parents along with edge description
             let parents = new Map()
