@@ -7,7 +7,7 @@ function graphqlQuery(query, variables) {
     // Url for our registries graphql endpoint
     const graphql_url = 'https://registry.aristotlemetadata.com/api/graphql/json'
     const query_obj = {query: query, variables: variables}
-    return axios.post(graphql_url, query_obj)
+    return axios.post(graphql_url, query_obj, {headers: {'Content-Type': 'application/json'}})
 }
 
 // Check that graphql response is valid
