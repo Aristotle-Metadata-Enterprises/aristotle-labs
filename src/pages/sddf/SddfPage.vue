@@ -238,8 +238,8 @@
                             </th>
                             <td>
                                 Common fields<br>
-                                Permissible Values <small>See below</small><br>
-                                Supplementary Values <small>See below</small><br>
+                                Permissible Values <small>(See below)</small><br>
+                                Supplementary Values <small>(See below)</small><br>
                                 Format<br>
                             </td>
                         </tr>
