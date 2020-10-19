@@ -238,8 +238,8 @@
                             </th>
                             <td>
                                 Common fields<br>
-                                Permissible Values<br>
-                                Supplementary Values<br>
+                                Permissible Values <small>See below</small><br>
+                                Supplementary Values <small>See below</small><br>
                                 Format<br>
                             </td>
                         </tr>
@@ -254,6 +254,28 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <h3>
+                Entering Permissible and Supplementary Values
+            </h3>
+            <div>
+            <p>
+            Aristotle allows you to record the code and the meaning when recording possible values for a value domain.
+            Rather than have codes and meanings in a separate table, or spread over multiple rows in Excel, you can record these SDDF
+            using semi-colons and line breaks to separate values.
+            </p>
+            <p>
+            For example, if you are measuring employment data had a Value Domain with two codes "FT" meaning Full time and "PT" meaning Part time, these can be entered in the cell
+            for the "Permissible Value" Column like so:
+            <div class="well">
+            <pre>
+                FT; Full-time employment
+                PT; Part-time employment
+            </pre>
+            </div>
+            <div class="alert alert-info">Hint: When using Excel you can add a new line inside a cell by pressing <kbd>Alt</kbd>+<kbd>Enter</kbd>!</div>
+            </p>
             </div>
 
             <h3>
