@@ -64,7 +64,6 @@
             <div class="card-deck mb-3">
                 <div class="card">
                     <img class="card-img-top" src="@/assets/sddf_excel.png" alt="">
-<!--                    <img class="card-img-top" src="@/assets/sddf_page.png" alt="">-->
                     <div class="card-body">
                         <h5 class="card-title">
                             Simple Data Dictionary Format Importer
@@ -79,7 +78,21 @@
                         </router-link>
                     </div>
                 </div>
-                <div class="card border-0">
+                <div class="card">
+                    <img class="card-img-top" src="@/assets/cropped_3d_graph.png">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            3D Graph Lab
+                        </h5>
+                        <p class="card-text">
+                            View a 3D graph of an Aristotle Data Set Specification
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://aristotle3d.netlify.app/" class="btn btn-primary">
+                            See the 3D graph &raquo;
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
