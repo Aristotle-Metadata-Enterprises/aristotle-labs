@@ -94,6 +94,23 @@
                         </a>
                     </div>
                 </div>
+                <div class="card">
+                    <img class="card-img-top" src="@/assets/review_tool_screenshot.png">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Aristotle Metadata Advanced Review tool
+                        </h5>
+                        <p class="card-text">
+                            Use the API-driven beta of our Advanced Review tool
+                            to perform quality control of your content.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://aristotle-pro-reviews.netlify.app/" class="btn btn-primary">
+                            Load the Advanced Review tool &raquo;
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <hr class="m-5">
